@@ -1,0 +1,35 @@
+# === Data ===
+# Raw layer (sparse clone of open-congress-data, large, regenerable via fetch step)
+data/raw/
+
+# Staging (parquet from parse_toml.py, regenerable from raw)
+data/staging/*
+!data/staging/.gitkeep
+
+# Curated is committed (small, final)
+# data/curated/ stays tracked
+
+# === Outputs ===
+outputs/*
+!outputs/.gitkeep
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# === Environment ===
+.env
+
+# === OS / IDE ===
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+*.part
