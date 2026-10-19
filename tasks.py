@@ -111,6 +111,9 @@ def cmd_verify() -> None:
     _run(["docker", "compose", "exec", "-T", "postgres",
           "psql", "-U", PG_USER, "-d", PG_DB, "-c", sql])
 
+def cmd_analytics() -> None:
+    _run([sys.executable, "-m", "src.analytics.build_graph"])
+
 
 def cmd_psql() -> None:
     _run(["docker", "compose", "exec", "postgres",
@@ -148,6 +151,7 @@ TASKS: dict[str, tuple[str, Callable[[], None]]] = {
     "down":          ("docker compose down (keeps volume)",           cmd_down),
     "load":          ("curated parquet -> Postgres (idempotent)",     cmd_load),
     "verify":        ("row counts per table",                         cmd_verify),
+    "analytics":     ("curated parquet -> data/analytics/ (graphs, communities, funnel)", cmd_analytics),
     "psql":          ("interactive psql shell",                       cmd_psql),
     "pipeline":      ("fetch -> parse -> validate -> build-curated -> up -> load -> verify", cmd_pipeline),
     "clean-staging": ("remove staging parquet",                       cmd_clean_staging),

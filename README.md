@@ -5,7 +5,7 @@ House bills, built from the [bettergovph/open-congress-data](https://github.com/
 corpus. Who files bills with whom, which committees bury them, and how
 legislative coalitions shift across Congresses.
 
-**Status:** Phase 2 (17th–19th Congress, ingest to staging).
+**Status:** Phase 4 (17th–19th Congress, graph + analytics).
 **Data current as of:** 2025-10-16 (last upstream commit; 20th Congress excluded as incomplete).
 
 ## What this project does
@@ -39,6 +39,57 @@ Congresses (2016–2025); the 20th is excluded as incomplete upstream.
 
 Data integrity rules live in `docs/data_contract.yaml`; per-run diagnostics land in `outputs/` (gitignored, generated per-run).
 
+## Analyses
+
+Phase 4 outputs live in `data/analytics/` and are committed:
+
+- **Six co-authorship graphs** — `{house, senate} × {17th, 18th, 19th}`,
+  kept separate per Congress and per chamber. Coalition structure in the
+  17th Senate is not assumed comparable to the 19th House; keeping the
+  graphs apart preserves honest temporal and cross-chamber comparisons.
+  - `edges/{chamber}-{congress}.parquet` — `source`, `target`, `weight`
+    (raw co-authorship count), `jaccard` (shared-bill overlap).
+  - `nodes/{chamber}-{congress}.parquet` — per-legislator attributes:
+    `bills_primary_filed`, `bills_coauthored`, `bills_solo_filed`,
+    `bills_with_cosponsors_filed`, `avg_coauthors_per_filed_bill`,
+    `coauthor_to_primary_ratio`.
+  - `communities/{chamber}-{congress}.parquet` — Louvain assignment
+    (`seed=42`) per legislator.
+- **`graph_stats.csv`** — one row per graph: `nodes`, `edges`,
+  `modularity`, `n_communities_all`, `n_communities_nontrivial` (≥ 2
+  members), `isolated_fraction`.
+- **`committee_funnel.csv`** — per chamber × scope (`17`, `18`, `19`,
+  `combined`): `committee_name`, `assigned_bills`, `ras`, `rate`, and a
+  `rank` within the chamber-scope cell.
+
+**Model choices, stated plainly:**
+
+- **Edges are co-authorship only.** The primary sponsor of a bill is
+  *not* connected to that bill's co-authors. Primary sponsorship is a
+  distinct legislative action, and letting it form edges would scale a
+  legislator's degree with how many bills they file rather than with
+  coalition behavior — Louvain would cluster by filing patterns, not
+  by coalition. Primary filings and related scalars are preserved as
+  node attributes instead, so the "solo filer" vs "coalition filer"
+  signal survives without distorting community structure. Cost: bills
+  with a single co-author contribute zero edges.
+- **Isolated nodes are preserved.** A legislator with no co-authorship
+  edges appears as a degree-0 node so the complete legislator set is
+  retained. Senate graphs have high `isolated_fraction` because
+  17th–19th Senate co-author data is sparse (see Limitations); this is
+  honest data behavior, not a build defect.
+- **Both raw count and Jaccard are stored per edge.** Louvain runs on
+  raw count; Jaccard is available for downstream toggling.
+- **Funnel rates are "committee touch rates," not "exit rates."** A
+  bill assigned to *N* committees counts in each of the *N*. Rankings
+  are computed only within each chamber × scope cell and only over
+  committees with `assigned_bills ≥ 10`; small-n committees are
+  excluded because a 2-bill, 2-RA committee is noise, not a 100%
+  funnel. Special committees can lead a ranking at modest n; the
+  touch-rate caveat applies.
+
+Reproduce with `python tasks.py analytics`.
+
 ## Limitations
 
 - **20th Congress excluded** — incomplete upstream; Phase 2 is 17th–19th Congress.
@@ -59,6 +110,15 @@ Data integrity rules live in `docs/data_contract.yaml`; per-run diagnostics land
 - **Upstream manual-encoding disclaimer** — `open-congress-data` is community-maintained
   and self-describes a manual-encoding process; parsed data inherits its
   accuracy characteristics.
+- **Senate co-author sparsity** — across the 17th–19th Senate, bills with
+  ≥ 2 co-authors are rare (17th: 2 bills; 18th: 11; 19th: 81). Under a
+  co-authorship edge model, single-co-author bills contribute zero
+  edges, so Senate graphs are sparse: senate-17 has 4 edges / 24 nodes
+  (modularity 0.0 — too sparse for Louvain to find structure) and 83%
+  isolated nodes; senate-18 has 23 edges and 50% isolated; senate-19
+  has 71 edges and 12% isolated. House graphs are dense (~40k edges
+  each, < 10% isolated). Senate community structure should be read with
+  that in mind.
 - **Data snapshot** — upstream HEAD `6e853ee`, 2025-10-16. Re-run
   `python -m src.ingest.fetch` to refresh.
 
@@ -91,11 +151,12 @@ python tasks.py build-curated  # staging + person TOMLs -> data/curated/*.parque
 python tasks.py up             # start Postgres container (waits for healthcheck)
 python tasks.py load           # curated -> Postgres (idempotent upsert)
 python tasks.py verify         # row counts per table
+python tasks.py analytics      # curated -> data/analytics/ (graphs, communities, funnel)
 python tasks.py psql           # interactive shell for ad-hoc queries
 ```
 
-`python tasks.py --help` lists all tasks. Later phases (graph, site) are
-not yet implemented.
+`python tasks.py --help` lists all tasks. Phase 5 (site build, 
+GitHub Pages) is not yet implemented.
 
 ## Reference
 

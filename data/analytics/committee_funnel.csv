@@ -1,0 +1,460 @@
+chamber,scope,committee_name,assigned_bills,ras,rate,rank
+house,17,Rules,1035,447,0.4318840579710145,1.0
+house,17,Basic Education and Culture,923,94,0.10184182015167931,7.0
+house,17,Appropriations,809,271,0.33498145859085293,2.0
+house,17,Health,732,46,0.06284153005464481,12.0
+house,17,Public Works and Highways,648,17,0.026234567901234566,23.0
+house,17,Higher and Technical Education,602,50,0.08305647840531562,10.0
+house,17,Local Government,508,46,0.09055118110236221,8.0
+house,17,Transportation,457,40,0.087527352297593,9.0
+house,17,Revision of Laws,407,60,0.14742014742014742,4.0
+house,17,Justice,405,25,0.06172839506172839,13.0
+house,17,Agriculture & Food,322,3,0.009316770186335404,39.0
+house,17,Ways and Means,312,33,0.10576923076923077,6.0
+house,17,Labor and Employment,295,5,0.01694915254237288,34.0
+house,17,Government Enterprises and Privatization,271,2,0.007380073800738007,41.0
+house,17,Natural Resources,258,1,0.003875968992248062,42.0
+house,17,Civil Service and Professional Regulation,232,5,0.021551724137931036,29.0
+house,17,Tourism,230,6,0.02608695652173913,24.0
+house,17,Trade and Industry,222,5,0.02252252252252252,28.0
+house,17,Government Reorganization,220,4,0.01818181818181818,33.0
+house,17,Legislative Franchises,204,66,0.3235294117647059,3.0
+house,17,Public Order and Safety,198,4,0.020202020202020204,31.0
+house,17,Aquaculture and Fisheries Resources,169,18,0.10650887573964497,5.0
+house,17,Population and Family Relations,153,2,0.013071895424836602,37.0
+house,17,National Defense and Security,141,0,0.0,43.0
+house,17,Information and Communications Technology,138,2,0.014492753623188406,35.0
+house,17,Energy,122,5,0.040983606557377046,20.0
+house,17,Suffrage and Electoral Reforms,122,3,0.02459016393442623,25.0
+house,17,Public Information,115,1,0.008695652173913044,40.0
+house,17,Banks and Financial Intermediaries,104,6,0.057692307692307696,14.0
+house,17,Ecology,104,0,0.0,43.0
+house,17,Housing and Urban Development,93,2,0.021505376344086023,30.0
+house,17,Welfare of Children,86,1,0.011627906976744186,38.0
+house,17,Overseas Workers Affairs,84,2,0.023809523809523808,27.0
+house,17,Dangerous Drugs,83,0,0.0,43.0
+house,17,Social Services,83,3,0.03614457831325301,21.0
+house,17,Women and Gender Equality,83,2,0.024096385542168676,26.0
+house,17,Youth and Sports Development,73,3,0.0410958904109589,19.0
+house,17,Poverty Alleviation,72,3,0.041666666666666664,18.0
+house,17,Economic Affairs,70,1,0.014285714285714285,36.0
+house,17,Science and Technology,64,3,0.046875,17.0
+house,17,Foreign Affairs,54,1,0.018518518518518517,32.0
+house,17,Food Security,49,0,0.0,43.0
+house,17,Games and Amusements,44,0,0.0,43.0
+house,17,Human Rights,43,0,0.0,43.0
+house,17,Indigenous Cultural Communities and Indigenous Peoples,38,0,0.0,43.0
+house,17,"Micro, Small and Medium Enterprise Development",37,1,0.02702702702702703,22.0
+house,17,Reforestation,34,0,0.0,43.0
+house,17,Senior Citizens,32,0,0.0,43.0
+house,17,Agrarian Reform,29,0,0.0,43.0
+house,17,People's Participation,24,0,0.0,43.0
+house,17,Cooperatives Development,19,1,0.05263157894736842,15.0
+house,17,Veterans Affairs and Welfare,19,1,0.05263157894736842,15.0
+house,17,Muslim Affairs,15,1,0.06666666666666667,11.0
+house,17,Land Use,14,0,0.0,43.0
+house,17,Climate Change,12,0,0.0,43.0
+house,17,Metro Manila Development,12,0,0.0,43.0
+house,17,Rural Development,12,0,0.0,43.0
+house,17,Bases Conversion,10,0,0.0,43.0
+house,17,Constitutional Amendments,8,0,0.0,
+house,17,Disaster Resilience,7,0,0.0,
+house,17,"Peace, Reconciliation and Unity",7,1,0.14285714285714285,
+house,17,B510,3,0,0.0,
+house,17,West Philippine Sea,2,0,0.0,
+house,17,C503,1,0,0.0,
+house,17,East ASEAN Growth Area,1,0,0.0,
+house,17,Sustainable Development Goals,1,0,0.0,
+house,17,Visayas Development,1,0,0.0,
+house,18,Rules,1232,383,0.31087662337662336,1.0
+house,18,Basic Education and Culture,1224,63,0.051470588235294115,12.0
+house,18,Appropriations,1040,254,0.24423076923076922,3.0
+house,18,Health,956,72,0.07531380753138076,6.0
+house,18,Higher and Technical Education,775,38,0.04903225806451613,13.0
+house,18,Local Government,758,41,0.05408970976253298,11.0
+house,18,Public Works and Highways,558,26,0.04659498207885305,14.0
+house,18,Justice,549,14,0.025500910746812388,17.0
+house,18,Transportation,481,39,0.08108108108108109,5.0
+house,18,Tourism,343,0,0.0,34.0
+house,18,Agriculture & Food,334,4,0.011976047904191617,28.0
+house,18,Government Reorganization,315,1,0.0031746031746031746,33.0
+house,18,Labor and Employment,300,0,0.0,34.0
+house,18,Ways and Means,296,20,0.06756756756756757,8.0
+house,18,Civil Service and Professional Regulation,268,0,0.0,34.0
+house,18,Legislative Franchises,261,77,0.2950191570881226,2.0
+house,18,Trade and Industry,251,6,0.02390438247011952,19.0
+house,18,Natural Resources,233,7,0.030042918454935622,16.0
+house,18,Public Order and Safety,230,4,0.017391304347826087,22.0
+house,18,Government Enterprises and Privatization,214,3,0.014018691588785047,26.0
+house,18,Revision of Laws,202,2,0.009900990099009901,30.0
+house,18,Aquaculture and Fisheries Resources,197,14,0.07106598984771574,7.0
+house,18,Information and Communications Technology,180,0,0.0,34.0
+house,18,Suffrage and Electoral Reforms,179,3,0.01675977653631285,23.0
+house,18,Welfare of Children,167,4,0.023952095808383235,18.0
+house,18,Senior Citizens,164,0,0.0,34.0
+house,18,Ecology,157,0,0.0,34.0
+house,18,Youth and Sports Development,139,2,0.014388489208633094,25.0
+house,18,Energy,137,5,0.0364963503649635,15.0
+house,18,National Defense and Security,136,2,0.014705882352941176,24.0
+house,18,Banks and Financial Intermediaries,133,3,0.022556390977443608,20.0
+house,18,Overseas Workers Affairs,127,1,0.007874015748031496,32.0
+house,18,Disaster Resilience,108,1,0.009259259259259259,31.0
+house,18,Housing and Urban Development,108,0,0.0,34.0
+house,18,Economic Affairs,107,2,0.018691588785046728,21.0
+house,18,Science and Technology,97,0,0.0,34.0
+house,18,Public Information,86,1,0.011627906976744186,29.0
+house,18,Reforestation,80,0,0.0,34.0
+house,18,Women and Gender Equality,79,1,0.012658227848101266,27.0
+house,18,Social Services,67,0,0.0,34.0
+house,18,Persons with Disabilities,65,0,0.0,34.0
+house,18,Human Rights,53,0,0.0,34.0
+house,18,"Micro, Small and Medium Enterprise Development",51,0,0.0,34.0
+house,18,Dangerous Drugs,49,0,0.0,34.0
+house,18,Population and Family Relations,49,0,0.0,34.0
+house,18,Poverty Alleviation,47,0,0.0,34.0
+house,18,Food Security,44,0,0.0,34.0
+house,18,Foreign Affairs,42,0,0.0,34.0
+house,18,People's Participation,31,0,0.0,34.0
+house,18,Games and Amusements,26,0,0.0,34.0
+house,18,Indigenous Cultural Communities and Indigenous Peoples,26,0,0.0,34.0
+house,18,Land Use,22,0,0.0,34.0
+house,18,Agrarian Reform,21,0,0.0,34.0
+house,18,Cooperatives Development,21,2,0.09523809523809523,4.0
+house,18,J506,19,0,0.0,34.0
+house,18,Muslim Affairs,18,1,0.05555555555555555,10.0
+house,18,Creative Industries,17,1,0.058823529411764705,9.0
+house,18,Metro Manila Development,15,0,0.0,34.0
+house,18,Rural Development,14,0,0.0,34.0
+house,18,Veterans Affairs and Welfare,12,0,0.0,34.0
+house,18,Climate Change,11,0,0.0,34.0
+house,18,"Peace, Reconciliation and Unity",9,1,0.1111111111111111,
+house,18,Bases Conversion,8,0,0.0,
+house,18,Sustainable Development Goals,5,0,0.0,
+house,18,West Philippine Sea,5,0,0.0,
+house,18,Public Accounts,4,0,0.0,
+house,18,Constitutional Amendments,2,0,0.0,
+house,18,Visayas Development,2,0,0.0,
+house,18,A507,1,0,0.0,
+house,18,B510,1,0,0.0,
+house,18,Flagship Programs and Projects,1,0,0.0,
+house,19,Rules,1167,323,0.27677806341045413,1.0
+house,19,Basic Education and Culture,1126,65,0.05772646536412078,9.0
+house,19,Health,1119,29,0.025915996425379804,16.0
+house,19,Local Government,987,45,0.04559270516717325,10.0
+house,19,Higher and Technical Education,871,24,0.027554535017221583,15.0
+house,19,Appropriations,854,236,0.27634660421545665,2.0
+house,19,Public Works and Highways,622,16,0.02572347266881029,17.0
+house,19,Transportation,520,51,0.09807692307692308,4.0
+house,19,Justice,519,40,0.07707129094412331,6.0
+house,19,Agriculture & Food,422,4,0.009478672985781991,27.0
+house,19,Tourism,409,1,0.0024449877750611247,37.0
+house,19,Labor and Employment,342,4,0.011695906432748537,25.0
+house,19,Ways and Means,331,31,0.09365558912386707,5.0
+house,19,Civil Service and Professional Regulation,294,1,0.003401360544217687,36.0
+house,19,Trade and Industry,262,4,0.015267175572519083,20.0
+house,19,Natural Resources,235,8,0.03404255319148936,13.0
+house,19,Aquaculture and Fisheries Resources,231,9,0.03896103896103896,11.0
+house,19,Information and Communications Technology,231,2,0.008658008658008658,30.0
+house,19,Public Order and Safety,230,2,0.008695652173913044,29.0
+house,19,Revision of Laws,223,3,0.013452914798206279,24.0
+house,19,Senior Citizens,218,1,0.0045871559633027525,35.0
+house,19,Government Reorganization,206,3,0.014563106796116505,22.0
+house,19,Suffrage and Electoral Reforms,181,2,0.011049723756906077,26.0
+house,19,Disaster Resilience,166,3,0.018072289156626505,19.0
+house,19,Government Enterprises and Privatization,154,0,0.0,38.0
+house,19,Energy,153,1,0.006535947712418301,34.0
+house,19,Youth and Sports Development,147,2,0.013605442176870748,23.0
+house,19,Welfare of Children,145,0,0.0,38.0
+house,19,Housing and Urban Development,139,1,0.007194244604316547,33.0
+house,19,Banks and Financial Intermediaries,135,2,0.014814814814814815,21.0
+house,19,Legislative Franchises,134,8,0.05970149253731343,8.0
+house,19,Science and Technology,126,1,0.007936507936507936,32.0
+house,19,Overseas Workers Affairs,119,1,0.008403361344537815,31.0
+house,19,Economic Affairs,114,1,0.008771929824561403,28.0
+house,19,Ecology,105,0,0.0,38.0
+house,19,National Defense and Security,103,3,0.02912621359223301,14.0
+house,19,Persons with Disabilities,98,0,0.0,38.0
+house,19,Women and Gender Equality,72,0,0.0,38.0
+house,19,"Micro, Small and Medium Enterprise Development",71,0,0.0,38.0
+house,19,Reforestation,71,0,0.0,38.0
+house,19,Foreign Affairs,68,5,0.07352941176470588,7.0
+house,19,Poverty Alleviation,62,0,0.0,38.0
+house,19,Social Services,54,0,0.0,38.0
+house,19,Food Security,51,0,0.0,38.0
+house,19,Dangerous Drugs,50,0,0.0,38.0
+house,19,Public Information,50,0,0.0,38.0
+house,19,Human Rights,48,0,0.0,38.0
+house,19,Population and Family Relations,48,0,0.0,38.0
+house,19,Agrarian Reform,41,1,0.024390243902439025,18.0
+house,19,Creative Industries,37,0,0.0,38.0
+house,19,Sustainable Development Goals,37,0,0.0,38.0
+house,19,Games and Amusements,36,0,0.0,38.0
+house,19,Climate Change,29,1,0.034482758620689655,12.0
+house,19,People's Participation,27,0,0.0,38.0
+house,19,Indigenous Cultural Communities and Indigenous Peoples,26,0,0.0,38.0
+house,19,Muslim Affairs,26,3,0.11538461538461539,3.0
+house,19,Land Use,21,0,0.0,38.0
+house,19,Nuclear Energy,20,0,0.0,38.0
+house,19,Rural Development,19,0,0.0,38.0
+house,19,Cooperatives Development,18,0,0.0,38.0
+house,19,J506,13,0,0.0,38.0
+house,19,West Philippine Sea,9,0,0.0,
+house,19,Constitutional Amendments,8,0,0.0,
+house,19,Bases Conversion,6,0,0.0,
+house,19,Metro Manila Development,4,0,0.0,
+house,19,"Peace, Reconciliation and Unity",4,0,0.0,
+house,19,Flagship Programs and Projects,2,0,0.0,
+house,19,Veterans Affairs and Welfare,2,1,0.5,
+house,19,East ASEAN Growth Area,1,0,0.0,
+house,19,K503,1,0,0.0,
+house,19,K504,1,0,0.0,
+house,19,K505,1,0,0.0,
+house,19,Public Accounts,1,0,0.0,
+house,19,Strategic Intelligence,1,0,0.0,
+house,19,Visayas Development,1,0,0.0,
+house,combined,Rules,3434,1153,0.3357600465928946,1.0
+house,combined,Basic Education and Culture,3273,222,0.06782768102658111,10.0
+house,combined,Health,2807,147,0.05236907730673317,14.0
+house,combined,Appropriations,2703,761,0.2815390307066223,2.0
+house,combined,Local Government,2253,132,0.05858854860186418,12.0
+house,combined,Higher and Technical Education,2248,112,0.0498220640569395,16.0
+house,combined,Public Works and Highways,1828,59,0.032275711159737416,18.0
+house,combined,Justice,1473,79,0.05363204344874406,13.0
+house,combined,Transportation,1458,130,0.08916323731138547,6.0
+house,combined,Agriculture & Food,1078,11,0.01020408163265306,39.0
+house,combined,Tourism,982,7,0.007128309572301426,47.0
+house,combined,Ways and Means,939,84,0.08945686900958466,5.0
+house,combined,Labor and Employment,937,9,0.0096051227321238,40.0
+house,combined,Revision of Laws,832,65,0.078125,8.0
+house,combined,Civil Service and Professional Regulation,794,6,0.007556675062972292,45.0
+house,combined,Government Reorganization,741,8,0.010796221322537112,38.0
+house,combined,Trade and Industry,735,15,0.02040816326530612,22.0
+house,combined,Natural Resources,726,16,0.02203856749311295,21.0
+house,combined,Public Order and Safety,658,10,0.015197568389057751,28.0
+house,combined,Government Enterprises and Privatization,639,5,0.00782472613458529,44.0
+house,combined,Legislative Franchises,599,151,0.25208681135225375,3.0
+house,combined,Aquaculture and Fisheries Resources,597,41,0.06867671691792294,9.0
+house,combined,Information and Communications Technology,549,4,0.007285974499089253,46.0
+house,combined,Suffrage and Electoral Reforms,482,8,0.016597510373443983,26.0
+house,combined,Senior Citizens,414,1,0.0024154589371980675,49.0
+house,combined,Energy,412,11,0.02669902912621359,20.0
+house,combined,Welfare of Children,398,5,0.01256281407035176,35.0
+house,combined,National Defense and Security,380,5,0.013157894736842105,33.0
+house,combined,Banks and Financial Intermediaries,372,11,0.02956989247311828,19.0
+house,combined,Ecology,366,0,0.0,50.0
+house,combined,Youth and Sports Development,359,7,0.019498607242339833,23.0
+house,combined,Housing and Urban Development,340,3,0.008823529411764706,41.0
+house,combined,Overseas Workers Affairs,330,4,0.012121212121212121,36.0
+house,combined,Economic Affairs,291,4,0.013745704467353952,32.0
+house,combined,Science and Technology,287,4,0.013937282229965157,31.0
+house,combined,Disaster Resilience,281,4,0.014234875444839857,30.0
+house,combined,Public Information,251,2,0.00796812749003984,43.0
+house,combined,Population and Family Relations,250,2,0.008,42.0
+house,combined,Women and Gender Equality,234,3,0.01282051282051282,34.0
+house,combined,Social Services,204,3,0.014705882352941176,29.0
+house,combined,Reforestation,185,0,0.0,50.0
+house,combined,Dangerous Drugs,182,0,0.0,50.0
+house,combined,Poverty Alleviation,181,3,0.016574585635359115,27.0
+house,combined,Foreign Affairs,164,6,0.036585365853658534,17.0
+house,combined,Persons with Disabilities,163,0,0.0,50.0
+house,combined,"Micro, Small and Medium Enterprise Development",159,1,0.006289308176100629,48.0
+house,combined,Food Security,144,0,0.0,50.0
+house,combined,Human Rights,144,0,0.0,50.0
+house,combined,Games and Amusements,106,0,0.0,50.0
+house,combined,Agrarian Reform,91,1,0.01098901098901099,37.0
+house,combined,Indigenous Cultural Communities and Indigenous Peoples,90,0,0.0,50.0
+house,combined,People's Participation,82,0,0.0,50.0
+house,combined,Muslim Affairs,59,5,0.0847457627118644,7.0
+house,combined,Cooperatives Development,58,3,0.05172413793103448,15.0
+house,combined,Land Use,57,0,0.0,50.0
+house,combined,Creative Industries,54,1,0.018518518518518517,25.0
+house,combined,Climate Change,52,1,0.019230769230769232,24.0
+house,combined,Rural Development,45,0,0.0,50.0
+house,combined,Sustainable Development Goals,43,0,0.0,50.0
+house,combined,Veterans Affairs and Welfare,33,2,0.06060606060606061,11.0
+house,combined,J506,32,0,0.0,50.0
+house,combined,Metro Manila Development,31,0,0.0,50.0
+house,combined,Bases Conversion,24,0,0.0,50.0
+house,combined,Nuclear Energy,20,0,0.0,50.0
+house,combined,"Peace, Reconciliation and Unity",20,2,0.1,4.0
+house,combined,Constitutional Amendments,18,0,0.0,50.0
+house,combined,West Philippine Sea,16,0,0.0,50.0
+house,combined,Public Accounts,5,0,0.0,
+house,combined,B510,4,0,0.0,
+house,combined,Visayas Development,4,0,0.0,
+house,combined,Flagship Programs and Projects,3,0,0.0,
+house,combined,East ASEAN Growth Area,2,0,0.0,
+house,combined,A507,1,0,0.0,
+house,combined,C503,1,0,0.0,
+house,combined,K503,1,0,0.0,
+house,combined,K504,1,0,0.0,
+house,combined,K505,1,0,0.0,
+house,combined,Strategic Intelligence,1,0,0.0,
+senate,17,"Education, Arts and Culture",212,38,0.1792452830188679,7.0
+senate,17,Health and Demography,204,33,0.16176470588235295,10.0
+senate,17,Justice and Human Rights,197,20,0.10152284263959391,15.0
+senate,17,Ways and Means,133,8,0.06015037593984962,23.0
+senate,17,"Civil Service, Government Reorganization and Professional Regulation",128,6,0.046875,24.0
+senate,17,Public Services,112,7,0.0625,22.0
+senate,17,Local Government,101,9,0.0891089108910891,18.0
+senate,17,"Labor, Employment and Human Resources Development",98,9,0.09183673469387756,16.0
+senate,17,Agriculture and Food,91,11,0.12087912087912088,12.0
+senate,17,Public Order and Dangerous Drugs,86,6,0.06976744186046512,21.0
+senate,17,"Women, Children, Family Relations and Gender Equality",83,9,0.10843373493975904,13.0
+senate,17,"Trade, Commerce and Entrepreneurship",76,2,0.02631578947368421,28.0
+senate,17,Environment and Natural Resources,75,3,0.04,27.0
+senate,17,"Social Justice, Welfare and Rural Development",72,22,0.3055555555555556,3.0
+senate,17,Government Corporations and Public Enterprises,71,3,0.04225352112676056,26.0
+senate,17,National Defense and Security,49,1,0.02040816326530612,29.0
+senate,17,Science and Technology,46,12,0.2608695652173913,4.0
+senate,17,Electoral Reforms and Peoples Participation,45,2,0.044444444444444446,25.0
+senate,17,Energy,43,10,0.23255813953488372,5.0
+senate,17,Public Information and Mass Media,38,3,0.07894736842105263,20.0
+senate,17,Public Works,38,4,0.10526315789473684,14.0
+senate,17,"Banks, Financial Institutions and Currencies",36,6,0.16666666666666666,9.0
+senate,17,Economic Affairs,29,5,0.1724137931034483,8.0
+senate,17,Finance,26,0,0.0,30.0
+senate,17,Rules,22,2,0.09090909090909091,17.0
+senate,17,"Urban Planning, Housing and Resettlement",22,7,0.3181818181818182,2.0
+senate,17,Cultural Communities,15,0,0.0,30.0
+senate,17,Sports,14,2,0.14285714285714285,11.0
+senate,17,Foreign Relations,12,1,0.08333333333333333,19.0
+senate,17,Youth,12,4,0.3333333333333333,1.0
+senate,17,Constitutional Amendments and Revision of Codes,11,2,0.18181818181818182,6.0
+senate,17,Agrarian Reform,9,0,0.0,
+senate,17,Games and Amusement,5,0,0.0,
+senate,17,Cooperatives,4,4,1.0,
+senate,17,Tourism,4,1,0.25,
+senate,17,Accounts,3,0,0.0,
+senate,17,Accountability of Public Officers and Investigations,2,0,0.0,
+senate,17,Climate Change,1,0,0.0,
+senate,17,"Peace, Unification and Reconciliation",1,0,0.0,
+senate,18,Health and Demography,270,22,0.08148148148148149,20.0
+senate,18,Justice and Human Rights,170,32,0.18823529411764706,8.0
+senate,18,"Basic Education, Arts and Culture",169,38,0.22485207100591717,7.0
+senate,18,Public Services,128,21,0.1640625,10.0
+senate,18,Rules,123,1,0.008130081300813009,27.0
+senate,18,"Civil Service, Government Reorganization and Professional Regulation",122,8,0.06557377049180328,21.0
+senate,18,Local Government,121,16,0.1322314049586777,15.0
+senate,18,"Higher, Technical and Vocational Education",112,26,0.23214285714285715,6.0
+senate,18,"Labor, Employment and Human Resources Development",111,2,0.018018018018018018,25.0
+senate,18,"Agriculture, Food and Agrarian Reform",102,15,0.14705882352941177,13.0
+senate,18,"Trade, Commerce and Entrepreneurship",93,14,0.15053763440860216,12.0
+senate,18,"Women, Children, Family Relations and Gender Equality",93,22,0.23655913978494625,5.0
+senate,18,"Environment, Natural Resources and Climate Change",90,11,0.12222222222222222,17.0
+senate,18,Public Order and Dangerous Drugs,77,13,0.16883116883116883,9.0
+senate,18,Ways and Means,71,10,0.14084507042253522,14.0
+senate,18,"Social Justice, Welfare and Rural Development",62,1,0.016129032258064516,26.0
+senate,18,"Banks, Financial Institutions and Currencies",56,16,0.2857142857142857,4.0
+senate,18,Finance,52,29,0.5576923076923077,1.0
+senate,18,"National Defense and Security, Peace, Unification and Reconciliation",52,8,0.15384615384615385,11.0
+senate,18,Government Corporations and Public Enterprises,48,4,0.08333333333333333,19.0
+senate,18,Electoral Reforms and Peoples Participation,47,6,0.1276595744680851,16.0
+senate,18,Science and Technology,42,1,0.023809523809523808,24.0
+senate,18,Energy,36,16,0.4444444444444444,2.0
+senate,18,Economic Affairs,35,4,0.11428571428571428,18.0
+senate,18,Public Works,35,2,0.05714285714285714,22.0
+senate,18,Tourism,33,0,0.0,28.0
+senate,18,Public Information and Mass Media,32,1,0.03125,23.0
+senate,18,"Urban Planning, Housing and Resettlement",31,0,0.0,28.0
+senate,18,Sports,24,0,0.0,28.0
+senate,18,Youth,19,6,0.3157894736842105,3.0
+senate,18,Cultural Communities,13,0,0.0,28.0
+senate,18,Foreign Relations,13,0,0.0,28.0
+senate,18,"Sustainable Development Goals, Innovation and Futures Thinking",10,0,0.0,28.0
+senate,18,Constitutional Amendments and Revision of Codes,9,0,0.0,
+senate,18,Cooperatives,5,3,0.6,
+senate,18,Accounts,2,0,0.0,
+senate,18,Games and Amusement,2,0,0.0,
+senate,19,Health and Demography,270,28,0.1037037037037037,17.0
+senate,19,"Civil Service, Government Reorganization and Professional Regulation",160,11,0.06875,25.0
+senate,19,"Higher, Technical and Vocational Education",150,13,0.08666666666666667,21.0
+senate,19,Justice and Human Rights,146,11,0.07534246575342465,24.0
+senate,19,"Agriculture, Food and Agrarian Reform",145,32,0.2206896551724138,7.0
+senate,19,Local Government,143,14,0.0979020979020979,18.0
+senate,19,Basic Education,142,12,0.08450704225352113,22.0
+senate,19,"Labor, Employment and Human Resources Development",141,7,0.04964539007092199,27.0
+senate,19,"Trade, Commerce and Entrepreneurship",131,16,0.12213740458015267,15.0
+senate,19,Public Services,120,10,0.08333333333333333,23.0
+senate,19,"Environment, Natural Resources and Climate Change",116,11,0.09482758620689655,19.0
+senate,19,Science and Technology,96,20,0.20833333333333334,9.0
+senate,19,"Social Justice, Welfare and Rural Development",90,4,0.044444444444444446,28.0
+senate,19,"National Defense and Security, Peace, Unification and Reconciliation",85,23,0.27058823529411763,5.0
+senate,19,Ways and Means,82,15,0.18292682926829268,11.0
+senate,19,Rules,79,1,0.012658227848101266,30.0
+senate,19,"Women, Children, Family Relations and Gender Equality",73,0,0.0,31.0
+senate,19,Public Order and Dangerous Drugs,70,0,0.0,31.0
+senate,19,"Banks, Financial Institutions and Currencies",64,8,0.125,14.0
+senate,19,Economic Affairs,58,9,0.15517241379310345,13.0
+senate,19,Electoral Reforms and Peoples Participation,57,10,0.17543859649122806,12.0
+senate,19,Tourism,56,3,0.05357142857142857,26.0
+senate,19,Government Corporations and Public Enterprises,52,11,0.21153846153846154,8.0
+senate,19,Culture and the Arts,51,6,0.11764705882352941,16.0
+senate,19,Energy,50,1,0.02,29.0
+senate,19,Public Works,49,12,0.24489795918367346,6.0
+senate,19,Public Information and Mass Media,47,0,0.0,31.0
+senate,19,"Urban Planning, Housing and Resettlement",44,4,0.09090909090909091,20.0
+senate,19,Migrant Workers,39,14,0.358974358974359,3.0
+senate,19,Sports,31,0,0.0,31.0
+senate,19,Foreign Relations,28,9,0.32142857142857145,4.0
+senate,19,Finance,26,17,0.6538461538461539,2.0
+senate,19,"Sustainable Development Goals, Innovation and Futures Thinking",23,0,0.0,31.0
+senate,19,Cultural Communities and Muslim Affairs,21,4,0.19047619047619047,10.0
+senate,19,Special Committee on Philippine Maritime and Admiralty Zones,18,16,0.8888888888888888,1.0
+senate,19,Youth,14,0,0.0,31.0
+senate,19,Constitutional Amendments and Revision of Codes,13,0,0.0,31.0
+senate,19,Cooperatives,7,0,0.0,
+senate,19,Games and Amusement,3,0,0.0,
+senate,19,Senate Special Committee on Marawi City Rehabilitation and Victims Compensation,2,0,0.0,
+senate,19,Cultural Communities,1,0,0.0,
+senate,combined,Health and Demography,744,83,0.11155913978494623,26.0
+senate,combined,Justice and Human Rights,513,63,0.12280701754385964,19.0
+senate,combined,"Civil Service, Government Reorganization and Professional Regulation",410,25,0.06097560975609756,34.0
+senate,combined,Local Government,365,39,0.10684931506849316,27.0
+senate,combined,Public Services,360,38,0.10555555555555556,30.0
+senate,combined,"Labor, Employment and Human Resources Development",350,18,0.05142857142857143,36.0
+senate,combined,"Trade, Commerce and Entrepreneurship",300,32,0.10666666666666667,29.0
+senate,combined,Ways and Means,286,33,0.11538461538461539,24.0
+senate,combined,"Higher, Technical and Vocational Education",262,39,0.14885496183206107,15.0
+senate,combined,"Women, Children, Family Relations and Gender Equality",249,31,0.12449799196787148,18.0
+senate,combined,"Agriculture, Food and Agrarian Reform",247,47,0.1902834008097166,11.0
+senate,combined,Public Order and Dangerous Drugs,233,19,0.0815450643776824,33.0
+senate,combined,Rules,224,4,0.017857142857142856,42.0
+senate,combined,"Social Justice, Welfare and Rural Development",224,27,0.12053571428571429,22.0
+senate,combined,"Education, Arts and Culture",212,38,0.1792452830188679,14.0
+senate,combined,"Environment, Natural Resources and Climate Change",206,22,0.10679611650485436,28.0
+senate,combined,Science and Technology,184,33,0.1793478260869565,13.0
+senate,combined,Government Corporations and Public Enterprises,171,18,0.10526315789473684,31.0
+senate,combined,"Basic Education, Arts and Culture",169,38,0.22485207100591717,6.0
+senate,combined,"Banks, Financial Institutions and Currencies",156,30,0.19230769230769232,9.0
+senate,combined,Electoral Reforms and Peoples Participation,149,18,0.12080536912751678,21.0
+senate,combined,Basic Education,142,12,0.08450704225352113,32.0
+senate,combined,"National Defense and Security, Peace, Unification and Reconciliation",137,31,0.22627737226277372,5.0
+senate,combined,Energy,129,27,0.20930232558139536,8.0
+senate,combined,Economic Affairs,122,18,0.14754098360655737,16.0
+senate,combined,Public Works,122,18,0.14754098360655737,16.0
+senate,combined,Public Information and Mass Media,117,4,0.03418803418803419,39.0
+senate,combined,Finance,104,46,0.4423076923076923,2.0
+senate,combined,"Urban Planning, Housing and Resettlement",97,11,0.1134020618556701,25.0
+senate,combined,Tourism,93,4,0.043010752688172046,37.0
+senate,combined,Agriculture and Food,91,11,0.12087912087912088,20.0
+senate,combined,Environment and Natural Resources,75,3,0.04,38.0
+senate,combined,Sports,69,2,0.028985507246376812,40.0
+senate,combined,Foreign Relations,53,10,0.18867924528301888,12.0
+senate,combined,Culture and the Arts,51,6,0.11764705882352941,23.0
+senate,combined,National Defense and Security,49,1,0.02040816326530612,41.0
+senate,combined,Youth,45,10,0.2222222222222222,7.0
+senate,combined,Migrant Workers,39,14,0.358974358974359,4.0
+senate,combined,Constitutional Amendments and Revision of Codes,33,2,0.06060606060606061,35.0
+senate,combined,"Sustainable Development Goals, Innovation and Futures Thinking",33,0,0.0,43.0
+senate,combined,Cultural Communities,29,0,0.0,43.0
+senate,combined,Cultural Communities and Muslim Affairs,21,4,0.19047619047619047,10.0
+senate,combined,Special Committee on Philippine Maritime and Admiralty Zones,18,16,0.8888888888888888,1.0
+senate,combined,Cooperatives,16,7,0.4375,3.0
+senate,combined,Games and Amusement,10,0,0.0,43.0
+senate,combined,Agrarian Reform,9,0,0.0,
+senate,combined,Accounts,5,0,0.0,
+senate,combined,Accountability of Public Officers and Investigations,2,0,0.0,
+senate,combined,Senate Special Committee on Marawi City Rehabilitation and Victims Compensation,2,0,0.0,
+senate,combined,Climate Change,1,0,0.0,
+senate,combined,"Peace, Unification and Reconciliation",1,0,0.0,
