@@ -8,6 +8,36 @@ from pathlib import Path
 if sys.version_info < (3, 11):
     raise RuntimeError("Python >= 3.11 required (tomllib is stdlib from 3.11)")
 
+# --------------------------------------------------------------------------- #
+# Settings (Phase 3)
+# --------------------------------------------------------------------------- #
+
+import os as _os
+
+try:
+    from dotenv import load_dotenv as _load_dotenv
+    _load_dotenv()
+except ImportError:
+    pass
+
+
+class Settings:
+    """Environment-backed settings. Access is lazy so Phase 1/2 commands
+    keep working without a .env file."""
+
+    @property
+    def postgres_uri(self) -> str:
+        uri = _os.environ.get("DATABASE_URL")
+        if not uri:
+            raise RuntimeError(
+                "DATABASE_URL is not set. Copy .env.example to .env "
+                "and adjust the credentials if needed."
+            )
+        return uri
+
+
+settings = Settings()
+
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 DATA_DIR     = PROJECT_ROOT / "data"

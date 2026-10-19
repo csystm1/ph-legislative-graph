@@ -74,16 +74,28 @@ fetch (sparse clone) → parse_toml → staging parquet
 
 ## Reproducing
 
+Full pipeline from a fresh clone:
+
 ```bash
-python -m src.ingest.fetch       # sparse-clone open-congress-data into data/raw/
-python -m src.ingest.parse_toml  # TOML → data/staging/*.parquet
-python -m src.validation.checks  # pre-load gate; exit 0 = pass
-# python -m src.load.load_postgres     # Phase 3
-# python -m src.analytics.build_graph  # Phase 4
-# python -m src.analytics.build_site   # Phase 5
+cp .env.example .env           # first time only
+python tasks.py pipeline       # fetch -> parse -> validate -> build-curated -> up -> load -> verify
 ```
 
-Later phases are commented out until they land.
+Incremental workflow — each task is independently runnable:
+
+```bash
+python tasks.py fetch          # sparse-clone or refresh open-congress-data
+python tasks.py parse          # TOML -> data/staging/*.parquet
+python tasks.py validate       # pre-load gate; exit 0 = pass
+python tasks.py build-curated  # staging + person TOMLs -> data/curated/*.parquet
+python tasks.py up             # start Postgres container (waits for healthcheck)
+python tasks.py load           # curated -> Postgres (idempotent upsert)
+python tasks.py verify         # row counts per table
+python tasks.py psql           # interactive shell for ad-hoc queries
+```
+
+`python tasks.py --help` lists all tasks. Later phases (graph, site) are
+not yet implemented.
 
 ## Reference
 
