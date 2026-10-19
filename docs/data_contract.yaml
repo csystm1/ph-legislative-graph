@@ -1,0 +1,286 @@
+# Data Contract — ph_legislative_graph staging layer
+# Phase 1 (19th Congress). Single source of truth for the shape and
+# validation rules of the three staging parquets. checks.py imports all
+# constants from here; editing this file changes pipeline behavior.
+
+contract_version: "1.1"
+effective: "2026-10-19"
+status: active
+dataset: ph_legislative_staging
+congress_scope: 19           # 19th Congress only. Must equal config.CONGRESS_SCOPE.
+
+purpose: |
+  Staging layer of a co-authorship and committee-funnel analysis over
+  Philippine Senate and House bills (19th Congress). Gates the Postgres
+  load. One row per bill, per authorship edge, per committee assignment.
+
+producers:
+  module: src/ingest/parse_toml.py
+  inputs:
+    - path: data/raw/open-congress-data/data/document/sb/19
+      role: Senate bills (TOML)
+    - path: data/raw/open-congress-data/data/document/hb/19
+      role: House bills (TOML)
+    - path: data/raw/open-congress-data/data/person
+      role: Person entity index (ULIDs)
+    - path: data/committee/.house-committee-mapping.yml
+      role: Hand-encoded House committee code → official name (71 codes)
+  write_semantics:
+    mode: full_replace
+    atomic: true
+    mechanism: "temp file + os.replace via src.utils.io.atomic_write_parquet"
+
+consumers:
+  - name: src/validation/checks.py
+    uses: "*"
+    notes: "Pre-load gate (this contract)"
+  - name: src/load/load_postgres.py     # Phase 3
+    uses: "*"
+    notes: "Upserts into bills / legislators / bill_authors / bill_committees"
+  - name: src/analytics/build_graph.py  # Phase 4
+    uses: [bills, authorship, committees]
+    notes: "NetworkX co-authorship graph + committee funnel"
+
+tables:
+
+  # ------------------------------------------------------------------ bills --
+  bills:
+    source: data/staging/bills.parquet
+    primary_key: bill_id
+    unique_constraints:
+      - name: bills_natural_key_unique
+        fields: [chamber, congress, bill_number]
+        rationale: "bill_id is derived; this is the natural-key backstop."
+    fields:
+      - name: bill_id
+        type: string
+        nullable: false
+        description: "'SBN-00001-19' | 'HBN-00001-19'"
+        example: "SBN-00001-19"
+      - name: chamber
+        type: string
+        nullable: false
+        allowed_values: [senate, house]
+      - name: congress
+        type: integer
+        nullable: false
+        example: 19
+      - name: bill_number
+        type: integer
+        nullable: false
+        example: 1
+      - name: title
+        type: string
+        nullable: false
+        description: "Short title; fallback 'Untitled <bill_id>' when upstream empty"
+      - name: long_title
+        type: string
+        nullable: true
+      - name: filed_date
+        type: string
+        format: date
+        nullable: true
+        description: "ISO 8601. Stored as object/str in parquet (verified)."
+        example: "2022-07-04"
+      - name: status
+        type: string
+        nullable: true
+      - name: became_ra
+        type: boolean
+        nullable: false
+        default: false
+
+    validation_rules:
+      - id: 1
+        name: bills_schema
+        check: check_bills_schema
+        severity: error
+        description: "All expected columns present, no extras, dtypes match."
+      - id: 2
+        name: bills_bill_id_unique
+        check: check_bills_bill_id_unique
+        severity: error
+      - id: 3
+        name: bills_chamber_domain
+        check: check_bills_chamber_domain
+        severity: error
+        params:
+          allowed: [senate, house]
+      - id: 4
+        name: bills_congress_scope
+        check: check_bills_congress_scope
+        severity: error
+        params:
+          expected: 19
+        description: "Must equal config.CONGRESS_SCOPE (asserted at import)."
+      - id: 5
+        name: bills_id_prefix_chamber
+        check: check_bills_id_prefix_chamber
+        severity: error
+        params:
+          prefix_map:
+            senate: "SBN-"
+            house: "HBN-"
+      - id: 6
+        name: bills_filed_date_valid
+        check: check_bills_filed_date_valid
+        severity: error
+        params:
+          min_date: "1987-01-01"     # 1987 Philippine Constitution
+      - id: 7
+        name: bills_became_ra_status_consistency
+        check: check_bills_became_ra_status_consistency
+        severity: warn
+        description: "became_ra=True rows should have non-null status."
+
+  # ------------------------------------------------------------- authorship --
+  authorship:
+    source: data/staging/authorship.parquet
+    primary_key: [bill_id, legislator_id, role]
+    unique_constraints:
+      - name: authorship_pk
+        fields: [bill_id, legislator_id, role]
+        rationale: "PK. Also enforces 'no duplicate survivors after dedup'."
+    fields:
+      - name: bill_id
+        type: string
+        nullable: false
+      - name: legislator_id
+        type: string
+        nullable: false
+        description: "Person TOML ULID"
+      - name: role
+        type: string
+        nullable: false
+        allowed_values: [primary, co_author]
+      - name: resolution_method
+        type: string
+        nullable: true
+        description: |
+          'senate_authors_raw' | 'senate_history' | 'house/tier_2' | ...
+          Required non-null on co_author rows (rule 11); soft on primary.
+
+    validation_rules:
+      - id: 8
+        name: authorship_schema
+        check: check_authorship_schema
+        severity: error
+      - id: 9
+        name: authorship_role_domain
+        check: check_authorship_role_domain
+        severity: error
+        params:
+          allowed: [primary, co_author]
+      - id: 10
+        name: authorship_pk_unique
+        check: check_authorship_pk_unique
+        severity: error
+      - id: 11
+        name: authorship_bill_id_fk
+        check: check_authorship_bill_id_fk
+        severity: error
+        description: "authorship.bill_id ⊆ bills.bill_id"
+      - id: 12
+        name: authorship_co_author_resolution_method_non_null
+        check: check_authorship_co_author_resolution_method_non_null
+        severity: error
+      - id: 13
+        name: authorship_primary_resolution_method_present
+        check: check_authorship_primary_resolution_method_present
+        severity: warn
+
+  # ------------------------------------------------------------- committees --
+  committees:
+    source: data/staging/committees.parquet
+    primary_key: [bill_id, committee_name]
+    unique_constraints:
+      - name: committees_pk
+        fields: [bill_id, committee_name]
+    fields:
+      - name: bill_id
+        type: string
+        nullable: false
+      - name: committee_name
+        type: string
+        nullable: true
+        description: |
+          Official display name. When the raw code is unmapped (4 known
+          codes: J506, K503, K504, K505), parser falls back to code-as-name.
+      - name: committee_type
+        type: string
+        nullable: true
+        allowed_values: [primary, secondary]     # NULL always for House
+        description: "Senate: primary|secondary. House: always NULL."
+
+    validation_rules:
+      - id: 14
+        name: committees_schema
+        check: check_committees_schema
+        severity: error
+      - id: 15
+        name: committees_pk_unique
+        check: check_committees_pk_unique
+        severity: error
+      - id: 16
+        name: committees_bill_id_fk
+        check: check_committees_bill_id_fk
+        severity: error
+        description: "committees.bill_id ⊆ bills.bill_id"
+      - id: 17
+        name: committees_name_non_empty
+        check: check_committees_name_non_empty
+        severity: warn
+      - id: 18
+        name: committees_code_fallback_count
+        check: check_committees_code_fallback_count
+        severity: warn
+        params:
+          mapping_path: data/committee/.house-committee-mapping.yml
+          max_expected: 16           # J506×13 + K503×1 + K504×1 + K505×1
+        description: "Rows where committee_name == raw code (unmapped). Warn if > max."
+
+# ------------------------------------------------------------ cross-table --
+cross_table_validation_rules:
+  - id: 19
+    name: bills_have_primary_author
+    check: check_bills_have_primary_author
+    severity: warn
+    params:
+      max_expected_without_primary: 15   # 11 sentinels observed; headroom
+    description: "Bills with no primary authorship row (sentinels expected)."
+  - id: 20
+    name: bills_have_any_authorship
+    check: check_bills_have_any_authorship
+    severity: warn
+    params:
+      max_expected: 15
+    description: >
+      Bills with zero authorship rows of any role. Sentinel bills whose only
+      listed co-authors were unresolved land here. Warn, not fail.
+
+failure_surfaces:
+  - stdout logs at ERROR level
+  - exit code 1
+  - outputs/validation_report.json (per-check pass/warn/fail + samples)
+
+limitations:
+  - id: congress_scope
+    description: "Phase 1 is 19th Congress only. 20th Congress incomplete upstream."
+  - id: house_coauthor_resolution
+    description: "91.95% resolved (floor; do not iterate). 28 distinct unresolved → outputs/house_unresolved_coauthors.csv"
+  - id: house_committee_fallback
+    description: "4 unmapped codes (J506/K503/K504/K505) fall back to code name. 16 bills."
+  - id: upstream_manual_encoding
+    description: "bettergovph/open-congress-data carries a manual-encoding disclaimer. HEAD 6e853ee (2025-10-16)."
+
+change_log:
+  - version: "1.0"
+    date: "2026-10-19"
+    change: "Initial contract. 3 tables, 20 validation rules (16 error, 4 warn)."
+  - version: "1.1"
+    date: "2026-10-19"
+    change: >
+      Fix committees_code_fallback_count semantics (detect raw-code names,
+      not mapped codes). Downgrade bills_have_any_authorship from error to
+      warn with max_expected=15 (5 zero-authorship sentinel bills observed).
+      Severity/params only; no schema or rule-name changes.
