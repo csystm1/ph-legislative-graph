@@ -39,9 +39,9 @@ logger = get_logger(__name__)
 _CONTRACT = Contract()
 
 # Fail fast on contract/config drift.
-assert _CONTRACT.congress_scope == CONGRESS_SCOPE, (
+assert set(_CONTRACT.congress_scope) == set(CONGRESS_SCOPE), (
     f"contract congress_scope={_CONTRACT.congress_scope} != "
-    f"config CONGRESS_SCOPE={CONGRESS_SCOPE}"
+    f"config CONGRESS_SCOPE={list(CONGRESS_SCOPE)}"
 )
 
 # Contract-derived constants — no hardcoded schema facts below this line.
@@ -166,13 +166,14 @@ def check_bills_chamber_domain(s: Staging) -> CheckResult:
 
 def check_bills_congress_scope(s: Staging) -> CheckResult:
     df = s.bills
-    bad = df[df["congress"] != CONGRESS_SCOPE]
+    allowed = _BILLS.rule_params("bills_congress_scope")["allowed"]
+    bad = df[~df["congress"].isin(allowed)]
     n = len(bad)
     if n == 0:
         return _pass("bills_congress_scope",
-                     f"All bills in congress {CONGRESS_SCOPE}")
+                     f"All bills in congress ∈ {allowed}")
     return _fail("bills_congress_scope",
-                 f"{n} bill(s) not in congress {CONGRESS_SCOPE}", n,
+                 f"{n} bill(s) not in congress ∈ {allowed}", n,
                  bad["bill_id"].head(SAMPLE_N).tolist())
 
 

@@ -9,9 +9,9 @@ Usage:
     python -m src.ingest.fetch             # skip if up-to-date
     python -m src.ingest.fetch --force     # always pull
 
-Phase 1 clones only the 19th-Congress bill directories. Phase 2 will
-broaden SPARSE_PATHS to include 17 and 18; re-running after that change
-requires re-running `git sparse-checkout set` — handled in a future session.
+Covers 17th-19th Congress bill directories plus person, committee, and
+congress reference data. Existing clones from the 19th-only era need a
+one-time `git sparse-checkout set` before re-running the parser.
 """
 from __future__ import annotations
 
@@ -28,7 +28,11 @@ UPSTREAM_URL = "https://github.com/bettergovph/open-congress-data.git"
 UPSTREAM_BRANCH = "main"
 
 SPARSE_PATHS = [
+    "data/document/hb/17",
+    "data/document/hb/18",
     "data/document/hb/19",
+    "data/document/sb/17",
+    "data/document/sb/18",
     "data/document/sb/19",
     "data/person",
     "data/committee",

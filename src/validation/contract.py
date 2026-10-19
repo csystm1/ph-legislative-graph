@@ -111,8 +111,15 @@ class Contract:
         return self._data["dataset"]
 
     @property
-    def congress_scope(self) -> int:
-        return int(self._data["congress_scope"])
+    def congress_scope(self) -> tuple[int, ...]:
+        raw = self._data["congress_scope"]
+        if not isinstance(raw, (list, tuple)) or not raw:
+            raise TypeError(
+                f"contract congress_scope must be a non-empty list of ints "
+                f"(got {type(raw).__name__}: {raw!r}). "
+                f"Contract v2.0 is multi-Congress; revert the YAML or update this accessor."
+            )
+        return tuple(int(x) for x in raw)
 
     @property
     def tables(self) -> list[str]:

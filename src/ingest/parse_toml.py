@@ -51,6 +51,13 @@ from src.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+# Explicit column lists so empty frames from missing Congresses still
+# concat cleanly with populated ones.
+_BILLS_COLUMNS = ["bill_id", "chamber", "congress", "bill_number", "title",
+                  "long_title", "filed_date", "status", "became_ra"]
+_AUTHORSHIP_COLUMNS = ["bill_id", "legislator_id", "role", "resolution_method"]
+_COMMITTEES_COLUMNS = ["bill_id", "committee_name", "committee_type"]
+
 # --- History parsing: pure string walk, no regex --------------------------
 #
 # History actions are semicolon-terminated, ALL-CAPS-named prose. Regexes
@@ -245,6 +252,8 @@ def _load_committee_names(committee_dir: Path) -> dict[str, str]:
 # --- Main parse -----------------------------------------------------------
 
 def parse_bills(
+    *,
+    congress: int,
     house_indexes: PersonIndexes,
     senate_indexes: PersonIndexes,
     senate_committee_map: dict[str, str],
@@ -266,13 +275,13 @@ def parse_bills(
     committee_block_used = 0
 
     # --- Senate ---
-    sb_dir = DOCUMENT_DIR / "sb" / str(CONGRESS_SCOPE)
+    sb_dir = DOCUMENT_DIR / "sb" / str(congress)
     for f in sorted(sb_dir.glob("*.toml")):
         d = tomllib.loads(f.read_text(encoding="utf-8"))
         m = d.get("meta") or {}
 
         if m.get("not_found"):
-            senate_not_found.append({"file": f.name})
+            senate_not_found.append({"file": f.name, "congress": congress})
             continue
 
         bill_number = m.get("bill_number")
@@ -280,7 +289,12 @@ def parse_bills(
             logger.warning("senate bill missing bill_number: %s", f.name)
             continue
 
-        bill_id = f"SBN-{bill_number:05d}-{CONGRESS_SCOPE}"
+        if m.get("congress") is not None and m["congress"] != congress:
+            logger.warning(
+                "senate congress mismatch %s: meta=%s, dir=%s (using dir)",
+                f.name, m["congress"], congress,
+            )
+        bill_id = f"SBN-{bill_number:05d}-{congress}"
         title = (m.get("title") or "").strip() or (m.get("long_title") or "").strip()
         if not title:
             title = f"Untitled {bill_id}"
@@ -289,7 +303,7 @@ def parse_bills(
         bills.append({
             "bill_id": bill_id,
             "chamber": "senate",
-            "congress": CONGRESS_SCOPE,
+            "congress": congress,
             "bill_number": bill_number,
             "title": title,
             "long_title": m.get("long_title"),
@@ -405,7 +419,7 @@ def parse_bills(
                 committee_fallback_used += 1
 
     # --- House ---
-    hb_dir = DOCUMENT_DIR / "hb" / str(CONGRESS_SCOPE)
+    hb_dir = DOCUMENT_DIR / "hb" / str(congress)
     for f in sorted(hb_dir.glob("*.toml")):
         d = tomllib.loads(f.read_text(encoding="utf-8"))
         m = d.get("meta") or {}
@@ -418,7 +432,12 @@ def parse_bills(
             logger.warning("house bill missing bill_number: %s", f.name)
             continue
 
-        bill_id = f"HBN-{bill_number:05d}-{CONGRESS_SCOPE}"
+        if m.get("congress") is not None and m["congress"] != congress:
+            logger.warning(
+                "house congress mismatch %s: meta=%s, dir=%s (using dir)",
+                f.name, m["congress"], congress,
+            )
+        bill_id = f"HBN-{bill_number:05d}-{congress}"
         title = (
             (m.get("title") or "").strip()
             or (m.get("congress_website_title") or "").strip()
@@ -431,7 +450,7 @@ def parse_bills(
         bills.append({
             "bill_id": bill_id,
             "chamber": "house",
-            "congress": CONGRESS_SCOPE,
+            "congress": congress,
             "bill_number": bill_number,
             "title": title,
             "long_title": m.get("long_title"),
@@ -506,9 +525,9 @@ def parse_bills(
     )
 
     return {
-        "bills": pd.DataFrame(bills),
-        "authorship": pd.DataFrame(authorship),
-        "committees": pd.DataFrame(committees),
+        "bills": pd.DataFrame(bills, columns=_BILLS_COLUMNS),
+        "authorship": pd.DataFrame(authorship, columns=_AUTHORSHIP_COLUMNS),
+        "committees": pd.DataFrame(committees, columns=_COMMITTEES_COLUMNS),
         "senate_unresolved": senate_unresolved,
         "house_unresolved": house_unresolved,
         "senate_coauthor_mismatches": senate_coauthor_mismatches,
@@ -519,20 +538,45 @@ def parse_bills(
     }
 
 
-def _counter_to_df(counter: collections.Counter[str], name_col: str = "raw_name") -> pd.DataFrame:
-    if not counter:
-        return pd.DataFrame(columns=[name_col, "count"])
-    return pd.DataFrame(counter.most_common(), columns=[name_col, "count"])
+def _counter_to_df(
+    by_congress: dict[int, collections.Counter[str]],
+    name_col: str = "raw_name",
+) -> pd.DataFrame:
+    rows: list[dict] = []
+    for c in sorted(by_congress):
+        for k, v in by_congress[c].most_common():
+            rows.append({name_col: k, "congress": c, "count": v})
+    return pd.DataFrame(rows, columns=[name_col, "congress", "count"])
 
 
 def run() -> None:
-    logger.info("loading person indexes...")
-    house_indexes = build_person_indexes(PERSON_DIR, chamber="house", congress=CONGRESS_SCOPE)
-    senate_indexes = build_person_indexes(PERSON_DIR, chamber="senate", congress=CONGRESS_SCOPE)
-    logger.info(
-        "targets: house=%d, senate=%d",
-        len(house_indexes.in_target), len(senate_indexes.in_target),
-    )
+    # Fail fast if any expected Congress dir is missing. Without this, the
+    # per-Congress loop below would silently emit zero-row frames for a
+    # stale clone with 19th-only sparse-checkout.
+    for chamber in ("sb", "hb"):
+        for c in CONGRESS_SCOPE:
+            d = DOCUMENT_DIR / chamber / str(c)
+            if not d.is_dir() or not any(d.glob("*.toml")):
+                raise RuntimeError(
+                    f"Missing or empty TOML dir: {d}. "
+                    f"Run `git sparse-checkout set` in the raw clone "
+                    f"(paths listed in src/ingest/fetch.py)."
+                )
+
+    logger.info("loading person indexes (per-Congress)...")
+    house_indexes = {
+        c: build_person_indexes(PERSON_DIR, chamber="house", congress=c)
+        for c in CONGRESS_SCOPE
+    }
+    senate_indexes = {
+        c: build_person_indexes(PERSON_DIR, chamber="senate", congress=c)
+        for c in CONGRESS_SCOPE
+    }
+    for c in CONGRESS_SCOPE:
+        logger.info(
+            "  %d: house=%d, senate=%d",
+            c, len(house_indexes[c].in_target), len(senate_indexes[c].in_target),
+        )
 
     logger.info("loading committee maps...")
     senate_committee_map = _load_yaml_flat(COMMITTEE_DIR / ".senate-website-key-mapping.yml")
@@ -543,15 +587,43 @@ def run() -> None:
         len(senate_committee_map), len(committee_names_by_ulid), len(house_committee_map),
     )
 
-    logger.info("parsing bill TOMLs...")
-    result = parse_bills(
-        house_indexes, senate_indexes,
-        senate_committee_map, house_committee_map, committee_names_by_ulid,
-    )
+    logger.info("parsing bill TOMLs (congresses: %s)...", list(CONGRESS_SCOPE))
 
-    bills_df = result["bills"]
-    authorship_df = result["authorship"]
-    committees_df = result["committees"]
+    bills_frames: list[pd.DataFrame] = []
+    authorship_frames: list[pd.DataFrame] = []
+    committees_frames: list[pd.DataFrame] = []
+    per_house_unresolved: dict[int, collections.Counter[str]] = {}
+    per_senate_unresolved: dict[int, collections.Counter[str]] = {}
+    per_house_committee_missing: dict[int, collections.Counter[str]] = {}
+    senate_not_found_all: list[dict] = []
+    senate_coauthor_mismatches_all: list[dict] = []
+    senate_primary_disagreements_all: list[dict] = []
+    house_0000_all: list[dict] = []
+
+    for c in CONGRESS_SCOPE:
+        logger.info("--- Congress %d ---", c)
+        result = parse_bills(
+            congress=c,
+            house_indexes=house_indexes[c],
+            senate_indexes=senate_indexes[c],
+            senate_committee_map=senate_committee_map,
+            house_committee_map=house_committee_map,
+            committee_names_by_ulid=committee_names_by_ulid,
+        )
+        bills_frames.append(result["bills"])
+        authorship_frames.append(result["authorship"])
+        committees_frames.append(result["committees"])
+        per_house_unresolved[c] = result["house_unresolved"]
+        per_senate_unresolved[c] = result["senate_unresolved"]
+        per_house_committee_missing[c] = result["house_committee_missing"]
+        senate_not_found_all.extend(result["senate_not_found"])
+        senate_coauthor_mismatches_all.extend(result["senate_coauthor_mismatches"])
+        senate_primary_disagreements_all.extend(result["senate_primary_disagreements"])
+        house_0000_all.extend(result["house_0000"])
+
+    bills_df = pd.concat(bills_frames, ignore_index=True)
+    authorship_df = pd.concat(authorship_frames, ignore_index=True)
+    committees_df = pd.concat(committees_frames, ignore_index=True)
 
     # --- summary ---
     logger.info("=" * 60)
@@ -567,13 +639,22 @@ def run() -> None:
                 len(committees_df),
                 int(committees_df["bill_id"].str.startswith("SBN-").sum()),
                 int(committees_df["bill_id"].str.startswith("HBN-").sum()))
-    logger.info("senate not_found excluded : %d", len(result["senate_not_found"]))
-    logger.info("senate coauthor mismatches: %d", len(result["senate_coauthor_mismatches"]))
-    logger.info("senate primary disagree   : %d", len(result["senate_primary_disagreements"]))
-    logger.info("house 0000/sentinel bills : %d", len(result["house_0000"]))
-    logger.info("house committee missing   : %d distinct codes", len(result["house_committee_missing"]))
-    logger.info("distinct senate unresolved: %d", len(result["senate_unresolved"]))
-    logger.info("distinct house  unresolved: %d", len(result["house_unresolved"]))
+    logger.info("per-Congress bills:")
+    for c, g in bills_df.groupby("congress"):
+        logger.info("  %d: %d bills", c, len(g))
+    logger.info("senate not_found excluded : %d", len(senate_not_found_all))
+    logger.info("senate coauthor mismatches: %d", len(senate_coauthor_mismatches_all))
+    logger.info("senate primary disagree   : %d", len(senate_primary_disagreements_all))
+    logger.info("house 0000/sentinel bills : %d", len(house_0000_all))
+    logger.info("per-Congress unresolved + committee-missing:")
+    for c in CONGRESS_SCOPE:
+        logger.info(
+            "  %d: house_committee_missing=%d, house_unresolved=%d, senate_unresolved=%d",
+            c,
+            len(per_house_committee_missing[c]),
+            len(per_house_unresolved[c]),
+            len(per_senate_unresolved[c]),
+        )
     logger.info("became_ra=True            : %d", int(bills_df["became_ra"].sum()))
 
     # --- write parquet ---
@@ -584,19 +665,19 @@ def run() -> None:
 
     # --- write diagnostics ---
     logger.info("writing diagnostics...")
-    atomic_write_csv(_counter_to_df(result["house_unresolved"]),
+    atomic_write_csv(_counter_to_df(per_house_unresolved),
                      OUTPUTS_DIR / "house_unresolved_coauthors.csv")
-    atomic_write_csv(_counter_to_df(result["senate_unresolved"]),
+    atomic_write_csv(_counter_to_df(per_senate_unresolved),
                      OUTPUTS_DIR / "senate_unresolved_coauthors.csv")
-    atomic_write_csv(pd.DataFrame(result["senate_coauthor_mismatches"]),
+    atomic_write_csv(pd.DataFrame(senate_coauthor_mismatches_all),
                      OUTPUTS_DIR / "senate_coauthor_mismatches.csv")
-    atomic_write_csv(pd.DataFrame(result["senate_primary_disagreements"]),
+    atomic_write_csv(pd.DataFrame(senate_primary_disagreements_all),
                      OUTPUTS_DIR / "senate_primary_disagreements.csv")
-    atomic_write_csv(pd.DataFrame(result["senate_not_found"]),
+    atomic_write_csv(pd.DataFrame(senate_not_found_all),
                      OUTPUTS_DIR / "senate_not_found.csv")
-    atomic_write_csv(pd.DataFrame(result["house_0000"]),
+    atomic_write_csv(pd.DataFrame(house_0000_all),
                      OUTPUTS_DIR / "house_0000_sentinel_bills.csv")
-    atomic_write_csv(_counter_to_df(result["house_committee_missing"], name_col="code"),
+    atomic_write_csv(_counter_to_df(per_house_committee_missing, name_col="code"),
                      OUTPUTS_DIR / "house_committee_missing_codes.csv")
 
     logger.info("done.")

@@ -3,24 +3,32 @@
 # validation rules of the three staging parquets. checks.py imports all
 # constants from here; editing this file changes pipeline behavior.
 
-contract_version: "1.1"
+contract_version: "2.0"
 effective: "2026-10-19"
 status: active
 dataset: ph_legislative_staging
-congress_scope: 19           # 19th Congress only. Must equal config.CONGRESS_SCOPE.
+congress_scope: [17, 18, 19]          # 19th Congress only. Must equal config.CONGRESS_SCOPE.
 
 purpose: |
   Staging layer of a co-authorship and committee-funnel analysis over
-  Philippine Senate and House bills (19th Congress). Gates the Postgres
+  Philippine Senate and House bills (17th-19th Congress). Gates the Postgres
   load. One row per bill, per authorship edge, per committee assignment.
 
 producers:
   module: src/ingest/parse_toml.py
   inputs:
+    - path: data/raw/open-congress-data/data/document/sb/17
+      role: Senate bills (TOML), 17th Congress
+    - path: data/raw/open-congress-data/data/document/sb/18
+      role: Senate bills (TOML), 18th Congress
     - path: data/raw/open-congress-data/data/document/sb/19
-      role: Senate bills (TOML)
+      role: Senate bills (TOML), 19th Congress
+    - path: data/raw/open-congress-data/data/document/hb/17
+      role: House bills (TOML), 17th Congress
+    - path: data/raw/open-congress-data/data/document/hb/18
+      role: House bills (TOML), 18th Congress
     - path: data/raw/open-congress-data/data/document/hb/19
-      role: House bills (TOML)
+      role: House bills (TOML), 19th Congress
     - path: data/raw/open-congress-data/data/person
       role: Person entity index (ULIDs)
     - path: data/committee/.house-committee-mapping.yml
@@ -111,8 +119,8 @@ tables:
         check: check_bills_congress_scope
         severity: error
         params:
-          expected: 19
-        description: "Must equal config.CONGRESS_SCOPE (asserted at import)."
+          allowed: [17, 18, 19]
+        description: "Must be in config.CONGRESS_SCOPE (set equality asserted at import)."
       - id: 5
         name: bills_id_prefix_chamber
         check: check_bills_id_prefix_chamber
@@ -265,7 +273,7 @@ failure_surfaces:
 
 limitations:
   - id: congress_scope
-    description: "Phase 1 is 19th Congress only. 20th Congress incomplete upstream."
+    description: "Phase 2 is 17th-19th Congress. 20th Congress incomplete upstream."
   - id: house_coauthor_resolution
     description: "91.95% resolved (floor; do not iterate). 28 distinct unresolved → outputs/house_unresolved_coauthors.csv"
   - id: house_committee_fallback
@@ -284,3 +292,13 @@ change_log:
       not mapped codes). Downgrade bills_have_any_authorship from error to
       warn with max_expected=15 (5 zero-authorship sentinel bills observed).
       Severity/params only; no schema or rule-name changes.
+  - version: "2.0"
+    date: "2026-10-19"
+    change: >
+      Phase 2: scope extended to 17th + 18th Congress (17th-19th total).
+      congress_scope and bills_congress_scope params change shape (scalar
+      → list); config.CONGRESS_SCOPE is now a tuple. Per-Congress person
+      indexes replace the single 19th-only index. Threshold params
+      (max_expected, max_expected_without_primary) unchanged in this
+      commit; re-measured in a follow-up after the first multi-Congress
+      parse. producers.inputs expands to six bill paths.

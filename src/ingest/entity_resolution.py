@@ -361,44 +361,52 @@ if __name__ == "__main__":
 
     from src.utils.config import CONGRESS_SCOPE, DOCUMENT_DIR, PERSON_DIR
 
-    t0 = time.monotonic()
-    indexes = build_person_indexes(PERSON_DIR, chamber="house", congress=CONGRESS_SCOPE)
-    logger.info("indexes built in %.2fs", time.monotonic() - t0)
+    # Per-Congress resolution floors. 19 preserves the original floor;
+    # 17/18 use conservative floors pending population-level re-measurement.
+    FLOORS = {17: 0.85, 18: 0.85, 19: 0.91}
+    DEFAULT_FLOOR = 0.85
 
-    stats: collections.Counter[str] = collections.Counter()
-    unresolved: collections.Counter[str] = collections.Counter()
-    resolved_pids: set[str] = set()
+    for congress in CONGRESS_SCOPE:
+        t0 = time.monotonic()
+        indexes = build_person_indexes(PERSON_DIR, chamber="house", congress=congress)
+        logger.info("indexes built in %.2fs", time.monotonic() - t0)
 
-    hb_dir = DOCUMENT_DIR / "hb" / str(CONGRESS_SCOPE)
-    for f in hb_dir.glob("*.toml"):
-        d = tomllib.loads(f.read_text(encoding="utf-8"))
-        m = d["meta"]
-        codes = list(m.get("congress_website_author_codes") or [])
-        for raw in m.get("congress_website_coauthors_raw") or []:
-            pid, method = resolve_house_coauthor(raw, codes, indexes)
-            stats["_total"] += 1
-            stats[method] += 1
-            if pid:
-                resolved_pids.add(pid)
-                stats["_resolved"] += 1
-            else:
-                unresolved[raw] += 1
+        stats: collections.Counter[str] = collections.Counter()
+        unresolved: collections.Counter[str] = collections.Counter()
+        resolved_pids: set[str] = set()
 
-    total = stats["_total"]
-    resolved = stats["_resolved"]
-    ratio = resolved / total if total else 0.0
+        hb_dir = DOCUMENT_DIR / "hb" / str(congress)
+        for f in hb_dir.glob("*.toml"):
+            d = tomllib.loads(f.read_text(encoding="utf-8"))
+            m = d["meta"]
+            codes = list(m.get("congress_website_author_codes") or [])
+            for raw in m.get("congress_website_coauthors_raw") or []:
+                pid, method = resolve_house_coauthor(raw, codes, indexes)
+                stats["_total"] += 1
+                stats[method] += 1
+                if pid:
+                    resolved_pids.add(pid)
+                    stats["_resolved"] += 1
+                else:
+                    unresolved[raw] += 1
 
-    logger.info("=== HB-%d co-author resolution ===", CONGRESS_SCOPE)
-    logger.info("total raw names: %d", total)
-    logger.info("resolved       : %d/%d = %.2f%%", resolved, total, ratio * 100)
-    for k in sorted(stats):
-        if k.startswith("_"):
-            continue
-        logger.info("  %-30s %6d  (%.2f%%)", k, stats[k], stats[k] / total * 100)
-    logger.info("distinct unresolved: %d", len(unresolved))
+        total = stats["_total"]
+        resolved = stats["_resolved"]
+        ratio = resolved / total if total else 0.0
+        floor = FLOORS.get(congress, DEFAULT_FLOOR)
 
-    assert total > 0, "no HB co-author rows parsed — did the sparse checkout run?"
-    assert ratio >= 0.91, (
-        f"resolution {ratio:.4f} fell below 0.91 floor — matcher regression"
-    )
+        logger.info("=== HB-%d co-author resolution ===", congress)
+        logger.info("total raw names: %d", total)
+        logger.info("resolved       : %d/%d = %.2f%%", resolved, total, ratio * 100)
+        for k in sorted(stats):
+            if k.startswith("_"):
+                continue
+            logger.info("  %-30s %6d  (%.2f%%)", k, stats[k], stats[k] / total * 100)
+        logger.info("distinct unresolved: %d", len(unresolved))
+
+        assert total > 0, f"no HB-{congress} co-author rows parsed — did the sparse checkout run?"
+        assert ratio >= floor, (
+            f"HB-{congress} resolution {ratio:.4f} fell below floor {floor} — matcher regression"
+        )
+
     logger.info("self-test OK")

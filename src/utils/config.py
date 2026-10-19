@@ -21,4 +21,4 @@ COMMITTEE_DIR = RAW_DIR / "data" / "committee"
 PERSON_DIR    = RAW_DIR / "data" / "person"
 DOCUMENT_DIR  = RAW_DIR / "data" / "document"
 
-CONGRESS_SCOPE = 19  # 19th Congress only
+CONGRESS_SCOPE = (17, 18, 19)  # Phase 2: 17th-19th Congress
