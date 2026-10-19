@@ -563,6 +563,12 @@ def run() -> None:
                     f"(paths listed in src/ingest/fetch.py)."
                 )
 
+    # Per-Congress person indexes, not a union. Measured on 100-bill
+    # samples with coauthors_raw, per-Congress beat union on every
+    # Congress: 17: 97.21% vs 87.36%, 18: 90.51% vs 78.83%,
+    # 19: 91.57% vs 84.34%. Every disagreement was a tier-2 tie
+    # introduced by non-Congress members in the candidate pool; zero
+    # rescue cases.
     logger.info("loading person indexes (per-Congress)...")
     house_indexes = {
         c: build_person_indexes(PERSON_DIR, chamber="house", congress=c)

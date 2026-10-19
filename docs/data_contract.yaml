@@ -1,9 +1,9 @@
 # Data Contract — ph_legislative_graph staging layer
-# Phase 1 (19th Congress). Single source of truth for the shape and
+# Phase 2 (17th-19th Congress). Single source of truth for the shape and
 # validation rules of the three staging parquets. checks.py imports all
 # constants from here; editing this file changes pipeline behavior.
 
-contract_version: "2.0"
+contract_version: "2.1"
 effective: "2026-10-19"
 status: active
 dataset: ph_legislative_staging
@@ -244,7 +244,7 @@ tables:
         severity: warn
         params:
           mapping_path: data/committee/.house-committee-mapping.yml
-          max_expected: 16           # J506×13 + K503×1 + K504×1 + K505×1
+          max_expected: 45           # Phase 2: 41 observed (17th-19th) + 10%
         description: "Rows where committee_name == raw code (unmapped). Warn if > max."
 
 # ------------------------------------------------------------ cross-table --
@@ -254,14 +254,14 @@ cross_table_validation_rules:
     check: check_bills_have_primary_author
     severity: warn
     params:
-      max_expected_without_primary: 15   # 11 sentinels observed; headroom
+      max_expected_without_primary: 45   # Phase 2: 33 observed + 36% (Phase 1 ratio)
     description: "Bills with no primary authorship row (sentinels expected)."
   - id: 20
     name: bills_have_any_authorship
     check: check_bills_have_any_authorship
     severity: warn
     params:
-      max_expected: 15
+      max_expected: 40   # Phase 2: 20 observed + 100% (Phase 1 generous headroom)
     description: >
       Bills with zero authorship rows of any role. Sentinel bills whose only
       listed co-authors were unresolved land here. Warn, not fail.
@@ -302,3 +302,16 @@ change_log:
       (max_expected, max_expected_without_primary) unchanged in this
       commit; re-measured in a follow-up after the first multi-Congress
       parse. producers.inputs expands to six bill paths.
+  - version: "2.1"
+    date: "2026-10-19"
+    change: >
+      Re-measure warn thresholds against the first multi-Congress parse
+      (17th-19th, 39,390 bills). Widen:
+        committees_code_fallback_count.max_expected: 16 -> 45
+        bills_have_primary_author.max_expected_without_primary: 15 -> 45
+        bills_have_any_authorship.max_expected: 15 -> 40
+      No schema, rule-name, or code changes. Contract shape unchanged.
+      New fallback codes (C503, B510, A507, +2) remain a documented
+      data-quality limitation; extending the House committee mapping is
+      deferred to a later phase (would require a browser session with
+      Cloudflare clearance, §6.3).
