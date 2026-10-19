@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overview — Philippine Legislative Bills Graph</title>
+<meta name="description" content="Co-authorship network and committee-funnel analysis of Philippine Senate and House bills, 17th-19th Congress (2016-2025).">
+<link rel="stylesheet" href="./assets/style.css">
+</head>
+<body><nav class="site-nav">
+  <a href="./index.html" data-nav="home" class="active">Overview</a>
+  <a href="./graphs/house-17.html" data-nav="house-17">House 17th</a>
+  <a href="./graphs/house-18.html" data-nav="house-18">House 18th</a>
+  <a href="./graphs/house-19.html" data-nav="house-19">House 19th</a>
+  <a href="./graphs/senate-17.html" data-nav="senate-17">Senate 17th</a>
+  <a href="./graphs/senate-18.html" data-nav="senate-18">Senate 18th</a>
+  <a href="./graphs/senate-19.html" data-nav="senate-19">Senate 19th</a>
+  <a href="./funnel.html" data-nav="funnel">Funnel</a>
+  <a href="./temporal.html" data-nav="temporal">Temporal</a>
+</nav><header>
+  <h1>Philippine Legislative Bills Graph</h1>
+  <p class="tagline">
+    Co-authorship and committee-funnel analysis of Philippine Senate and House
+    bills filed during the 17th, 18th, and 19th Congresses (2016–2025). Built
+    from <a href="https://github.com/bettergovph/open-congress-data">bettergovph/open-congress-data</a>.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>What this is</h2>
+<p>
+  Three analyses over the metadata of <b>39,390</b> filed bills
+  (7,761 Senate, 31,629 House):
+</p>
+<ul>
+  <li>
+    <b>Co-authorship network</b> — who files with whom, community structure
+    within each chamber-Congress.
+  </li>
+  <li>
+    <b>Committee funnel</b> — bills assigned to each committee and the
+    fraction that became Republic Acts.
+  </li>
+  <li>
+    <b>Temporal evolution</b> — how the graph and funnel change across the
+    17th, 18th, and 19th Congresses.
+  </li>
+</ul>
+<p>
+  The unit of analysis is the <i>bill</i>, not the vote: which legislative
+  relationships the filing system actually encodes.
+</p>
+</section>
+
+<section>
+<h2>Key findings</h2>
+<ul class="findings">
+  <li>
+    <b>House graphs are dense but weakly modular.</b>
+    Each 17th–19th House graph spans 301–316 legislators and
+    39,755–40,391 co-authorship edges, with Louvain modularity between
+    0.055 and 0.095. The signal is broad overlap
+    between blocs, not clean partition into them.
+    <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
+  </li>
+  <li>
+    <b>Senate structure varies sharply by Congress.</b>
+    The 17th Senate's graph has only 4 edges and 83%
+    of nodes isolated (no co-authorship edges at all); the 19th Senate's has
+    71 edges and 12% isolated. Same chamber, same
+    co-authorship model — different data regime.
+    <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
+  </li>
+  <li>
+    <b>High modularity on a sparse graph is not evidence of coalition structure.</b>
+    Senate-18 has the highest modularity in the corpus (0.315) — but
+    that rests on 23 edges across 24 nodes. It is
+    what Louvain returns when there is almost nothing to partition.
+    <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
+  </li>
+  <li>
+    <b>Committee funnel rankings favor the committees that carry enacted bills.</b>
+    House-17 <code>Rules</code> touches 43% of its
+    1,035 assigned bills that became RAs; <code>Appropriations</code>
+    touches 33% of 809. The funnel records where
+    bills pass through, not where they die.
+    <small class="source">source: <code>data/analytics/committee_funnel.csv</code></small>
+  </li>
+  <li>
+    <b>Communities are not cross-Congress comparable.</b>
+    Each graph is clustered independently. A community id in house-17 is
+    not the same coalition as the same id in house-19. Temporal comparisons
+    read node/edge/community <i>counts</i>, not community identity.
+    <small class="source">source: <code>data/analytics/communities/*.parquet</code></small>
+  </li>
+</ul>
+</section>
+
+<section>
+<h2>Graphs and analysis</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Chamber</th>
+      <th>Congress</th>
+      <th class="num">Nodes</th>
+      <th class="num">Edges</th>
+      <th class="num">Modularity</th>
+      <th class="num">Communities (n≥2)</th>
+      <th class="num">Isolated</th>
+      <th>Detail</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr><td>House</td><td>17th</td><td class="num">301</td><td class="num">40,391</td><td class="num">0.095</td><td class="num">4</td><td class="num">3%</td><td><a href="./graphs/house-17.html">view graph</a></td></tr>
+      <tr><td>House</td><td>18th</td><td class="num">305</td><td class="num">39,755</td><td class="num">0.055</td><td class="num">5</td><td class="num">6%</td><td><a href="./graphs/house-18.html">view graph</a></td></tr>
+      <tr><td>House</td><td>19th</td><td class="num">316</td><td class="num">39,873</td><td class="num">0.095</td><td class="num">3</td><td class="num">6%</td><td><a href="./graphs/house-19.html">view graph</a></td></tr>
+      <tr><td>Senate</td><td>17th</td><td class="num">24</td><td class="num">4</td><td class="num">0.000</td><td class="num">2</td><td class="num">83%</td><td><a href="./graphs/senate-17.html">view graph</a></td></tr>
+      <tr><td>Senate</td><td>18th</td><td class="num">24</td><td class="num">23</td><td class="num">0.315</td><td class="num">2</td><td class="num">50%</td><td><a href="./graphs/senate-18.html">view graph</a></td></tr>
+      <tr><td>Senate</td><td>19th</td><td class="num">24</td><td class="num">71</td><td class="num">0.089</td><td class="num">4</td><td class="num">12%</td><td><a href="./graphs/senate-19.html">view graph</a></td></tr>
+
+  </tbody>
+</table>
+<p>
+  Also: <a href="./funnel.html">committee funnel table</a> ·
+  <a href="./temporal.html">temporal small-multiples</a>.
+</p>
+</section>
+
+<section>
+<h2>Data and method</h2>
+<p>
+  Source: <a href="https://github.com/bettergovph/open-congress-data">bettergovph/open-congress-data</a>,
+  a community-maintained TOML corpus of Philippine legislative documents.
+  Scope is the 17th–19th Congress (2016–2025); the 20th Congress is
+  excluded as incomplete upstream.
+</p>
+<p>
+  Graph edges are <b>co-authorship only</b>. The primary sponsor of a bill
+  is recorded as a node attribute, not as an edge — a distinction that keeps
+  Louvain from clustering by filing volume. See the
+  <a href="https://github.com/csystm1/ph-legislative-graph#analyses">repository's Analyses section</a> for the
+  full rationale and known limitations.
+</p>
+</section>
+
+</main><footer>
+  <p>
+    Source, pipeline, and methodology:
+    <a href="https://github.com/csystm1/ph-legislative-graph">https://github.com/csystm1/ph-legislative-graph</a>.
+    Data from <a href="https://github.com/bettergovph/open-congress-data">bettergovph/open-congress-data</a>
+    (17th–19th Congress, 2016–2025).
+  </p>
+  <p>
+    Reproduced from committed parquet artifacts under <code>data/analytics/</code>.
+    No live database is required to read this site.
+  </p>
+</footer>
+</body>
+</html>

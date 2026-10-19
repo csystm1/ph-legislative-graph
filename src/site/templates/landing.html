@@ -1,0 +1,124 @@
+<header>
+  <h1>Philippine Legislative Bills Graph</h1>
+  <p class="tagline">
+    Co-authorship and committee-funnel analysis of Philippine Senate and House
+    bills filed during the 17th, 18th, and 19th Congresses (2016–2025). Built
+    from <a href="__DATA_REPO_URL__">bettergovph/open-congress-data</a>.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>What this is</h2>
+<p>
+  Three analyses over the metadata of <b>__TOTAL_BILLS__</b> filed bills
+  (__TOTAL_SENATE__ Senate, __TOTAL_HOUSE__ House):
+</p>
+<ul>
+  <li>
+    <b>Co-authorship network</b> — who files with whom, community structure
+    within each chamber-Congress.
+  </li>
+  <li>
+    <b>Committee funnel</b> — bills assigned to each committee and the
+    fraction that became Republic Acts.
+  </li>
+  <li>
+    <b>Temporal evolution</b> — how the graph and funnel change across the
+    17th, 18th, and 19th Congresses.
+  </li>
+</ul>
+<p>
+  The unit of analysis is the <i>bill</i>, not the vote: which legislative
+  relationships the filing system actually encodes.
+</p>
+</section>
+
+<section>
+<h2>Key findings</h2>
+<ul class="findings">
+  <li>
+    <b>House graphs are dense but weakly modular.</b>
+    Each 17th–19th House graph spans __HOUSE_NODES__ legislators and
+    __HOUSE_EDGES__ co-authorship edges, with Louvain modularity between
+    __HOUSE_MOD_MIN__ and __HOUSE_MOD_MAX__. The signal is broad overlap
+    between blocs, not clean partition into them.
+    <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
+  </li>
+  <li>
+    <b>Senate structure varies sharply by Congress.</b>
+    The 17th Senate's graph has only __S17_EDGES__ edges and __S17_ISOLATED__
+    of nodes isolated (no co-authorship edges at all); the 19th Senate's has
+    __S19_EDGES__ edges and __S19_ISOLATED__ isolated. Same chamber, same
+    co-authorship model — different data regime.
+    <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
+  </li>
+  <li>
+    <b>High modularity on a sparse graph is not evidence of coalition structure.</b>
+    Senate-18 has the highest modularity in the corpus (__S18_MOD__) — but
+    that rests on __S18_EDGES__ edges across __S18_NODES__ nodes. It is
+    what Louvain returns when there is almost nothing to partition.
+    <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
+  </li>
+  <li>
+    <b>Committee funnel rankings favor the committees that carry enacted bills.</b>
+    House-17 <code>Rules</code> touches __H17_RULES_RATE__ of its
+    __H17_RULES_N__ assigned bills that became RAs; <code>Appropriations</code>
+    touches __H17_APPS_RATE__ of __H17_APPS_N__. The funnel records where
+    bills pass through, not where they die.
+    <small class="source">source: <code>data/analytics/committee_funnel.csv</code></small>
+  </li>
+  <li>
+    <b>Communities are not cross-Congress comparable.</b>
+    Each graph is clustered independently. A community id in house-17 is
+    not the same coalition as the same id in house-19. Temporal comparisons
+    read node/edge/community <i>counts</i>, not community identity.
+    <small class="source">source: <code>data/analytics/communities/*.parquet</code></small>
+  </li>
+</ul>
+</section>
+
+<section>
+<h2>Graphs and analysis</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Chamber</th>
+      <th>Congress</th>
+      <th class="num">Nodes</th>
+      <th class="num">Edges</th>
+      <th class="num">Modularity</th>
+      <th class="num">Communities (n≥2)</th>
+      <th class="num">Isolated</th>
+      <th>Detail</th>
+    </tr>
+  </thead>
+  <tbody>
+__GRAPH_ROWS__
+  </tbody>
+</table>
+<p>
+  Also: <a href="./funnel.html">committee funnel table</a> ·
+  <a href="./temporal.html">temporal small-multiples</a>.
+</p>
+</section>
+
+<section>
+<h2>Data and method</h2>
+<p>
+  Source: <a href="__DATA_REPO_URL__">bettergovph/open-congress-data</a>,
+  a community-maintained TOML corpus of Philippine legislative documents.
+  Scope is the 17th–19th Congress (2016–2025); the 20th Congress is
+  excluded as incomplete upstream.
+</p>
+<p>
+  Graph edges are <b>co-authorship only</b>. The primary sponsor of a bill
+  is recorded as a node attribute, not as an edge — a distinction that keeps
+  Louvain from clustering by filing volume. See the
+  <a href="__REPO_URL__#analyses">repository's Analyses section</a> for the
+  full rationale and known limitations.
+</p>
+</section>
+
+</main>
