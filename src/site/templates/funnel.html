@@ -1,0 +1,63 @@
+<header>
+  <h1>Committee funnel</h1>
+  <p class="tagline">
+    Bills assigned to each committee and the fraction that became
+    Republic Acts. Per chamber, per Congress, with a combined view.
+    Ranked committees appear first; committees below the ranking floor
+    are collapsed at the bottom of each section.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>Reading this table</h2>
+<aside>
+<p>
+  <b>Touch rate, not exit rate.</b> A bill assigned to <i>N</i>
+  committees counts once in each. A 40% rate means 40% of the bills
+  assigned to this committee eventually became RAs — not that this
+  committee shepherded them there.
+</p>
+<p>
+  <b>Ranking floor: 10 assigned bills.</b> Committees with fewer than
+  10 assigned bills are collapsed below each ranked table as
+  "below the floor — unranked." A 2-bill, 2-RA committee is not a
+  100% funnel; it is noise.
+</p>
+<p>
+  <b>Special committees can lead at modest n.</b> A special committee
+  that handles 15 bills and produces 12 RAs will outrank a regular
+  committee with 800 bills and a 40% rate. The floor exists to prevent
+  absurd results, not to enforce chamber-hierarchy realism.
+</p>
+</aside>
+</section>
+
+<section>
+<h2>House</h2>
+__HOUSE_SECTIONS__
+</section>
+
+<section>
+<h2>Senate</h2>
+__SENATE_SECTIONS__
+</section>
+
+<section>
+<h2>Data source</h2>
+<p>
+  Every row is traceable to <code>data/analytics/committee_funnel.csv</code>,
+  derived from <code>data/curated/committees.parquet</code> and
+  <code>data/curated/bills.parquet</code>. The rate column is
+  <code>ras / assigned_bills</code>.
+</p>
+<p>
+  Four House committee codes remain unmapped and appear below as
+  code-as-name: <code>J506</code> (32 rows), <code>K503</code>,
+  <code>K504</code>, <code>K505</code> (1 row each, all in the 19th
+  Congress). See the repository's README limitations section for detail.
+</p>
+</section>
+
+</main>

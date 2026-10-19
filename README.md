@@ -5,7 +5,8 @@ House bills, built from the [bettergovph/open-congress-data](https://github.com/
 corpus. Who files bills with whom, which committees bury them, and how
 legislative coalitions shift across Congresses.
 
-**Status:** Phase 4 (17th–19th Congress, graph + analytics).
+**Status:** Phase 5 (17th–19th Congress, graph + analytics + site).
+**Live site:** [csystm1.github.io/ph-legislative-graph](https://csystm1.github.io/ph-legislative-graph/) (GitHub Pages, served from `docs/`).
 **Data current as of:** 2025-10-16 (last upstream commit; 20th Congress excluded as incomplete).
 
 ## What this project does
@@ -88,7 +89,14 @@ Phase 4 outputs live in `data/analytics/` and are committed:
   funnel. Special committees can lead a ranking at modest n; the
   touch-rate caveat applies.
 
-Reproduce with `python tasks.py analytics`.
+Reproduce analytics with `python tasks.py analytics`. The site is assembled
+by `python tasks.py site` from `data/analytics/` and published at
+[csystm1.github.io/ph-legislative-graph](https://csystm1.github.io/ph-legislative-graph/)
+via GitHub Pages (`docs/`, no database dependency). House graphs are rendered
+as a 500-edge backbone in both the interactive and static views; the full
+House graph is a near-complete graph (~90% of legislator pairs share bills)
+and no browser view of that density is readable. Senate graphs are sparse
+enough to render in full.
 
 ## Limitations
 
@@ -97,11 +105,16 @@ Reproduce with `python tasks.py analytics`.
   19th 91.95%. Distinct unresolved: 10/19/28. Logged per-Congress to
   `outputs/house_unresolved_coauthors.csv`. Senate unresolved: 9/5/8 distinct
   in `outputs/senate_unresolved_coauthors.csv`. Floors: do not iterate.
-- **Unmapped House committee codes** — 9 distinct across the three Congresses
-  (`C503`, `B510`, `A507`, `J506`, `K503`, `K504`, `K505`, +2 unseen in the
-  5-row sample); 41 rows fall back to code-as-name. `outputs/house_committee_missing_codes.csv`
-  is Congress-tagged. Extending the mapping is deferred (needs a browser
-  session with Cloudflare clearance — see `src/ingest/fetch.py`).
+- **Unmapped House committee codes** — 4 codes (`J506`, `K503`, `K504`,
+  `K505`) contribute 35 fallback rows across 35 distinct House bills to
+  `data/curated/committees.parquet` — each such bill carries exactly one
+  unmapped code. Rows fall back to code-as-name in `bill_committees`.
+  All four return 404 on
+  `congress.gov.ph/committees/committee/view/{code}` (re-verified
+  2026-10-19) — possibly retired committees or upstream typos. Accepted
+  as-is; the mapping-extension task is closed. See
+  `docs/data_contract.yaml` (`house_committee_fallback`) and
+  `outputs/house_committee_missing_codes.csv`.
 - **Sentinel bills** — 33 bills lack a primary authorship row; 20 lack any
   authorship. Same data-gap class across all three Congresses; `0000` /
   empty author codes upstream. Validation warns, not fails.
@@ -152,11 +165,11 @@ python tasks.py up             # start Postgres container (waits for healthcheck
 python tasks.py load           # curated -> Postgres (idempotent upsert)
 python tasks.py verify         # row counts per table
 python tasks.py analytics      # curated -> data/analytics/ (graphs, communities, funnel)
+python tasks.py site           # data/analytics -> docs/ (static site for GitHub Pages)
 python tasks.py psql           # interactive shell for ad-hoc queries
 ```
 
-`python tasks.py --help` lists all tasks. Phase 5 (site build, 
-GitHub Pages) is not yet implemented.
+`python tasks.py --help` lists all tasks.
 
 ## Reference
 

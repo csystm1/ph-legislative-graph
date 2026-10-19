@@ -18,6 +18,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.site import charts, graphs
+from src.site.funnel import render_funnel_body
 from src.site.theme import CSS
 from src.utils.config import CONGRESS_SCOPE, PROJECT_ROOT
 from src.utils.io import atomic_write_text
@@ -397,6 +398,24 @@ def _write_temporal_page(stats: pd.DataFrame) -> None:
     logger.info("wrote %s", DOCS_DIR / "temporal.html")
 
 
+def _write_funnel_page(funnel_df: pd.DataFrame) -> None:
+    body = render_funnel_body(funnel_df)
+    page = _wrap(
+        title="Committee funnel",
+        description=(
+            "Bills assigned to each committee and the fraction that became "
+            "Republic Acts, per chamber and per Congress."
+        ),
+        body=body,
+        active_nav="funnel",
+        root="./",
+        css_path="./assets/style.css",
+        body_class="wide-view",
+    )
+    atomic_write_text(page, DOCS_DIR / "funnel.html")
+    logger.info("wrote %s", DOCS_DIR / "funnel.html")
+
+
 def _write_css() -> None:
     DOCS_ASSETS.mkdir(parents=True, exist_ok=True)
     atomic_write_text(CSS, DOCS_CSS)
@@ -445,6 +464,7 @@ def main() -> int:
 
     _write_graph_pages(stats)
     _write_temporal_page(stats)
+    _write_funnel_page(funnel)
 
     logger.info("=== site build complete ===")
     return 0

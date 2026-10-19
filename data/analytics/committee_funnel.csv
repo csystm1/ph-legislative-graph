@@ -60,9 +60,9 @@ house,17,Bases Conversion,10,0,0.0,43.0
 house,17,Constitutional Amendments,8,0,0.0,
 house,17,Disaster Resilience,7,0,0.0,
 house,17,"Peace, Reconciliation and Unity",7,1,0.14285714285714285,
-house,17,B510,3,0,0.0,
+house,17,North Luzon Growth Quadrangle,3,0,0.0,
 house,17,West Philippine Sea,2,0,0.0,
-house,17,C503,1,0,0.0,
+house,17,"Agriculture, Food & Fisheries",1,0,0.0,
 house,17,East ASEAN Growth Area,1,0,0.0,
 house,17,Sustainable Development Goals,1,0,0.0,
 house,17,Visayas Development,1,0,0.0,
@@ -134,9 +134,9 @@ house,18,West Philippine Sea,5,0,0.0,
 house,18,Public Accounts,4,0,0.0,
 house,18,Constitutional Amendments,2,0,0.0,
 house,18,Visayas Development,2,0,0.0,
-house,18,A507,1,0,0.0,
-house,18,B510,1,0,0.0,
 house,18,Flagship Programs and Projects,1,0,0.0,
+house,18,Mindanao Affairs,1,0,0.0,
+house,18,North Luzon Growth Quadrangle,1,0,0.0,
 house,19,Rules,1167,323,0.27677806341045413,1.0
 house,19,Basic Education and Culture,1126,65,0.05772646536412078,9.0
 house,19,Health,1119,29,0.025915996425379804,16.0
@@ -280,15 +280,15 @@ house,combined,"Peace, Reconciliation and Unity",20,2,0.1,4.0
 house,combined,Constitutional Amendments,18,0,0.0,50.0
 house,combined,West Philippine Sea,16,0,0.0,50.0
 house,combined,Public Accounts,5,0,0.0,
-house,combined,B510,4,0,0.0,
+house,combined,North Luzon Growth Quadrangle,4,0,0.0,
 house,combined,Visayas Development,4,0,0.0,
 house,combined,Flagship Programs and Projects,3,0,0.0,
 house,combined,East ASEAN Growth Area,2,0,0.0,
-house,combined,A507,1,0,0.0,
-house,combined,C503,1,0,0.0,
+house,combined,"Agriculture, Food & Fisheries",1,0,0.0,
 house,combined,K503,1,0,0.0,
 house,combined,K504,1,0,0.0,
 house,combined,K505,1,0,0.0,
+house,combined,Mindanao Affairs,1,0,0.0,
 house,combined,Strategic Intelligence,1,0,0.0,
 senate,17,"Education, Arts and Culture",212,38,0.1792452830188679,7.0
 senate,17,Health and Demography,204,33,0.16176470588235295,10.0

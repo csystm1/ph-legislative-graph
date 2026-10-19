@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Committee funnel — Philippine Legislative Bills Graph</title>
+<meta name="description" content="Bills assigned to each committee and the fraction that became Republic Acts, per chamber and per Congress.">
+<link rel="stylesheet" href="./assets/style.css">
+</head>
+<body class="wide-view"><nav class="site-nav">
+  <a href="./index.html" data-nav="home">Overview</a>
+  <a href="./graphs/house-17.html" data-nav="house-17">House 17th</a>
+  <a href="./graphs/house-18.html" data-nav="house-18">House 18th</a>
+  <a href="./graphs/house-19.html" data-nav="house-19">House 19th</a>
+  <a href="./graphs/senate-17.html" data-nav="senate-17">Senate 17th</a>
+  <a href="./graphs/senate-18.html" data-nav="senate-18">Senate 18th</a>
+  <a href="./graphs/senate-19.html" data-nav="senate-19">Senate 19th</a>
+  <a href="./funnel.html" data-nav="funnel" class="active">Funnel</a>
+  <a href="./temporal.html" data-nav="temporal">Temporal</a>
+</nav><header>
+  <h1>Committee funnel</h1>
+  <p class="tagline">
+    Bills assigned to each committee and the fraction that became
+    Republic Acts. Per chamber, per Congress, with a combined view.
+    Ranked committees appear first; committees below the ranking floor
+    are collapsed at the bottom of each section.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>Reading this table</h2>
+<aside>
+<p>
+  <b>Touch rate, not exit rate.</b> A bill assigned to <i>N</i>
+  committees counts once in each. A 40% rate means 40% of the bills
+  assigned to this committee eventually became RAs — not that this
+  committee shepherded them there.
+</p>
+<p>
+  <b>Ranking floor: 10 assigned bills.</b> Committees with fewer than
+  10 assigned bills are collapsed below each ranked table as
+  "below the floor — unranked." A 2-bill, 2-RA committee is not a
+  100% funnel; it is noise.
+</p>
+<p>
+  <b>Special committees can lead at modest n.</b> A special committee
+  that handles 15 bills and produces 12 RAs will outrank a regular
+  committee with 800 bills and a 40% rate. The floor exists to prevent
+  absurd results, not to enforce chamber-hierarchy realism.
+</p>
+</aside>
+</section>
+
+<section>
+<h2>House</h2>
+<h3>17th Congress</h3>
+<table>
+<thead><tr><th class="num">Rank</th><th>Committee</th><th class="num">Assigned</th><th class="num">Became RA</th><th class="num">Rate</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>Rules</td><td class="num">1,035</td><td class="num">447</td><td class="num">43.2%</td></tr>
+<tr><td class="num">2</td><td>Appropriations</td><td class="num">809</td><td class="num">271</td><td class="num">33.5%</td></tr>
+<tr><td class="num">3</td><td>Legislative Franchises</td><td class="num">204</td><td class="num">66</td><td class="num">32.4%</td></tr>
+<tr><td class="num">4</td><td>Revision of Laws</td><td class="num">407</td><td class="num">60</td><td class="num">14.7%</td></tr>
+<tr><td class="num">5</td><td>Aquaculture and Fisheries Resources</td><td class="num">169</td><td class="num">18</td><td class="num">10.7%</td></tr>
+<tr><td class="num">6</td><td>Ways and Means</td><td class="num">312</td><td class="num">33</td><td class="num">10.6%</td></tr>
+<tr><td class="num">7</td><td>Basic Education and Culture</td><td class="num">923</td><td class="num">94</td><td class="num">10.2%</td></tr>
+<tr><td class="num">8</td><td>Local Government</td><td class="num">508</td><td class="num">46</td><td class="num">9.1%</td></tr>
+<tr><td class="num">9</td><td>Transportation</td><td class="num">457</td><td class="num">40</td><td class="num">8.8%</td></tr>
+<tr><td class="num">10</td><td>Higher and Technical Education</td><td class="num">602</td><td class="num">50</td><td class="num">8.3%</td></tr>
+<tr><td class="num">11</td><td>Muslim Affairs</td><td class="num">15</td><td class="num">1</td><td class="num">6.7%</td></tr>
+<tr><td class="num">12</td><td>Health</td><td class="num">732</td><td class="num">46</td><td class="num">6.3%</td></tr>
+<tr><td class="num">13</td><td>Justice</td><td class="num">405</td><td class="num">25</td><td class="num">6.2%</td></tr>
+<tr><td class="num">14</td><td>Banks and Financial Intermediaries</td><td class="num">104</td><td class="num">6</td><td class="num">5.8%</td></tr>
+<tr><td class="num">15</td><td>Veterans Affairs and Welfare</td><td class="num">19</td><td class="num">1</td><td class="num">5.3%</td></tr>
+<tr><td class="num">15</td><td>Cooperatives Development</td><td class="num">19</td><td class="num">1</td><td class="num">5.3%</td></tr>
+<tr><td class="num">17</td><td>Science and Technology</td><td class="num">64</td><td class="num">3</td><td class="num">4.7%</td></tr>
+<tr><td class="num">18</td><td>Poverty Alleviation</td><td class="num">72</td><td class="num">3</td><td class="num">4.2%</td></tr>
+<tr><td class="num">19</td><td>Youth and Sports Development</td><td class="num">73</td><td class="num">3</td><td class="num">4.1%</td></tr>
+<tr><td class="num">20</td><td>Energy</td><td class="num">122</td><td class="num">5</td><td class="num">4.1%</td></tr>
+<tr><td class="num">21</td><td>Social Services</td><td class="num">83</td><td class="num">3</td><td class="num">3.6%</td></tr>
+<tr><td class="num">22</td><td>Micro, Small and Medium Enterprise Development</td><td class="num">37</td><td class="num">1</td><td class="num">2.7%</td></tr>
+<tr><td class="num">23</td><td>Public Works and Highways</td><td class="num">648</td><td class="num">17</td><td class="num">2.6%</td></tr>
+<tr><td class="num">24</td><td>Tourism</td><td class="num">230</td><td class="num">6</td><td class="num">2.6%</td></tr>
+<tr><td class="num">25</td><td>Suffrage and Electoral Reforms</td><td class="num">122</td><td class="num">3</td><td class="num">2.5%</td></tr>
+<tr><td class="num">26</td><td>Women and Gender Equality</td><td class="num">83</td><td class="num">2</td><td class="num">2.4%</td></tr>
+<tr><td class="num">27</td><td>Overseas Workers Affairs</td><td class="num">84</td><td class="num">2</td><td class="num">2.4%</td></tr>
+<tr><td class="num">28</td><td>Trade and Industry</td><td class="num">222</td><td class="num">5</td><td class="num">2.3%</td></tr>
+<tr><td class="num">29</td><td>Civil Service and Professional Regulation</td><td class="num">232</td><td class="num">5</td><td class="num">2.2%</td></tr>
+<tr><td class="num">30</td><td>Housing and Urban Development</td><td class="num">93</td><td class="num">2</td><td class="num">2.2%</td></tr>
+<tr><td class="num">31</td><td>Public Order and Safety</td><td class="num">198</td><td class="num">4</td><td class="num">2.0%</td></tr>
+<tr><td class="num">32</td><td>Foreign Affairs</td><td class="num">54</td><td class="num">1</td><td class="num">1.9%</td></tr>
+<tr><td class="num">33</td><td>Government Reorganization</td><td class="num">220</td><td class="num">4</td><td class="num">1.8%</td></tr>
+<tr><td class="num">34</td><td>Labor and Employment</td><td class="num">295</td><td class="num">5</td><td class="num">1.7%</td></tr>
+<tr><td class="num">35</td><td>Information and Communications Technology</td><td class="num">138</td><td class="num">2</td><td class="num">1.4%</td></tr>
+<tr><td class="num">36</td><td>Economic Affairs</td><td class="num">70</td><td class="num">1</td><td class="num">1.4%</td></tr>
+<tr><td class="num">37</td><td>Population and Family Relations</td><td class="num">153</td><td class="num">2</td><td class="num">1.3%</td></tr>
+<tr><td class="num">38</td><td>Welfare of Children</td><td class="num">86</td><td class="num">1</td><td class="num">1.2%</td></tr>
+<tr><td class="num">39</td><td>Agriculture & Food</td><td class="num">322</td><td class="num">3</td><td class="num">0.9%</td></tr>
+<tr><td class="num">40</td><td>Public Information</td><td class="num">115</td><td class="num">1</td><td class="num">0.9%</td></tr>
+<tr><td class="num">41</td><td>Government Enterprises and Privatization</td><td class="num">271</td><td class="num">2</td><td class="num">0.7%</td></tr>
+<tr><td class="num">42</td><td>Natural Resources</td><td class="num">258</td><td class="num">1</td><td class="num">0.4%</td></tr>
+<tr><td class="num">43</td><td>Ecology</td><td class="num">104</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>National Defense and Security</td><td class="num">141</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Human Rights</td><td class="num">43</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Dangerous Drugs</td><td class="num">83</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Games and Amusements</td><td class="num">44</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Food Security</td><td class="num">49</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Senior Citizens</td><td class="num">32</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Reforestation</td><td class="num">34</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Indigenous Cultural Communities and Indigenous Peoples</td><td class="num">38</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>People's Participation</td><td class="num">24</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Agrarian Reform</td><td class="num">29</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Land Use</td><td class="num">14</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Climate Change</td><td class="num">12</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Metro Manila Development</td><td class="num">12</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Rural Development</td><td class="num">12</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Bases Conversion</td><td class="num">10</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+<details>
+<summary>9 committee(s) below the ranking floor (fewer than 10 assigned bills)</summary>
+<table>
+<tbody>
+<tr><td class="num">—</td><td>Constitutional Amendments</td><td class="num">8</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Disaster Resilience</td><td class="num">7</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Peace, Reconciliation and Unity</td><td class="num">7</td><td class="num">1</td><td class="num">14.3%</td></tr>
+<tr><td class="num">—</td><td>North Luzon Growth Quadrangle</td><td class="num">3</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>West Philippine Sea</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Agriculture, Food & Fisheries</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>East ASEAN Growth Area</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Sustainable Development Goals</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Visayas Development</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+</details>
+<h3>18th Congress</h3>
+<table>
+<thead><tr><th class="num">Rank</th><th>Committee</th><th class="num">Assigned</th><th class="num">Became RA</th><th class="num">Rate</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>Rules</td><td class="num">1,232</td><td class="num">383</td><td class="num">31.1%</td></tr>
+<tr><td class="num">2</td><td>Legislative Franchises</td><td class="num">261</td><td class="num">77</td><td class="num">29.5%</td></tr>
+<tr><td class="num">3</td><td>Appropriations</td><td class="num">1,040</td><td class="num">254</td><td class="num">24.4%</td></tr>
+<tr><td class="num">4</td><td>Cooperatives Development</td><td class="num">21</td><td class="num">2</td><td class="num">9.5%</td></tr>
+<tr><td class="num">5</td><td>Transportation</td><td class="num">481</td><td class="num">39</td><td class="num">8.1%</td></tr>
+<tr><td class="num">6</td><td>Health</td><td class="num">956</td><td class="num">72</td><td class="num">7.5%</td></tr>
+<tr><td class="num">7</td><td>Aquaculture and Fisheries Resources</td><td class="num">197</td><td class="num">14</td><td class="num">7.1%</td></tr>
+<tr><td class="num">8</td><td>Ways and Means</td><td class="num">296</td><td class="num">20</td><td class="num">6.8%</td></tr>
+<tr><td class="num">9</td><td>Creative Industries</td><td class="num">17</td><td class="num">1</td><td class="num">5.9%</td></tr>
+<tr><td class="num">10</td><td>Muslim Affairs</td><td class="num">18</td><td class="num">1</td><td class="num">5.6%</td></tr>
+<tr><td class="num">11</td><td>Local Government</td><td class="num">758</td><td class="num">41</td><td class="num">5.4%</td></tr>
+<tr><td class="num">12</td><td>Basic Education and Culture</td><td class="num">1,224</td><td class="num">63</td><td class="num">5.1%</td></tr>
+<tr><td class="num">13</td><td>Higher and Technical Education</td><td class="num">775</td><td class="num">38</td><td class="num">4.9%</td></tr>
+<tr><td class="num">14</td><td>Public Works and Highways</td><td class="num">558</td><td class="num">26</td><td class="num">4.7%</td></tr>
+<tr><td class="num">15</td><td>Energy</td><td class="num">137</td><td class="num">5</td><td class="num">3.6%</td></tr>
+<tr><td class="num">16</td><td>Natural Resources</td><td class="num">233</td><td class="num">7</td><td class="num">3.0%</td></tr>
+<tr><td class="num">17</td><td>Justice</td><td class="num">549</td><td class="num">14</td><td class="num">2.6%</td></tr>
+<tr><td class="num">18</td><td>Welfare of Children</td><td class="num">167</td><td class="num">4</td><td class="num">2.4%</td></tr>
+<tr><td class="num">19</td><td>Trade and Industry</td><td class="num">251</td><td class="num">6</td><td class="num">2.4%</td></tr>
+<tr><td class="num">20</td><td>Banks and Financial Intermediaries</td><td class="num">133</td><td class="num">3</td><td class="num">2.3%</td></tr>
+<tr><td class="num">21</td><td>Economic Affairs</td><td class="num">107</td><td class="num">2</td><td class="num">1.9%</td></tr>
+<tr><td class="num">22</td><td>Public Order and Safety</td><td class="num">230</td><td class="num">4</td><td class="num">1.7%</td></tr>
+<tr><td class="num">23</td><td>Suffrage and Electoral Reforms</td><td class="num">179</td><td class="num">3</td><td class="num">1.7%</td></tr>
+<tr><td class="num">24</td><td>National Defense and Security</td><td class="num">136</td><td class="num">2</td><td class="num">1.5%</td></tr>
+<tr><td class="num">25</td><td>Youth and Sports Development</td><td class="num">139</td><td class="num">2</td><td class="num">1.4%</td></tr>
+<tr><td class="num">26</td><td>Government Enterprises and Privatization</td><td class="num">214</td><td class="num">3</td><td class="num">1.4%</td></tr>
+<tr><td class="num">27</td><td>Women and Gender Equality</td><td class="num">79</td><td class="num">1</td><td class="num">1.3%</td></tr>
+<tr><td class="num">28</td><td>Agriculture & Food</td><td class="num">334</td><td class="num">4</td><td class="num">1.2%</td></tr>
+<tr><td class="num">29</td><td>Public Information</td><td class="num">86</td><td class="num">1</td><td class="num">1.2%</td></tr>
+<tr><td class="num">30</td><td>Revision of Laws</td><td class="num">202</td><td class="num">2</td><td class="num">1.0%</td></tr>
+<tr><td class="num">31</td><td>Disaster Resilience</td><td class="num">108</td><td class="num">1</td><td class="num">0.9%</td></tr>
+<tr><td class="num">32</td><td>Overseas Workers Affairs</td><td class="num">127</td><td class="num">1</td><td class="num">0.8%</td></tr>
+<tr><td class="num">33</td><td>Government Reorganization</td><td class="num">315</td><td class="num">1</td><td class="num">0.3%</td></tr>
+<tr><td class="num">34</td><td>Ecology</td><td class="num">157</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Senior Citizens</td><td class="num">164</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Civil Service and Professional Regulation</td><td class="num">268</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Labor and Employment</td><td class="num">300</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Tourism</td><td class="num">343</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Information and Communications Technology</td><td class="num">180</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Science and Technology</td><td class="num">97</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Persons with Disabilities</td><td class="num">65</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Human Rights</td><td class="num">53</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Micro, Small and Medium Enterprise Development</td><td class="num">51</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Dangerous Drugs</td><td class="num">49</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Population and Family Relations</td><td class="num">49</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Housing and Urban Development</td><td class="num">108</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Reforestation</td><td class="num">80</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Social Services</td><td class="num">67</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Foreign Affairs</td><td class="num">42</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Food Security</td><td class="num">44</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Poverty Alleviation</td><td class="num">47</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>People's Participation</td><td class="num">31</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Land Use</td><td class="num">22</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Indigenous Cultural Communities and Indigenous Peoples</td><td class="num">26</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Agrarian Reform</td><td class="num">21</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Games and Amusements</td><td class="num">26</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>J506</td><td class="num">19</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Metro Manila Development</td><td class="num">15</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Rural Development</td><td class="num">14</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Veterans Affairs and Welfare</td><td class="num">12</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">34</td><td>Climate Change</td><td class="num">11</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+<details>
+<summary>10 committee(s) below the ranking floor (fewer than 10 assigned bills)</summary>
+<table>
+<tbody>
+<tr><td class="num">—</td><td>Peace, Reconciliation and Unity</td><td class="num">9</td><td class="num">1</td><td class="num">11.1%</td></tr>
+<tr><td class="num">—</td><td>Bases Conversion</td><td class="num">8</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Sustainable Development Goals</td><td class="num">5</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>West Philippine Sea</td><td class="num">5</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Public Accounts</td><td class="num">4</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Constitutional Amendments</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Visayas Development</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Flagship Programs and Projects</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Mindanao Affairs</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>North Luzon Growth Quadrangle</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+</details>
+<h3>19th Congress</h3>
+<table>
+<thead><tr><th class="num">Rank</th><th>Committee</th><th class="num">Assigned</th><th class="num">Became RA</th><th class="num">Rate</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>Rules</td><td class="num">1,167</td><td class="num">323</td><td class="num">27.7%</td></tr>
+<tr><td class="num">2</td><td>Appropriations</td><td class="num">854</td><td class="num">236</td><td class="num">27.6%</td></tr>
+<tr><td class="num">3</td><td>Muslim Affairs</td><td class="num">26</td><td class="num">3</td><td class="num">11.5%</td></tr>
+<tr><td class="num">4</td><td>Transportation</td><td class="num">520</td><td class="num">51</td><td class="num">9.8%</td></tr>
+<tr><td class="num">5</td><td>Ways and Means</td><td class="num">331</td><td class="num">31</td><td class="num">9.4%</td></tr>
+<tr><td class="num">6</td><td>Justice</td><td class="num">519</td><td class="num">40</td><td class="num">7.7%</td></tr>
+<tr><td class="num">7</td><td>Foreign Affairs</td><td class="num">68</td><td class="num">5</td><td class="num">7.4%</td></tr>
+<tr><td class="num">8</td><td>Legislative Franchises</td><td class="num">134</td><td class="num">8</td><td class="num">6.0%</td></tr>
+<tr><td class="num">9</td><td>Basic Education and Culture</td><td class="num">1,126</td><td class="num">65</td><td class="num">5.8%</td></tr>
+<tr><td class="num">10</td><td>Local Government</td><td class="num">987</td><td class="num">45</td><td class="num">4.6%</td></tr>
+<tr><td class="num">11</td><td>Aquaculture and Fisheries Resources</td><td class="num">231</td><td class="num">9</td><td class="num">3.9%</td></tr>
+<tr><td class="num">12</td><td>Climate Change</td><td class="num">29</td><td class="num">1</td><td class="num">3.4%</td></tr>
+<tr><td class="num">13</td><td>Natural Resources</td><td class="num">235</td><td class="num">8</td><td class="num">3.4%</td></tr>
+<tr><td class="num">14</td><td>National Defense and Security</td><td class="num">103</td><td class="num">3</td><td class="num">2.9%</td></tr>
+<tr><td class="num">15</td><td>Higher and Technical Education</td><td class="num">871</td><td class="num">24</td><td class="num">2.8%</td></tr>
+<tr><td class="num">16</td><td>Health</td><td class="num">1,119</td><td class="num">29</td><td class="num">2.6%</td></tr>
+<tr><td class="num">17</td><td>Public Works and Highways</td><td class="num">622</td><td class="num">16</td><td class="num">2.6%</td></tr>
+<tr><td class="num">18</td><td>Agrarian Reform</td><td class="num">41</td><td class="num">1</td><td class="num">2.4%</td></tr>
+<tr><td class="num">19</td><td>Disaster Resilience</td><td class="num">166</td><td class="num">3</td><td class="num">1.8%</td></tr>
+<tr><td class="num">20</td><td>Trade and Industry</td><td class="num">262</td><td class="num">4</td><td class="num">1.5%</td></tr>
+<tr><td class="num">21</td><td>Banks and Financial Intermediaries</td><td class="num">135</td><td class="num">2</td><td class="num">1.5%</td></tr>
+<tr><td class="num">22</td><td>Government Reorganization</td><td class="num">206</td><td class="num">3</td><td class="num">1.5%</td></tr>
+<tr><td class="num">23</td><td>Youth and Sports Development</td><td class="num">147</td><td class="num">2</td><td class="num">1.4%</td></tr>
+<tr><td class="num">24</td><td>Revision of Laws</td><td class="num">223</td><td class="num">3</td><td class="num">1.3%</td></tr>
+<tr><td class="num">25</td><td>Labor and Employment</td><td class="num">342</td><td class="num">4</td><td class="num">1.2%</td></tr>
+<tr><td class="num">26</td><td>Suffrage and Electoral Reforms</td><td class="num">181</td><td class="num">2</td><td class="num">1.1%</td></tr>
+<tr><td class="num">27</td><td>Agriculture & Food</td><td class="num">422</td><td class="num">4</td><td class="num">0.9%</td></tr>
+<tr><td class="num">28</td><td>Economic Affairs</td><td class="num">114</td><td class="num">1</td><td class="num">0.9%</td></tr>
+<tr><td class="num">29</td><td>Public Order and Safety</td><td class="num">230</td><td class="num">2</td><td class="num">0.9%</td></tr>
+<tr><td class="num">30</td><td>Information and Communications Technology</td><td class="num">231</td><td class="num">2</td><td class="num">0.9%</td></tr>
+<tr><td class="num">31</td><td>Overseas Workers Affairs</td><td class="num">119</td><td class="num">1</td><td class="num">0.8%</td></tr>
+<tr><td class="num">32</td><td>Science and Technology</td><td class="num">126</td><td class="num">1</td><td class="num">0.8%</td></tr>
+<tr><td class="num">33</td><td>Housing and Urban Development</td><td class="num">139</td><td class="num">1</td><td class="num">0.7%</td></tr>
+<tr><td class="num">34</td><td>Energy</td><td class="num">153</td><td class="num">1</td><td class="num">0.7%</td></tr>
+<tr><td class="num">35</td><td>Senior Citizens</td><td class="num">218</td><td class="num">1</td><td class="num">0.5%</td></tr>
+<tr><td class="num">36</td><td>Civil Service and Professional Regulation</td><td class="num">294</td><td class="num">1</td><td class="num">0.3%</td></tr>
+<tr><td class="num">37</td><td>Tourism</td><td class="num">409</td><td class="num">1</td><td class="num">0.2%</td></tr>
+<tr><td class="num">38</td><td>Welfare of Children</td><td class="num">145</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Government Enterprises and Privatization</td><td class="num">154</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Persons with Disabilities</td><td class="num">98</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Reforestation</td><td class="num">71</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Poverty Alleviation</td><td class="num">62</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Social Services</td><td class="num">54</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Food Security</td><td class="num">51</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Dangerous Drugs</td><td class="num">50</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Women and Gender Equality</td><td class="num">72</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Micro, Small and Medium Enterprise Development</td><td class="num">71</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Ecology</td><td class="num">105</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Population and Family Relations</td><td class="num">48</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Human Rights</td><td class="num">48</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Public Information</td><td class="num">50</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Creative Industries</td><td class="num">37</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Games and Amusements</td><td class="num">36</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Sustainable Development Goals</td><td class="num">37</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>People's Participation</td><td class="num">27</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Indigenous Cultural Communities and Indigenous Peoples</td><td class="num">26</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Land Use</td><td class="num">21</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Nuclear Energy</td><td class="num">20</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Rural Development</td><td class="num">19</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>Cooperatives Development</td><td class="num">18</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">38</td><td>J506</td><td class="num">13</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+<details>
+<summary>14 committee(s) below the ranking floor (fewer than 10 assigned bills)</summary>
+<table>
+<tbody>
+<tr><td class="num">—</td><td>West Philippine Sea</td><td class="num">9</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Constitutional Amendments</td><td class="num">8</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Bases Conversion</td><td class="num">6</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Metro Manila Development</td><td class="num">4</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Peace, Reconciliation and Unity</td><td class="num">4</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Flagship Programs and Projects</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Veterans Affairs and Welfare</td><td class="num">2</td><td class="num">1</td><td class="num">50.0%</td></tr>
+<tr><td class="num">—</td><td>East ASEAN Growth Area</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>K503</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>K504</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>K505</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Public Accounts</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Strategic Intelligence</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Visayas Development</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+</details>
+<h3>Combined (17th–19th Congress)</h3>
+<table>
+<thead><tr><th class="num">Rank</th><th>Committee</th><th class="num">Assigned</th><th class="num">Became RA</th><th class="num">Rate</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>Rules</td><td class="num">3,434</td><td class="num">1,153</td><td class="num">33.6%</td></tr>
+<tr><td class="num">2</td><td>Appropriations</td><td class="num">2,703</td><td class="num">761</td><td class="num">28.2%</td></tr>
+<tr><td class="num">3</td><td>Legislative Franchises</td><td class="num">599</td><td class="num">151</td><td class="num">25.2%</td></tr>
+<tr><td class="num">4</td><td>Peace, Reconciliation and Unity</td><td class="num">20</td><td class="num">2</td><td class="num">10.0%</td></tr>
+<tr><td class="num">5</td><td>Ways and Means</td><td class="num">939</td><td class="num">84</td><td class="num">8.9%</td></tr>
+<tr><td class="num">6</td><td>Transportation</td><td class="num">1,458</td><td class="num">130</td><td class="num">8.9%</td></tr>
+<tr><td class="num">7</td><td>Muslim Affairs</td><td class="num">59</td><td class="num">5</td><td class="num">8.5%</td></tr>
+<tr><td class="num">8</td><td>Revision of Laws</td><td class="num">832</td><td class="num">65</td><td class="num">7.8%</td></tr>
+<tr><td class="num">9</td><td>Aquaculture and Fisheries Resources</td><td class="num">597</td><td class="num">41</td><td class="num">6.9%</td></tr>
+<tr><td class="num">10</td><td>Basic Education and Culture</td><td class="num">3,273</td><td class="num">222</td><td class="num">6.8%</td></tr>
+<tr><td class="num">11</td><td>Veterans Affairs and Welfare</td><td class="num">33</td><td class="num">2</td><td class="num">6.1%</td></tr>
+<tr><td class="num">12</td><td>Local Government</td><td class="num">2,253</td><td class="num">132</td><td class="num">5.9%</td></tr>
+<tr><td class="num">13</td><td>Justice</td><td class="num">1,473</td><td class="num">79</td><td class="num">5.4%</td></tr>
+<tr><td class="num">14</td><td>Health</td><td class="num">2,807</td><td class="num">147</td><td class="num">5.2%</td></tr>
+<tr><td class="num">15</td><td>Cooperatives Development</td><td class="num">58</td><td class="num">3</td><td class="num">5.2%</td></tr>
+<tr><td class="num">16</td><td>Higher and Technical Education</td><td class="num">2,248</td><td class="num">112</td><td class="num">5.0%</td></tr>
+<tr><td class="num">17</td><td>Foreign Affairs</td><td class="num">164</td><td class="num">6</td><td class="num">3.7%</td></tr>
+<tr><td class="num">18</td><td>Public Works and Highways</td><td class="num">1,828</td><td class="num">59</td><td class="num">3.2%</td></tr>
+<tr><td class="num">19</td><td>Banks and Financial Intermediaries</td><td class="num">372</td><td class="num">11</td><td class="num">3.0%</td></tr>
+<tr><td class="num">20</td><td>Energy</td><td class="num">412</td><td class="num">11</td><td class="num">2.7%</td></tr>
+<tr><td class="num">21</td><td>Natural Resources</td><td class="num">726</td><td class="num">16</td><td class="num">2.2%</td></tr>
+<tr><td class="num">22</td><td>Trade and Industry</td><td class="num">735</td><td class="num">15</td><td class="num">2.0%</td></tr>
+<tr><td class="num">23</td><td>Youth and Sports Development</td><td class="num">359</td><td class="num">7</td><td class="num">1.9%</td></tr>
+<tr><td class="num">24</td><td>Climate Change</td><td class="num">52</td><td class="num">1</td><td class="num">1.9%</td></tr>
+<tr><td class="num">25</td><td>Creative Industries</td><td class="num">54</td><td class="num">1</td><td class="num">1.9%</td></tr>
+<tr><td class="num">26</td><td>Suffrage and Electoral Reforms</td><td class="num">482</td><td class="num">8</td><td class="num">1.7%</td></tr>
+<tr><td class="num">27</td><td>Poverty Alleviation</td><td class="num">181</td><td class="num">3</td><td class="num">1.7%</td></tr>
+<tr><td class="num">28</td><td>Public Order and Safety</td><td class="num">658</td><td class="num">10</td><td class="num">1.5%</td></tr>
+<tr><td class="num">29</td><td>Social Services</td><td class="num">204</td><td class="num">3</td><td class="num">1.5%</td></tr>
+<tr><td class="num">30</td><td>Disaster Resilience</td><td class="num">281</td><td class="num">4</td><td class="num">1.4%</td></tr>
+<tr><td class="num">31</td><td>Science and Technology</td><td class="num">287</td><td class="num">4</td><td class="num">1.4%</td></tr>
+<tr><td class="num">32</td><td>Economic Affairs</td><td class="num">291</td><td class="num">4</td><td class="num">1.4%</td></tr>
+<tr><td class="num">33</td><td>National Defense and Security</td><td class="num">380</td><td class="num">5</td><td class="num">1.3%</td></tr>
+<tr><td class="num">34</td><td>Women and Gender Equality</td><td class="num">234</td><td class="num">3</td><td class="num">1.3%</td></tr>
+<tr><td class="num">35</td><td>Welfare of Children</td><td class="num">398</td><td class="num">5</td><td class="num">1.3%</td></tr>
+<tr><td class="num">36</td><td>Overseas Workers Affairs</td><td class="num">330</td><td class="num">4</td><td class="num">1.2%</td></tr>
+<tr><td class="num">37</td><td>Agrarian Reform</td><td class="num">91</td><td class="num">1</td><td class="num">1.1%</td></tr>
+<tr><td class="num">38</td><td>Government Reorganization</td><td class="num">741</td><td class="num">8</td><td class="num">1.1%</td></tr>
+<tr><td class="num">39</td><td>Agriculture & Food</td><td class="num">1,078</td><td class="num">11</td><td class="num">1.0%</td></tr>
+<tr><td class="num">40</td><td>Labor and Employment</td><td class="num">937</td><td class="num">9</td><td class="num">1.0%</td></tr>
+<tr><td class="num">41</td><td>Housing and Urban Development</td><td class="num">340</td><td class="num">3</td><td class="num">0.9%</td></tr>
+<tr><td class="num">42</td><td>Population and Family Relations</td><td class="num">250</td><td class="num">2</td><td class="num">0.8%</td></tr>
+<tr><td class="num">43</td><td>Public Information</td><td class="num">251</td><td class="num">2</td><td class="num">0.8%</td></tr>
+<tr><td class="num">44</td><td>Government Enterprises and Privatization</td><td class="num">639</td><td class="num">5</td><td class="num">0.8%</td></tr>
+<tr><td class="num">45</td><td>Civil Service and Professional Regulation</td><td class="num">794</td><td class="num">6</td><td class="num">0.8%</td></tr>
+<tr><td class="num">46</td><td>Information and Communications Technology</td><td class="num">549</td><td class="num">4</td><td class="num">0.7%</td></tr>
+<tr><td class="num">47</td><td>Tourism</td><td class="num">982</td><td class="num">7</td><td class="num">0.7%</td></tr>
+<tr><td class="num">48</td><td>Micro, Small and Medium Enterprise Development</td><td class="num">159</td><td class="num">1</td><td class="num">0.6%</td></tr>
+<tr><td class="num">49</td><td>Senior Citizens</td><td class="num">414</td><td class="num">1</td><td class="num">0.2%</td></tr>
+<tr><td class="num">50</td><td>Ecology</td><td class="num">366</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Persons with Disabilities</td><td class="num">163</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Human Rights</td><td class="num">144</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Dangerous Drugs</td><td class="num">182</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Food Security</td><td class="num">144</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>People's Participation</td><td class="num">82</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Reforestation</td><td class="num">185</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Land Use</td><td class="num">57</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Games and Amusements</td><td class="num">106</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Rural Development</td><td class="num">45</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Sustainable Development Goals</td><td class="num">43</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>J506</td><td class="num">32</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Metro Manila Development</td><td class="num">31</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Bases Conversion</td><td class="num">24</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Indigenous Cultural Communities and Indigenous Peoples</td><td class="num">90</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Nuclear Energy</td><td class="num">20</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>Constitutional Amendments</td><td class="num">18</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">50</td><td>West Philippine Sea</td><td class="num">16</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+<details>
+<summary>11 committee(s) below the ranking floor (fewer than 10 assigned bills)</summary>
+<table>
+<tbody>
+<tr><td class="num">—</td><td>Public Accounts</td><td class="num">5</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>North Luzon Growth Quadrangle</td><td class="num">4</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Visayas Development</td><td class="num">4</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Flagship Programs and Projects</td><td class="num">3</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>East ASEAN Growth Area</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Agriculture, Food & Fisheries</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>K503</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>K504</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>K505</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Mindanao Affairs</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Strategic Intelligence</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+</details>
+
+</section>
+
+<section>
+<h2>Senate</h2>
+<h3>17th Congress</h3>
+<table>
+<thead><tr><th class="num">Rank</th><th>Committee</th><th class="num">Assigned</th><th class="num">Became RA</th><th class="num">Rate</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>Youth</td><td class="num">12</td><td class="num">4</td><td class="num">33.3%</td></tr>
+<tr><td class="num">2</td><td>Urban Planning, Housing and Resettlement</td><td class="num">22</td><td class="num">7</td><td class="num">31.8%</td></tr>
+<tr><td class="num">3</td><td>Social Justice, Welfare and Rural Development</td><td class="num">72</td><td class="num">22</td><td class="num">30.6%</td></tr>
+<tr><td class="num">4</td><td>Science and Technology</td><td class="num">46</td><td class="num">12</td><td class="num">26.1%</td></tr>
+<tr><td class="num">5</td><td>Energy</td><td class="num">43</td><td class="num">10</td><td class="num">23.3%</td></tr>
+<tr><td class="num">6</td><td>Constitutional Amendments and Revision of Codes</td><td class="num">11</td><td class="num">2</td><td class="num">18.2%</td></tr>
+<tr><td class="num">7</td><td>Education, Arts and Culture</td><td class="num">212</td><td class="num">38</td><td class="num">17.9%</td></tr>
+<tr><td class="num">8</td><td>Economic Affairs</td><td class="num">29</td><td class="num">5</td><td class="num">17.2%</td></tr>
+<tr><td class="num">9</td><td>Banks, Financial Institutions and Currencies</td><td class="num">36</td><td class="num">6</td><td class="num">16.7%</td></tr>
+<tr><td class="num">10</td><td>Health and Demography</td><td class="num">204</td><td class="num">33</td><td class="num">16.2%</td></tr>
+<tr><td class="num">11</td><td>Sports</td><td class="num">14</td><td class="num">2</td><td class="num">14.3%</td></tr>
+<tr><td class="num">12</td><td>Agriculture and Food</td><td class="num">91</td><td class="num">11</td><td class="num">12.1%</td></tr>
+<tr><td class="num">13</td><td>Women, Children, Family Relations and Gender Equality</td><td class="num">83</td><td class="num">9</td><td class="num">10.8%</td></tr>
+<tr><td class="num">14</td><td>Public Works</td><td class="num">38</td><td class="num">4</td><td class="num">10.5%</td></tr>
+<tr><td class="num">15</td><td>Justice and Human Rights</td><td class="num">197</td><td class="num">20</td><td class="num">10.2%</td></tr>
+<tr><td class="num">16</td><td>Labor, Employment and Human Resources Development</td><td class="num">98</td><td class="num">9</td><td class="num">9.2%</td></tr>
+<tr><td class="num">17</td><td>Rules</td><td class="num">22</td><td class="num">2</td><td class="num">9.1%</td></tr>
+<tr><td class="num">18</td><td>Local Government</td><td class="num">101</td><td class="num">9</td><td class="num">8.9%</td></tr>
+<tr><td class="num">19</td><td>Foreign Relations</td><td class="num">12</td><td class="num">1</td><td class="num">8.3%</td></tr>
+<tr><td class="num">20</td><td>Public Information and Mass Media</td><td class="num">38</td><td class="num">3</td><td class="num">7.9%</td></tr>
+<tr><td class="num">21</td><td>Public Order and Dangerous Drugs</td><td class="num">86</td><td class="num">6</td><td class="num">7.0%</td></tr>
+<tr><td class="num">22</td><td>Public Services</td><td class="num">112</td><td class="num">7</td><td class="num">6.2%</td></tr>
+<tr><td class="num">23</td><td>Ways and Means</td><td class="num">133</td><td class="num">8</td><td class="num">6.0%</td></tr>
+<tr><td class="num">24</td><td>Civil Service, Government Reorganization and Professional Regulation</td><td class="num">128</td><td class="num">6</td><td class="num">4.7%</td></tr>
+<tr><td class="num">25</td><td>Electoral Reforms and Peoples Participation</td><td class="num">45</td><td class="num">2</td><td class="num">4.4%</td></tr>
+<tr><td class="num">26</td><td>Government Corporations and Public Enterprises</td><td class="num">71</td><td class="num">3</td><td class="num">4.2%</td></tr>
+<tr><td class="num">27</td><td>Environment and Natural Resources</td><td class="num">75</td><td class="num">3</td><td class="num">4.0%</td></tr>
+<tr><td class="num">28</td><td>Trade, Commerce and Entrepreneurship</td><td class="num">76</td><td class="num">2</td><td class="num">2.6%</td></tr>
+<tr><td class="num">29</td><td>National Defense and Security</td><td class="num">49</td><td class="num">1</td><td class="num">2.0%</td></tr>
+<tr><td class="num">30</td><td>Finance</td><td class="num">26</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">30</td><td>Cultural Communities</td><td class="num">15</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+<details>
+<summary>8 committee(s) below the ranking floor (fewer than 10 assigned bills)</summary>
+<table>
+<tbody>
+<tr><td class="num">—</td><td>Agrarian Reform</td><td class="num">9</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Games and Amusement</td><td class="num">5</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Cooperatives</td><td class="num">4</td><td class="num">4</td><td class="num">100.0%</td></tr>
+<tr><td class="num">—</td><td>Tourism</td><td class="num">4</td><td class="num">1</td><td class="num">25.0%</td></tr>
+<tr><td class="num">—</td><td>Accounts</td><td class="num">3</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Accountability of Public Officers and Investigations</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Climate Change</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Peace, Unification and Reconciliation</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+</details>
+<h3>18th Congress</h3>
+<table>
+<thead><tr><th class="num">Rank</th><th>Committee</th><th class="num">Assigned</th><th class="num">Became RA</th><th class="num">Rate</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>Finance</td><td class="num">52</td><td class="num">29</td><td class="num">55.8%</td></tr>
+<tr><td class="num">2</td><td>Energy</td><td class="num">36</td><td class="num">16</td><td class="num">44.4%</td></tr>
+<tr><td class="num">3</td><td>Youth</td><td class="num">19</td><td class="num">6</td><td class="num">31.6%</td></tr>
+<tr><td class="num">4</td><td>Banks, Financial Institutions and Currencies</td><td class="num">56</td><td class="num">16</td><td class="num">28.6%</td></tr>
+<tr><td class="num">5</td><td>Women, Children, Family Relations and Gender Equality</td><td class="num">93</td><td class="num">22</td><td class="num">23.7%</td></tr>
+<tr><td class="num">6</td><td>Higher, Technical and Vocational Education</td><td class="num">112</td><td class="num">26</td><td class="num">23.2%</td></tr>
+<tr><td class="num">7</td><td>Basic Education, Arts and Culture</td><td class="num">169</td><td class="num">38</td><td class="num">22.5%</td></tr>
+<tr><td class="num">8</td><td>Justice and Human Rights</td><td class="num">170</td><td class="num">32</td><td class="num">18.8%</td></tr>
+<tr><td class="num">9</td><td>Public Order and Dangerous Drugs</td><td class="num">77</td><td class="num">13</td><td class="num">16.9%</td></tr>
+<tr><td class="num">10</td><td>Public Services</td><td class="num">128</td><td class="num">21</td><td class="num">16.4%</td></tr>
+<tr><td class="num">11</td><td>National Defense and Security, Peace, Unification and Reconciliation</td><td class="num">52</td><td class="num">8</td><td class="num">15.4%</td></tr>
+<tr><td class="num">12</td><td>Trade, Commerce and Entrepreneurship</td><td class="num">93</td><td class="num">14</td><td class="num">15.1%</td></tr>
+<tr><td class="num">13</td><td>Agriculture, Food and Agrarian Reform</td><td class="num">102</td><td class="num">15</td><td class="num">14.7%</td></tr>
+<tr><td class="num">14</td><td>Ways and Means</td><td class="num">71</td><td class="num">10</td><td class="num">14.1%</td></tr>
+<tr><td class="num">15</td><td>Local Government</td><td class="num">121</td><td class="num">16</td><td class="num">13.2%</td></tr>
+<tr><td class="num">16</td><td>Electoral Reforms and Peoples Participation</td><td class="num">47</td><td class="num">6</td><td class="num">12.8%</td></tr>
+<tr><td class="num">17</td><td>Environment, Natural Resources and Climate Change</td><td class="num">90</td><td class="num">11</td><td class="num">12.2%</td></tr>
+<tr><td class="num">18</td><td>Economic Affairs</td><td class="num">35</td><td class="num">4</td><td class="num">11.4%</td></tr>
+<tr><td class="num">19</td><td>Government Corporations and Public Enterprises</td><td class="num">48</td><td class="num">4</td><td class="num">8.3%</td></tr>
+<tr><td class="num">20</td><td>Health and Demography</td><td class="num">270</td><td class="num">22</td><td class="num">8.1%</td></tr>
+<tr><td class="num">21</td><td>Civil Service, Government Reorganization and Professional Regulation</td><td class="num">122</td><td class="num">8</td><td class="num">6.6%</td></tr>
+<tr><td class="num">22</td><td>Public Works</td><td class="num">35</td><td class="num">2</td><td class="num">5.7%</td></tr>
+<tr><td class="num">23</td><td>Public Information and Mass Media</td><td class="num">32</td><td class="num">1</td><td class="num">3.1%</td></tr>
+<tr><td class="num">24</td><td>Science and Technology</td><td class="num">42</td><td class="num">1</td><td class="num">2.4%</td></tr>
+<tr><td class="num">25</td><td>Labor, Employment and Human Resources Development</td><td class="num">111</td><td class="num">2</td><td class="num">1.8%</td></tr>
+<tr><td class="num">26</td><td>Social Justice, Welfare and Rural Development</td><td class="num">62</td><td class="num">1</td><td class="num">1.6%</td></tr>
+<tr><td class="num">27</td><td>Rules</td><td class="num">123</td><td class="num">1</td><td class="num">0.8%</td></tr>
+<tr><td class="num">28</td><td>Tourism</td><td class="num">33</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">28</td><td>Urban Planning, Housing and Resettlement</td><td class="num">31</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">28</td><td>Sports</td><td class="num">24</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">28</td><td>Cultural Communities</td><td class="num">13</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">28</td><td>Foreign Relations</td><td class="num">13</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">28</td><td>Sustainable Development Goals, Innovation and Futures Thinking</td><td class="num">10</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+<details>
+<summary>4 committee(s) below the ranking floor (fewer than 10 assigned bills)</summary>
+<table>
+<tbody>
+<tr><td class="num">—</td><td>Constitutional Amendments and Revision of Codes</td><td class="num">9</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Cooperatives</td><td class="num">5</td><td class="num">3</td><td class="num">60.0%</td></tr>
+<tr><td class="num">—</td><td>Accounts</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Games and Amusement</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+</details>
+<h3>19th Congress</h3>
+<table>
+<thead><tr><th class="num">Rank</th><th>Committee</th><th class="num">Assigned</th><th class="num">Became RA</th><th class="num">Rate</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>Special Committee on Philippine Maritime and Admiralty Zones</td><td class="num">18</td><td class="num">16</td><td class="num">88.9%</td></tr>
+<tr><td class="num">2</td><td>Finance</td><td class="num">26</td><td class="num">17</td><td class="num">65.4%</td></tr>
+<tr><td class="num">3</td><td>Migrant Workers</td><td class="num">39</td><td class="num">14</td><td class="num">35.9%</td></tr>
+<tr><td class="num">4</td><td>Foreign Relations</td><td class="num">28</td><td class="num">9</td><td class="num">32.1%</td></tr>
+<tr><td class="num">5</td><td>National Defense and Security, Peace, Unification and Reconciliation</td><td class="num">85</td><td class="num">23</td><td class="num">27.1%</td></tr>
+<tr><td class="num">6</td><td>Public Works</td><td class="num">49</td><td class="num">12</td><td class="num">24.5%</td></tr>
+<tr><td class="num">7</td><td>Agriculture, Food and Agrarian Reform</td><td class="num">145</td><td class="num">32</td><td class="num">22.1%</td></tr>
+<tr><td class="num">8</td><td>Government Corporations and Public Enterprises</td><td class="num">52</td><td class="num">11</td><td class="num">21.2%</td></tr>
+<tr><td class="num">9</td><td>Science and Technology</td><td class="num">96</td><td class="num">20</td><td class="num">20.8%</td></tr>
+<tr><td class="num">10</td><td>Cultural Communities and Muslim Affairs</td><td class="num">21</td><td class="num">4</td><td class="num">19.0%</td></tr>
+<tr><td class="num">11</td><td>Ways and Means</td><td class="num">82</td><td class="num">15</td><td class="num">18.3%</td></tr>
+<tr><td class="num">12</td><td>Electoral Reforms and Peoples Participation</td><td class="num">57</td><td class="num">10</td><td class="num">17.5%</td></tr>
+<tr><td class="num">13</td><td>Economic Affairs</td><td class="num">58</td><td class="num">9</td><td class="num">15.5%</td></tr>
+<tr><td class="num">14</td><td>Banks, Financial Institutions and Currencies</td><td class="num">64</td><td class="num">8</td><td class="num">12.5%</td></tr>
+<tr><td class="num">15</td><td>Trade, Commerce and Entrepreneurship</td><td class="num">131</td><td class="num">16</td><td class="num">12.2%</td></tr>
+<tr><td class="num">16</td><td>Culture and the Arts</td><td class="num">51</td><td class="num">6</td><td class="num">11.8%</td></tr>
+<tr><td class="num">17</td><td>Health and Demography</td><td class="num">270</td><td class="num">28</td><td class="num">10.4%</td></tr>
+<tr><td class="num">18</td><td>Local Government</td><td class="num">143</td><td class="num">14</td><td class="num">9.8%</td></tr>
+<tr><td class="num">19</td><td>Environment, Natural Resources and Climate Change</td><td class="num">116</td><td class="num">11</td><td class="num">9.5%</td></tr>
+<tr><td class="num">20</td><td>Urban Planning, Housing and Resettlement</td><td class="num">44</td><td class="num">4</td><td class="num">9.1%</td></tr>
+<tr><td class="num">21</td><td>Higher, Technical and Vocational Education</td><td class="num">150</td><td class="num">13</td><td class="num">8.7%</td></tr>
+<tr><td class="num">22</td><td>Basic Education</td><td class="num">142</td><td class="num">12</td><td class="num">8.5%</td></tr>
+<tr><td class="num">23</td><td>Public Services</td><td class="num">120</td><td class="num">10</td><td class="num">8.3%</td></tr>
+<tr><td class="num">24</td><td>Justice and Human Rights</td><td class="num">146</td><td class="num">11</td><td class="num">7.5%</td></tr>
+<tr><td class="num">25</td><td>Civil Service, Government Reorganization and Professional Regulation</td><td class="num">160</td><td class="num">11</td><td class="num">6.9%</td></tr>
+<tr><td class="num">26</td><td>Tourism</td><td class="num">56</td><td class="num">3</td><td class="num">5.4%</td></tr>
+<tr><td class="num">27</td><td>Labor, Employment and Human Resources Development</td><td class="num">141</td><td class="num">7</td><td class="num">5.0%</td></tr>
+<tr><td class="num">28</td><td>Social Justice, Welfare and Rural Development</td><td class="num">90</td><td class="num">4</td><td class="num">4.4%</td></tr>
+<tr><td class="num">29</td><td>Energy</td><td class="num">50</td><td class="num">1</td><td class="num">2.0%</td></tr>
+<tr><td class="num">30</td><td>Rules</td><td class="num">79</td><td class="num">1</td><td class="num">1.3%</td></tr>
+<tr><td class="num">31</td><td>Public Order and Dangerous Drugs</td><td class="num">70</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">31</td><td>Women, Children, Family Relations and Gender Equality</td><td class="num">73</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">31</td><td>Sports</td><td class="num">31</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">31</td><td>Public Information and Mass Media</td><td class="num">47</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">31</td><td>Sustainable Development Goals, Innovation and Futures Thinking</td><td class="num">23</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">31</td><td>Youth</td><td class="num">14</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">31</td><td>Constitutional Amendments and Revision of Codes</td><td class="num">13</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+<details>
+<summary>4 committee(s) below the ranking floor (fewer than 10 assigned bills)</summary>
+<table>
+<tbody>
+<tr><td class="num">—</td><td>Cooperatives</td><td class="num">7</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Games and Amusement</td><td class="num">3</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Senate Special Committee on Marawi City Rehabilitation and Victims Compensation</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Cultural Communities</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+</details>
+<h3>Combined (17th–19th Congress)</h3>
+<table>
+<thead><tr><th class="num">Rank</th><th>Committee</th><th class="num">Assigned</th><th class="num">Became RA</th><th class="num">Rate</th></tr></thead>
+<tbody>
+<tr><td class="num">1</td><td>Special Committee on Philippine Maritime and Admiralty Zones</td><td class="num">18</td><td class="num">16</td><td class="num">88.9%</td></tr>
+<tr><td class="num">2</td><td>Finance</td><td class="num">104</td><td class="num">46</td><td class="num">44.2%</td></tr>
+<tr><td class="num">3</td><td>Cooperatives</td><td class="num">16</td><td class="num">7</td><td class="num">43.8%</td></tr>
+<tr><td class="num">4</td><td>Migrant Workers</td><td class="num">39</td><td class="num">14</td><td class="num">35.9%</td></tr>
+<tr><td class="num">5</td><td>National Defense and Security, Peace, Unification and Reconciliation</td><td class="num">137</td><td class="num">31</td><td class="num">22.6%</td></tr>
+<tr><td class="num">6</td><td>Basic Education, Arts and Culture</td><td class="num">169</td><td class="num">38</td><td class="num">22.5%</td></tr>
+<tr><td class="num">7</td><td>Youth</td><td class="num">45</td><td class="num">10</td><td class="num">22.2%</td></tr>
+<tr><td class="num">8</td><td>Energy</td><td class="num">129</td><td class="num">27</td><td class="num">20.9%</td></tr>
+<tr><td class="num">9</td><td>Banks, Financial Institutions and Currencies</td><td class="num">156</td><td class="num">30</td><td class="num">19.2%</td></tr>
+<tr><td class="num">10</td><td>Cultural Communities and Muslim Affairs</td><td class="num">21</td><td class="num">4</td><td class="num">19.0%</td></tr>
+<tr><td class="num">11</td><td>Agriculture, Food and Agrarian Reform</td><td class="num">247</td><td class="num">47</td><td class="num">19.0%</td></tr>
+<tr><td class="num">12</td><td>Foreign Relations</td><td class="num">53</td><td class="num">10</td><td class="num">18.9%</td></tr>
+<tr><td class="num">13</td><td>Science and Technology</td><td class="num">184</td><td class="num">33</td><td class="num">17.9%</td></tr>
+<tr><td class="num">14</td><td>Education, Arts and Culture</td><td class="num">212</td><td class="num">38</td><td class="num">17.9%</td></tr>
+<tr><td class="num">15</td><td>Higher, Technical and Vocational Education</td><td class="num">262</td><td class="num">39</td><td class="num">14.9%</td></tr>
+<tr><td class="num">16</td><td>Economic Affairs</td><td class="num">122</td><td class="num">18</td><td class="num">14.8%</td></tr>
+<tr><td class="num">16</td><td>Public Works</td><td class="num">122</td><td class="num">18</td><td class="num">14.8%</td></tr>
+<tr><td class="num">18</td><td>Women, Children, Family Relations and Gender Equality</td><td class="num">249</td><td class="num">31</td><td class="num">12.4%</td></tr>
+<tr><td class="num">19</td><td>Justice and Human Rights</td><td class="num">513</td><td class="num">63</td><td class="num">12.3%</td></tr>
+<tr><td class="num">20</td><td>Agriculture and Food</td><td class="num">91</td><td class="num">11</td><td class="num">12.1%</td></tr>
+<tr><td class="num">21</td><td>Electoral Reforms and Peoples Participation</td><td class="num">149</td><td class="num">18</td><td class="num">12.1%</td></tr>
+<tr><td class="num">22</td><td>Social Justice, Welfare and Rural Development</td><td class="num">224</td><td class="num">27</td><td class="num">12.1%</td></tr>
+<tr><td class="num">23</td><td>Culture and the Arts</td><td class="num">51</td><td class="num">6</td><td class="num">11.8%</td></tr>
+<tr><td class="num">24</td><td>Ways and Means</td><td class="num">286</td><td class="num">33</td><td class="num">11.5%</td></tr>
+<tr><td class="num">25</td><td>Urban Planning, Housing and Resettlement</td><td class="num">97</td><td class="num">11</td><td class="num">11.3%</td></tr>
+<tr><td class="num">26</td><td>Health and Demography</td><td class="num">744</td><td class="num">83</td><td class="num">11.2%</td></tr>
+<tr><td class="num">27</td><td>Local Government</td><td class="num">365</td><td class="num">39</td><td class="num">10.7%</td></tr>
+<tr><td class="num">28</td><td>Environment, Natural Resources and Climate Change</td><td class="num">206</td><td class="num">22</td><td class="num">10.7%</td></tr>
+<tr><td class="num">29</td><td>Trade, Commerce and Entrepreneurship</td><td class="num">300</td><td class="num">32</td><td class="num">10.7%</td></tr>
+<tr><td class="num">30</td><td>Public Services</td><td class="num">360</td><td class="num">38</td><td class="num">10.6%</td></tr>
+<tr><td class="num">31</td><td>Government Corporations and Public Enterprises</td><td class="num">171</td><td class="num">18</td><td class="num">10.5%</td></tr>
+<tr><td class="num">32</td><td>Basic Education</td><td class="num">142</td><td class="num">12</td><td class="num">8.5%</td></tr>
+<tr><td class="num">33</td><td>Public Order and Dangerous Drugs</td><td class="num">233</td><td class="num">19</td><td class="num">8.2%</td></tr>
+<tr><td class="num">34</td><td>Civil Service, Government Reorganization and Professional Regulation</td><td class="num">410</td><td class="num">25</td><td class="num">6.1%</td></tr>
+<tr><td class="num">35</td><td>Constitutional Amendments and Revision of Codes</td><td class="num">33</td><td class="num">2</td><td class="num">6.1%</td></tr>
+<tr><td class="num">36</td><td>Labor, Employment and Human Resources Development</td><td class="num">350</td><td class="num">18</td><td class="num">5.1%</td></tr>
+<tr><td class="num">37</td><td>Tourism</td><td class="num">93</td><td class="num">4</td><td class="num">4.3%</td></tr>
+<tr><td class="num">38</td><td>Environment and Natural Resources</td><td class="num">75</td><td class="num">3</td><td class="num">4.0%</td></tr>
+<tr><td class="num">39</td><td>Public Information and Mass Media</td><td class="num">117</td><td class="num">4</td><td class="num">3.4%</td></tr>
+<tr><td class="num">40</td><td>Sports</td><td class="num">69</td><td class="num">2</td><td class="num">2.9%</td></tr>
+<tr><td class="num">41</td><td>National Defense and Security</td><td class="num">49</td><td class="num">1</td><td class="num">2.0%</td></tr>
+<tr><td class="num">42</td><td>Rules</td><td class="num">224</td><td class="num">4</td><td class="num">1.8%</td></tr>
+<tr><td class="num">43</td><td>Sustainable Development Goals, Innovation and Futures Thinking</td><td class="num">33</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Cultural Communities</td><td class="num">29</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">43</td><td>Games and Amusement</td><td class="num">10</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+<details>
+<summary>6 committee(s) below the ranking floor (fewer than 10 assigned bills)</summary>
+<table>
+<tbody>
+<tr><td class="num">—</td><td>Agrarian Reform</td><td class="num">9</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Accounts</td><td class="num">5</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Accountability of Public Officers and Investigations</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Senate Special Committee on Marawi City Rehabilitation and Victims Compensation</td><td class="num">2</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Climate Change</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+<tr><td class="num">—</td><td>Peace, Unification and Reconciliation</td><td class="num">1</td><td class="num">0</td><td class="num">0.0%</td></tr>
+</tbody>
+</table>
+</details>
+
+</section>
+
+<section>
+<h2>Data source</h2>
+<p>
+  Every row is traceable to <code>data/analytics/committee_funnel.csv</code>,
+  derived from <code>data/curated/committees.parquet</code> and
+  <code>data/curated/bills.parquet</code>. The rate column is
+  <code>ras / assigned_bills</code>.
+</p>
+<p>
+  Four House committee codes remain unmapped and appear below as
+  code-as-name: <code>J506</code> (32 rows), <code>K503</code>,
+  <code>K504</code>, <code>K505</code> (1 row each, all in the 19th
+  Congress). See the repository's README limitations section for detail.
+</p>
+</section>
+
+</main><footer>
+  <p>
+    Source, pipeline, and methodology:
+    <a href="https://github.com/csystm1/ph-legislative-graph">https://github.com/csystm1/ph-legislative-graph</a>.
+    Data from <a href="https://github.com/bettergovph/open-congress-data">bettergovph/open-congress-data</a>
+    (17th–19th Congress, 2016–2025).
+  </p>
+  <p>
+    Reproduced from committed parquet artifacts under <code>data/analytics/</code>.
+    No live database is required to read this site.
+  </p>
+</footer>
+</body>
+</html>

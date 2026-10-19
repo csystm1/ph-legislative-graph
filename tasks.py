@@ -115,6 +115,10 @@ def cmd_analytics() -> None:
     _run([sys.executable, "-m", "src.analytics.build_graph"])
 
 
+def cmd_site() -> None:
+    _run([sys.executable, "-m", "src.site.build_site"])
+
+
 def cmd_psql() -> None:
     _run(["docker", "compose", "exec", "postgres",
           "psql", "-U", PG_USER, "-d", PG_DB])
@@ -152,6 +156,7 @@ TASKS: dict[str, tuple[str, Callable[[], None]]] = {
     "load":          ("curated parquet -> Postgres (idempotent)",     cmd_load),
     "verify":        ("row counts per table",                         cmd_verify),
     "analytics":     ("curated parquet -> data/analytics/ (graphs, communities, funnel)", cmd_analytics),
+    "site":          ("data/analytics -> docs/ (static site for GitHub Pages)", cmd_site),
     "psql":          ("interactive psql shell",                       cmd_psql),
     "pipeline":      ("fetch -> parse -> validate -> build-curated -> up -> load -> verify", cmd_pipeline),
     "clean-staging": ("remove staging parquet",                       cmd_clean_staging),

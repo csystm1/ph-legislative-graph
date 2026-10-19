@@ -283,7 +283,8 @@ limitations:
     description: |
       4 codes (J506, K503, K504, K505) return 404 on
       congress.gov.ph/committees/committee/view/{code} (re-verified
-      2026-10-19). 16 House bills fall back to code-as-name. Possibly
+      2026-10-19). 35 House bills fall back to code-as-name — each such
+      bill carries exactly one unmapped code. Possibly
       retired committees or upstream typos; accepted as-is. Add one line
       per code to .house-committee-mapping.yml if ever found.
   - id: house_committee_historical_names
