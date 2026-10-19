@@ -12,11 +12,14 @@ Diagnostics (gitignored):
     outputs/senate_primary_disagreements.csv
     outputs/senate_not_found.csv
     outputs/house_0000_sentinel_bills.csv
+    outputs/house_committee_missing_codes.csv
 
-House committee rows are intentionally omitted until the hand-encoded
-mapping lands . Senate committees come from the
-[[committees]] block; codes → YAML → TOML name is the fallback for the
-~0.5% without a block.
+Senate committees come from the [[committees]] block; codes → YAML → TOML
+name is the fallback for the ~0.5% without a block. House committees come
+from meta.congress_website_committee_codes → hand-encoded YAML
+(data/committee/.house-committee-mapping.yml). Codes not in the YAML fall
+back to the raw code as display name and are counted in
+outputs/house_committee_missing_codes.csv.
 """
 from __future__ import annotations
 
@@ -38,6 +41,7 @@ from src.utils.config import (
     COMMITTEE_DIR,
     CONGRESS_SCOPE,
     DOCUMENT_DIR,
+    HOUSE_COMMITTEE_MAP_PATH,
     OUTPUTS_DIR,
     PERSON_DIR,
     STAGING_DIR,
@@ -244,6 +248,7 @@ def parse_bills(
     house_indexes: PersonIndexes,
     senate_indexes: PersonIndexes,
     senate_committee_map: dict[str, str],
+    house_committee_map: dict[str, str],
     committee_names_by_ulid: dict[str, str],
 ) -> dict:
     bills: list[dict] = []
@@ -256,6 +261,7 @@ def parse_bills(
     senate_primary_disagreements: list[dict] = []
     senate_not_found: list[dict] = []
     house_0000: list[dict] = []
+    house_committee_missing: collections.Counter[str] = collections.Counter()
     committee_fallback_used = 0
     committee_block_used = 0
 
@@ -476,11 +482,27 @@ def parse_bills(
                 "resolution_method": f"house/{method}",
             })
 
-        # --- House committees: intentionally omitted until hand-encoded map lands ---
+        # --- House committees ---
+        house_codes = list(dict.fromkeys(m.get("congress_website_committee_codes") or []))
+        seen_names: set[str] = set()
+        for code in house_codes:
+            name = house_committee_map.get(code)
+            if not name:
+                house_committee_missing[code] += 1
+                name = code  # fallback: keep the row, flag for later resolution
+            if name in seen_names:
+                continue  # PK is (bill_id, committee_name); no dup rows
+            seen_names.add(name)
+            committees.append({
+                "bill_id": bill_id,
+                "committee_name": name,
+                "committee_type": None,  # no primary/secondary on House bills
+            })
 
+    house_committee_rows = sum(1 for c in committees if c["bill_id"].startswith("HBN-"))
     logger.info(
-        "senate committees: block=%d bills, fallback=%d bills, rows=%d",
-        committee_block_used, committee_fallback_used, len(committees),
+        "committees: senate_block=%d, senate_fallback=%d, house_rows=%d, total=%d",
+        committee_block_used, committee_fallback_used, house_committee_rows, len(committees),
     )
 
     return {
@@ -493,6 +515,7 @@ def parse_bills(
         "senate_primary_disagreements": senate_primary_disagreements,
         "senate_not_found": senate_not_found,
         "house_0000": house_0000,
+        "house_committee_missing": house_committee_missing,
     }
 
 
@@ -514,15 +537,16 @@ def run() -> None:
     logger.info("loading committee maps...")
     senate_committee_map = _load_yaml_flat(COMMITTEE_DIR / ".senate-website-key-mapping.yml")
     committee_names_by_ulid = _load_committee_names(COMMITTEE_DIR)
+    house_committee_map = _load_yaml_flat(HOUSE_COMMITTEE_MAP_PATH)
     logger.info(
-        "senate committee map: %d codes, %d committee TOMLs",
-        len(senate_committee_map), len(committee_names_by_ulid),
+        "senate committee map: %d codes, %d committee TOMLs; house map: %d codes",
+        len(senate_committee_map), len(committee_names_by_ulid), len(house_committee_map),
     )
 
     logger.info("parsing bill TOMLs...")
     result = parse_bills(
         house_indexes, senate_indexes,
-        senate_committee_map, committee_names_by_ulid,
+        senate_committee_map, house_committee_map, committee_names_by_ulid,
     )
 
     bills_df = result["bills"]
@@ -539,11 +563,15 @@ def run() -> None:
                 len(authorship_df),
                 int((authorship_df["role"] == "primary").sum()),
                 int((authorship_df["role"] == "co_author").sum()))
-    logger.info("committees     : %d rows", len(committees_df))
+    logger.info("committees     : %d rows  (senate=%d, house=%d)",
+                len(committees_df),
+                int(committees_df["bill_id"].str.startswith("SBN-").sum()),
+                int(committees_df["bill_id"].str.startswith("HBN-").sum()))
     logger.info("senate not_found excluded : %d", len(result["senate_not_found"]))
     logger.info("senate coauthor mismatches: %d", len(result["senate_coauthor_mismatches"]))
     logger.info("senate primary disagree   : %d", len(result["senate_primary_disagreements"]))
     logger.info("house 0000/sentinel bills : %d", len(result["house_0000"]))
+    logger.info("house committee missing   : %d distinct codes", len(result["house_committee_missing"]))
     logger.info("distinct senate unresolved: %d", len(result["senate_unresolved"]))
     logger.info("distinct house  unresolved: %d", len(result["house_unresolved"]))
     logger.info("became_ra=True            : %d", int(bills_df["became_ra"].sum()))
@@ -568,6 +596,8 @@ def run() -> None:
                      OUTPUTS_DIR / "senate_not_found.csv")
     atomic_write_csv(pd.DataFrame(result["house_0000"]),
                      OUTPUTS_DIR / "house_0000_sentinel_bills.csv")
+    atomic_write_csv(_counter_to_df(result["house_committee_missing"], name_col="code"),
+                     OUTPUTS_DIR / "house_committee_missing_codes.csv")
 
     logger.info("done.")
 

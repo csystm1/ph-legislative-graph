@@ -16,6 +16,7 @@ STAGING_DIR  = DATA_DIR / "staging"
 CURATED_DIR  = DATA_DIR / "curated"
 OUTPUTS_DIR  = PROJECT_ROOT / "outputs"
 
+HOUSE_COMMITTEE_MAP_PATH = DATA_DIR / "committee" / ".house-committee-mapping.yml"
 COMMITTEE_DIR = RAW_DIR / "data" / "committee"
 PERSON_DIR    = RAW_DIR / "data" / "person"
 DOCUMENT_DIR  = RAW_DIR / "data" / "document"
