@@ -275,9 +275,15 @@ limitations:
   - id: congress_scope
     description: "Phase 2 is 17th-19th Congress. 20th Congress incomplete upstream."
   - id: house_coauthor_resolution
-    description: "91.95% resolved (floor; do not iterate). 28 distinct unresolved → outputs/house_unresolved_coauthors.csv"
+    description: >
+      Per-Congress resolution: 17th 97.33%, 18th 92.74%, 19th 91.95%.
+      Distinct unresolved: 10/19/28. Floors — do not iterate.
+      outputs/house_unresolved_coauthors.csv is Congress-tagged.
   - id: house_committee_fallback
-    description: "4 unmapped codes (J506/K503/K504/K505) fall back to code name. 16 bills."
+    description: >
+      9 distinct unmapped House committee codes across 17th-19th
+      (41 rows). Fallback to code-as-name. Extending the mapping needs a
+      browser session with Cloudflare clearance; deferred to a later phase.
   - id: upstream_manual_encoding
     description: "bettergovph/open-congress-data carries a manual-encoding disclaimer. HEAD 6e853ee (2025-10-16)."
 
@@ -305,13 +311,10 @@ change_log:
   - version: "2.1"
     date: "2026-10-19"
     change: >
-      Re-measure warn thresholds against the first multi-Congress parse
-      (17th-19th, 39,390 bills). Widen:
+      Re-measure warn thresholds for 17th-19th scope and refresh
+      limitations. Thresholds:
         committees_code_fallback_count.max_expected: 16 -> 45
         bills_have_primary_author.max_expected_without_primary: 15 -> 45
         bills_have_any_authorship.max_expected: 15 -> 40
-      No schema, rule-name, or code changes. Contract shape unchanged.
-      New fallback codes (C503, B510, A507, +2) remain a documented
-      data-quality limitation; extending the House committee mapping is
-      deferred to a later phase (would require a browser session with
-      Cloudflare clearance, §6.3).
+      Per-Congress resolution: 17th 97.33%, 18th 92.74%, 19th 91.95%.
+      9 distinct unmapped House codes (41 rows).
