@@ -29,8 +29,15 @@ Philippine legislative documents (8th–20th Congress). We use the 19th Congress
 - **House:** 11,561 bills
 - **Persons:** 1,173 legislators across 13 Congresses, 317 with 19th-House membership
 
-Data completeness is documented in `docs/data_contract.yaml` (later phase) and
-`outputs/` (generated per-run).
+Data integrity rules live in `docs/data_contract.yaml`; per-run diagnostics land in `outputs/` (gitignored, generated per-run).
+
+## Limitations
+
+- **20th Congress excluded** — incomplete upstream; Phase 1 is 19th Congress only.
+- **House co-author resolution floor: 91.95%** — 28 distinct unresolved names logged to `outputs/house_unresolved_coauthors.csv`; 8 Senate names in `outputs/senate_unresolved_coauthors.csv`.
+- **4 unmapped House committee codes** (`J506`, `K503`, `K504`, `K505`) — 16 bills fall back to code-as-name; `outputs/house_committee_missing_codes.csv`.
+- **Upstream manual-encoding disclaimer** — `open-congress-data` is community-maintained and self-describes a manual-encoding process; parsed data inherits its accuracy characteristics.
+- **Data snapshot** — upstream HEAD `6e853ee`, 2025-10-16. Re-run `python -m src.ingest.fetch` to refresh.
 
 ## Pipeline
 
@@ -45,18 +52,15 @@ fetch (sparse clone) → parse_toml → staging parquet
 ## Reproducing
 
 ```bash
-python -m venv .venv && source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-pip install -r requirements.txt
-
-make fetch    # sparse-clone open-congress-data into data/raw/
-make parse    # TOML → data/staging/*.parquet
-make validate # validation gate
-make load     # Postgres load (idempotent)
-make analyze  # graph build, communities, funnel
-make site     # assemble docs/ for GitHub Pages
+python -m src.ingest.fetch       # sparse-clone open-congress-data into data/raw/
+python -m src.ingest.parse_toml  # TOML → data/staging/*.parquet
+python -m src.validation.checks  # pre-load gate; exit 0 = pass
+# python -m src.load.load_postgres     # Phase 3
+# python -m src.analytics.build_graph  # Phase 4
+# python -m src.analytics.build_site   # Phase 5
 ```
 
-(Entries to be filled in as each stage lands.)
+Later phases are commented out until they land.
 
 ## Reference
 
