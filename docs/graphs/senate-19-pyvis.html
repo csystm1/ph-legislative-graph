@@ -1,0 +1,321 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script>function neighbourhoodHighlight(params) {
+  // console.log("in nieghbourhoodhighlight");
+  allNodes = nodes.get({ returnType: "Object" });
+  // originalNodes = JSON.parse(JSON.stringify(allNodes));
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    highlightActive = true;
+    var i, j;
+    var selectedNode = params.nodes[0];
+    var degrees = 2;
+
+    // mark all nodes as hard to read.
+    for (let nodeId in allNodes) {
+      // nodeColors[nodeId] = allNodes[nodeId].color;
+      allNodes[nodeId].color = "rgba(200,200,200,0.5)";
+      if (allNodes[nodeId].hiddenLabel === undefined) {
+        allNodes[nodeId].hiddenLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+    var connectedNodes = network.getConnectedNodes(selectedNode);
+    var allConnectedNodes = [];
+
+    // get the second degree nodes
+    for (i = 1; i < degrees; i++) {
+      for (j = 0; j < connectedNodes.length; j++) {
+        allConnectedNodes = allConnectedNodes.concat(
+          network.getConnectedNodes(connectedNodes[j])
+        );
+      }
+    }
+
+    // all second degree nodes get a different color and their label back
+    for (i = 0; i < allConnectedNodes.length; i++) {
+      // allNodes[allConnectedNodes[i]].color = "pink";
+      allNodes[allConnectedNodes[i]].color = "rgba(150,150,150,0.75)";
+      if (allNodes[allConnectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[allConnectedNodes[i]].label =
+          allNodes[allConnectedNodes[i]].hiddenLabel;
+        allNodes[allConnectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // all first degree nodes get their own color and their label back
+    for (i = 0; i < connectedNodes.length; i++) {
+      // allNodes[connectedNodes[i]].color = undefined;
+      allNodes[connectedNodes[i]].color = nodeColors[connectedNodes[i]];
+      if (allNodes[connectedNodes[i]].hiddenLabel !== undefined) {
+        allNodes[connectedNodes[i]].label =
+          allNodes[connectedNodes[i]].hiddenLabel;
+        allNodes[connectedNodes[i]].hiddenLabel = undefined;
+      }
+    }
+
+    // the main node gets its own color and its label back.
+    // allNodes[selectedNode].color = undefined;
+    allNodes[selectedNode].color = nodeColors[selectedNode];
+    if (allNodes[selectedNode].hiddenLabel !== undefined) {
+      allNodes[selectedNode].label = allNodes[selectedNode].hiddenLabel;
+      allNodes[selectedNode].hiddenLabel = undefined;
+    }
+  } else if (highlightActive === true) {
+    // console.log("highlightActive was true");
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      // allNodes[nodeId].color = "purple";
+      allNodes[nodeId].color = nodeColors[nodeId];
+      // delete allNodes[nodeId].color;
+      if (allNodes[nodeId].hiddenLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].hiddenLabel;
+        allNodes[nodeId].hiddenLabel = undefined;
+      }
+    }
+    highlightActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    // console.log("Nothing was selected");
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        // console.log(allNodes[nodeId]);
+        // allNodes[nodeId].color = {};
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function filterHighlight(params) {
+  allNodes = nodes.get({ returnType: "Object" });
+  // if something is selected:
+  if (params.nodes.length > 0) {
+    filterActive = true;
+    let selectedNodes = params.nodes;
+
+    // hiding all nodes and saving the label
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = true;
+      if (allNodes[nodeId].savedLabel === undefined) {
+        allNodes[nodeId].savedLabel = allNodes[nodeId].label;
+        allNodes[nodeId].label = undefined;
+      }
+    }
+
+    for (let i=0; i < selectedNodes.length; i++) {
+      allNodes[selectedNodes[i]].hidden = false;
+      if (allNodes[selectedNodes[i]].savedLabel !== undefined) {
+        allNodes[selectedNodes[i]].label = allNodes[selectedNodes[i]].savedLabel;
+        allNodes[selectedNodes[i]].savedLabel = undefined;
+      }
+    }
+
+  } else if (filterActive === true) {
+    // reset all nodes
+    for (let nodeId in allNodes) {
+      allNodes[nodeId].hidden = false;
+      if (allNodes[nodeId].savedLabel !== undefined) {
+        allNodes[nodeId].label = allNodes[nodeId].savedLabel;
+        allNodes[nodeId].savedLabel = undefined;
+      }
+    }
+    filterActive = false;
+  }
+
+  // transform the object into an array
+  var updateArray = [];
+  if (params.nodes.length > 0) {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  } else {
+    for (let nodeId in allNodes) {
+      if (allNodes.hasOwnProperty(nodeId)) {
+        updateArray.push(allNodes[nodeId]);
+      }
+    }
+    nodes.update(updateArray);
+  }
+}
+
+function selectNode(nodes) {
+  network.selectNodes(nodes);
+  neighbourhoodHighlight({ nodes: nodes });
+  return nodes;
+}
+
+function selectNodes(nodes) {
+  network.selectNodes(nodes);
+  filterHighlight({nodes: nodes});
+  return nodes;
+}
+
+function highlightFilter(filter) {
+  let selectedNodes = []
+  let selectedProp = filter['property']
+  if (filter['item'] === 'node') {
+    let allNodes = nodes.get({ returnType: "Object" });
+    for (let nodeId in allNodes) {
+      if (allNodes[nodeId][selectedProp] && filter['value'].includes((allNodes[nodeId][selectedProp]).toString())) {
+        selectedNodes.push(nodeId)
+      }
+    }
+  }
+  else if (filter['item'] === 'edge'){
+    let allEdges = edges.get({returnType: 'object'});
+    // check if the selected property exists for selected edge and select the nodes connected to the edge
+    for (let edge in allEdges) {
+      if (allEdges[edge][selectedProp] && filter['value'].includes((allEdges[edge][selectedProp]).toString())) {
+        selectedNodes.push(allEdges[edge]['from'])
+        selectedNodes.push(allEdges[edge]['to'])
+      }
+    }
+  }
+  selectNodes(selectedNodes)
+}</script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+            
+            
+            
+            
+            
+
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 800px;
+                 background-color: #fafafa;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0HN", "label": "Juan Edgardo Manalang Angara", "shape": "dot", "size": 7, "title": "Juan Edgardo Manalang Angara\ncommunity: 1\nprimary filed: 139\nco-authored: 2\nsolo filed: 112\nwith cosponsors: 27\navg cosponsors/filed: 0.31\ncoauthor/primary ratio: 0.01", "x": -192.45228009653135, "y": 376.96256149300655}, {"color": {"background": "#5a7d3a", "border": "#333333", "highlight": {"background": "#5a7d3a", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0HQ", "label": "Maria Lourdes Nancy Sombillo Binay", "shape": "dot", "size": 10, "title": "Maria Lourdes Nancy Sombillo Binay\ncommunity: 2\nprimary filed: 29\nco-authored: 22\nsolo filed: 23\nwith cosponsors: 6\navg cosponsors/filed: 0.21\ncoauthor/primary ratio: 0.76", "x": -286.40163405147155, "y": -92.6974166348329}, {"color": {"background": "#7a5e9b", "border": "#333333", "highlight": {"background": "#7a5e9b", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0HS", "label": "Alan Peter Schramm Cayetano", "shape": "dot", "size": 7, "title": "Alan Peter Schramm Cayetano\ncommunity: 3\nprimary filed: 25\nco-authored: 2\nsolo filed: 23\nwith cosponsors: 2\navg cosponsors/filed: 0.20\ncoauthor/primary ratio: 0.08", "x": -734.2427673539947, "y": -107.29427224651766}, {"color": {"background": "#7a5e9b", "border": "#333333", "highlight": {"background": "#7a5e9b", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0HT", "label": "Pilar Juliana Schramm Cayetano", "shape": "dot", "size": 8, "title": "Pilar Juliana Schramm Cayetano\ncommunity: 3\nprimary filed: 43\nco-authored: 8\nsolo filed: 38\nwith cosponsors: 5\navg cosponsors/filed: 0.19\ncoauthor/primary ratio: 0.19", "x": -175.39714640516047, "y": -298.2841814039149}, {"color": {"background": "#b07c2f", "border": "#333333", "highlight": {"background": "#b07c2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0HX", "label": "Ronald Marapon dela Rosa", "shape": "dot", "size": 6, "title": "Ronald Marapon dela Rosa\ncommunity: 4\nprimary filed: 69\nco-authored: 0\nsolo filed: 58\nwith cosponsors: 11\navg cosponsors/filed: 0.22\ncoauthor/primary ratio: 0.00", "x": 652.0080930203055, "y": 482.3467871992584}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0HY", "label": "Francis Guevara Escudero", "shape": "dot", "size": 10, "title": "Francis Guevara Escudero\ncommunity: 1\nprimary filed: 63\nco-authored: 20\nsolo filed: 55\nwith cosponsors: 8\navg cosponsors/filed: 0.21\ncoauthor/primary ratio: 0.32", "x": -800.0, "y": 139.79965652179135}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0HZ", "label": "Jose Pimentel Ejercito-Estrada Jr", "shape": "dot", "size": 7, "title": "Jose Pimentel Ejercito-Estrada Jr\ncommunity: 1\nprimary filed: 266\nco-authored: 2\nsolo filed: 251\nwith cosponsors: 15\navg cosponsors/filed: 0.11\ncoauthor/primary ratio: 0.01", "x": 560.1486298803052, "y": 27.644066891324314}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0J0", "label": "Joseph Victor Gomez Ejercito", "shape": "dot", "size": 8, "title": "Joseph Victor Gomez Ejercito\ncommunity: 1\nprimary filed: 106\nco-authored: 5\nsolo filed: 90\nwith cosponsors: 16\navg cosponsors/filed: 0.19\ncoauthor/primary ratio: 0.05", "x": -746.7455061500049, "y": -399.01569564989563}, {"color": {"background": "#7a5e9b", "border": "#333333", "highlight": {"background": "#7a5e9b", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0J4", "label": "Christopher Lawrence Tesoro Go", "shape": "dot", "size": 10, "title": "Christopher Lawrence Tesoro Go\ncommunity: 3\nprimary filed: 77\nco-authored: 20\nsolo filed: 72\nwith cosponsors: 5\navg cosponsors/filed: 0.09\ncoauthor/primary ratio: 0.26", "x": -152.49965409690094, "y": -116.272148261356}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0J6", "label": "Sherwin Ting Gatchalian", "shape": "dot", "size": 10, "title": "Sherwin Ting Gatchalian\ncommunity: 1\nprimary filed: 172\nco-authored: 28\nsolo filed: 148\nwith cosponsors: 24\navg cosponsors/filed: 0.20\ncoauthor/primary ratio: 0.16", "x": -477.8365519670301, "y": -251.19861793720804}, {"color": {"background": "#1f4e79", "border": "#333333", "highlight": {"background": "#1f4e79", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0J8", "label": "Ana Theresia Navarro Hontiveros-Baraquel", "shape": "dot", "size": 7, "title": "Ana Theresia Navarro Hontiveros-Baraquel\ncommunity: 0\nprimary filed: 88\nco-authored: 2\nsolo filed: 84\nwith cosponsors: 4\navg cosponsors/filed: 0.07\ncoauthor/primary ratio: 0.02", "x": 226.68363735373623, "y": -550.0}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0JC", "label": "Lorna Regina Bautista Legarda", "shape": "dot", "size": 12, "title": "Lorna Regina Bautista Legarda\ncommunity: 1\nprimary filed: 148\nco-authored: 50\nsolo filed: 123\nwith cosponsors: 25\navg cosponsors/filed: 0.22\ncoauthor/primary ratio: 0.34", "x": -221.79582851376335, "y": -215.89179306929844}, {"color": {"background": "#5a7d3a", "border": "#333333", "highlight": {"background": "#5a7d3a", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0JD", "label": "Manuel Mercado Lapid", "shape": "dot", "size": 8, "title": "Manuel Mercado Lapid\ncommunity: 2\nprimary filed: 152\nco-authored: 6\nsolo filed: 140\nwith cosponsors: 12\navg cosponsors/filed: 0.12\ncoauthor/primary ratio: 0.04", "x": 126.73444810377748, "y": 32.610971882988565}, {"color": {"background": "#5a7d3a", "border": "#333333", "highlight": {"background": "#5a7d3a", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0JG", "label": "Imee Romualdez Marcos", "shape": "dot", "size": 8, "title": "Imee Romualdez Marcos\ncommunity: 2\nprimary filed: 302\nco-authored: 5\nsolo filed: 293\nwith cosponsors: 9\navg cosponsors/filed: 0.04\ncoauthor/primary ratio: 0.02", "x": -202.47521806162672, "y": 197.0898089565393}, {"color": {"background": "#1f4e79", "border": "#333333", "highlight": {"background": "#1f4e79", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0JR", "label": "Grace Sonora Poe", "shape": "dot", "size": 8, "title": "Grace Sonora Poe\ncommunity: 0\nprimary filed: 120\nco-authored: 6\nsolo filed: 111\nwith cosponsors: 9\navg cosponsors/filed: 0.10\ncoauthor/primary ratio: 0.05", "x": 55.29318517159186, "y": -318.98524372833117}, {"color": {"background": "#7a5e9b", "border": "#333333", "highlight": {"background": "#7a5e9b", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0JS", "label": "Robinhood Cari\u00f1o Padilla", "shape": "dot", "size": 10, "title": "Robinhood Cari\u00f1o Padilla\ncommunity: 3\nprimary filed: 73\nco-authored: 24\nsolo filed: 65\nwith cosponsors: 8\navg cosponsors/filed: 0.15\ncoauthor/primary ratio: 0.33", "x": -526.8958268103064, "y": -80.77264018244153}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0JW", "label": "Ramon Bautista Revilla Jr", "shape": "dot", "size": 6, "title": "Ramon Bautista Revilla Jr\ncommunity: 1\nprimary filed: 330\nco-authored: 1\nsolo filed: 330\nwith cosponsors: 0\navg cosponsors/filed: 0.00\ncoauthor/primary ratio: 0.00", "x": -41.416188814284055, "y": 475.6727980972282}, {"color": {"background": "#5a7d3a", "border": "#333333", "highlight": {"background": "#5a7d3a", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0K1", "label": "Francis Ng Tolentino", "shape": "dot", "size": 7, "title": "Francis Ng Tolentino\ncommunity: 2\nprimary filed: 120\nco-authored: 2\nsolo filed: 109\nwith cosponsors: 11\navg cosponsors/filed: 0.14\ncoauthor/primary ratio: 0.02", "x": 100.05741285236672, "y": -122.51281456979649}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5S6MAZ4YBST5GDJV827A0K2", "label": "Rafael Teshiba Tulfo", "shape": "dot", "size": 10, "title": "Rafael Teshiba Tulfo\ncommunity: 1\nprimary filed: 141\nco-authored: 28\nsolo filed: 131\nwith cosponsors: 10\navg cosponsors/filed: 0.11\ncoauthor/primary ratio: 0.20", "x": -329.4557919922768, "y": -21.48296714127298}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5ST4GKP8P26VCTY2059AZT6", "label": "Emmanuel Joel Jose Villanueva", "shape": "dot", "size": 15, "title": "Emmanuel Joel Jose Villanueva\ncommunity: 1\nprimary filed: 154\nco-authored: 108\nsolo filed: 144\nwith cosponsors: 10\navg cosponsors/filed: 0.08\ncoauthor/primary ratio: 0.70", "x": -174.50748598023267, "y": 12.34192402277688}, {"color": {"background": "#a63d2f", "border": "#333333", "highlight": {"background": "#a63d2f", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "label": "Cynthia Aguilar Villar", "shape": "dot", "size": 11, "title": "Cynthia Aguilar Villar\ncommunity: 1\nprimary filed: 100\nco-authored: 38\nsolo filed: 77\nwith cosponsors: 23\navg cosponsors/filed: 0.30\ncoauthor/primary ratio: 0.38", "x": -64.97733803229039, "y": -179.6786954268817}, {"color": {"background": "#7a5e9b", "border": "#333333", "highlight": {"background": "#7a5e9b", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "label": "Mark Aguilar Villar", "shape": "dot", "size": 9, "title": "Mark Aguilar Villar\ncommunity: 3\nprimary filed: 153\nco-authored: 14\nsolo filed: 149\nwith cosponsors: 4\navg cosponsors/filed: 0.07\ncoauthor/primary ratio: 0.09", "x": -412.9367507103399, "y": -175.8668029987764}, {"color": {"background": "#3a7c7c", "border": "#333333", "highlight": {"background": "#3a7c7c", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K5ST4HCY5N9130WESWJH9BSZ", "label": "Juan Miguel Fernandez Zubiri", "shape": "dot", "size": 6, "title": "Juan Miguel Fernandez Zubiri\ncommunity: 5\nprimary filed: 93\nco-authored: 0\nsolo filed: 73\nwith cosponsors: 20\navg cosponsors/filed: 0.28\ncoauthor/primary ratio: 0.00", "x": -551.5006162844182, "y": 550.0}, {"color": {"background": "#8b4a6a", "border": "#333333", "highlight": {"background": "#8b4a6a", "border": "#000000"}}, "font": {"color": "#222"}, "id": "01K6ZRH24BJ9EJBD8DFGYKVMEB", "label": "Aquilino Martin de la Llana Pimentel III", "shape": "dot", "size": 6, "title": "Aquilino Martin de la Llana Pimentel III\ncommunity: 6\nprimary filed: 39\nco-authored: 0\nsolo filed: 32\nwith cosponsors: 7\navg cosponsors/filed: 0.21\ncoauthor/primary ratio: 0.00", "x": 800.0, "y": 237.8137320183963}]);
+                  edges = new vis.DataSet([{"from": "01K5S6MAZ4YBST5GDJV827A0HN", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5S6MAZ4YBST5GDJV827A0HT", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5S6MAZ4YBST5GDJV827A0J4", "value": 4}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5S6MAZ4YBST5GDJV827A0J6", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5S6MAZ4YBST5GDJV827A0JC", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5S6MAZ4YBST5GDJV827A0JG", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5S6MAZ4YBST5GDJV827A0JS", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5S6MAZ4YBST5GDJV827A0K1", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 4}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "title": "shared bills: 7\njaccard: 0.057", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 7}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0HQ", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HS", "to": "01K5S6MAZ4YBST5GDJV827A0JS", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0HS", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HS", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HS", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HT", "to": "01K5S6MAZ4YBST5GDJV827A0J4", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0HT", "to": "01K5S6MAZ4YBST5GDJV827A0J8", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HT", "to": "01K5S6MAZ4YBST5GDJV827A0JR", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HT", "to": "01K5S6MAZ4YBST5GDJV827A0JS", "value": 4}, {"from": "01K5S6MAZ4YBST5GDJV827A0HT", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HT", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 3}, {"from": "01K5S6MAZ4YBST5GDJV827A0HT", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0HY", "to": "01K5S6MAZ4YBST5GDJV827A0JS", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0HY", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 4}, {"from": "01K5S6MAZ4YBST5GDJV827A0HZ", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0J0", "to": "01K5S6MAZ4YBST5GDJV827A0J6", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0J0", "to": "01K5S6MAZ4YBST5GDJV827A0JC", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0J4", "to": "01K5S6MAZ4YBST5GDJV827A0J6", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0J4", "to": "01K5S6MAZ4YBST5GDJV827A0JC", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0J4", "to": "01K5S6MAZ4YBST5GDJV827A0JS", "value": 3}, {"from": "01K5S6MAZ4YBST5GDJV827A0J4", "to": "01K5S6MAZ4YBST5GDJV827A0K1", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0J4", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0J4", "title": "shared bills: 7\njaccard: 0.058", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 7}, {"from": "01K5S6MAZ4YBST5GDJV827A0J4", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 3}, {"from": "01K5S6MAZ4YBST5GDJV827A0J4", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 3}, {"from": "01K5S6MAZ4YBST5GDJV827A0J6", "title": "shared bills: 5\njaccard: 0.068", "to": "01K5S6MAZ4YBST5GDJV827A0JC", "value": 5}, {"from": "01K5S6MAZ4YBST5GDJV827A0J6", "to": "01K5S6MAZ4YBST5GDJV827A0JS", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0J6", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 4}, {"from": "01K5S6MAZ4YBST5GDJV827A0J6", "title": "shared bills: 5\njaccard: 0.038", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 5}, {"from": "01K5S6MAZ4YBST5GDJV827A0J6", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 4}, {"from": "01K5S6MAZ4YBST5GDJV827A0J6", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0J8", "to": "01K5S6MAZ4YBST5GDJV827A0JR", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JC", "to": "01K5S6MAZ4YBST5GDJV827A0JD", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JC", "to": "01K5S6MAZ4YBST5GDJV827A0JR", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JC", "to": "01K5S6MAZ4YBST5GDJV827A0K1", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0JC", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0JC", "title": "shared bills: 13\njaccard: 0.090", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 13}, {"from": "01K5S6MAZ4YBST5GDJV827A0JC", "title": "shared bills: 6\njaccard: 0.073", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 6}, {"from": "01K5S6MAZ4YBST5GDJV827A0JC", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 2}, {"from": "01K5S6MAZ4YBST5GDJV827A0JD", "to": "01K5S6MAZ4YBST5GDJV827A0JG", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JD", "to": "01K5S6MAZ4YBST5GDJV827A0K1", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JD", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JD", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JG", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JR", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JR", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JR", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0JS", "to": "01K5S6MAZ4YBST5GDJV827A0K2", "value": 3}, {"from": "01K5S6MAZ4YBST5GDJV827A0JS", "title": "shared bills: 6\njaccard: 0.048", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 6}, {"from": "01K5S6MAZ4YBST5GDJV827A0JS", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 4}, {"from": "01K5S6MAZ4YBST5GDJV827A0JS", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 4}, {"from": "01K5S6MAZ4YBST5GDJV827A0JW", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0K1", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0K1", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0K1", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 1}, {"from": "01K5S6MAZ4YBST5GDJV827A0K2", "title": "shared bills: 6\njaccard: 0.046", "to": "01K5ST4GKP8P26VCTY2059AZT6", "value": 6}, {"from": "01K5S6MAZ4YBST5GDJV827A0K2", "title": "shared bills: 7\njaccard: 0.119", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 7}, {"from": "01K5S6MAZ4YBST5GDJV827A0K2", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 1}, {"from": "01K5ST4GKP8P26VCTY2059AZT6", "title": "shared bills: 7\njaccard: 0.050", "to": "01K5ST4GNB7GB6P4VE2Y7G1KKR", "value": 7}, {"from": "01K5ST4GKP8P26VCTY2059AZT6", "title": "shared bills: 7\njaccard: 0.061", "to": "01K5ST4GQDCMHPRF0HNE0H2KKJ", "value": 7}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"physics": {"enabled": false}, "configure": {"enabled": false, "filter": false}, "interaction": {"hover": true, "hoverConnectedEdges": false, "navigationButtons": false, "multiselect": false, "keyboard": {"enabled": false}}, "edges": {"smooth": false, "color": {"opacity": 0.22}, "width": 0.8}, "nodes": {"borderWidth": 1, "font": {"size": 12, "face": "sans-serif", "color": "#222"}}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

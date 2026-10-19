@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temporal — Philippine Legislative Bills Graph</title>
+<meta name="description" content="Co-authorship across the 17th-19th Congress, per chamber.">
+<link rel="stylesheet" href="./assets/style.css">
+</head>
+<body class="wide-view"><nav class="site-nav">
+  <a href="./index.html" data-nav="home">Overview</a>
+  <a href="./graphs/house-17.html" data-nav="house-17">House 17th</a>
+  <a href="./graphs/house-18.html" data-nav="house-18">House 18th</a>
+  <a href="./graphs/house-19.html" data-nav="house-19">House 19th</a>
+  <a href="./graphs/senate-17.html" data-nav="senate-17">Senate 17th</a>
+  <a href="./graphs/senate-18.html" data-nav="senate-18">Senate 18th</a>
+  <a href="./graphs/senate-19.html" data-nav="senate-19">Senate 19th</a>
+  <a href="./funnel.html" data-nav="funnel">Funnel</a>
+  <a href="./temporal.html" data-nav="temporal" class="active">Temporal</a>
+</nav><header>
+  <h1>Temporal evolution, 17th–19th Congress</h1>
+  <p class="tagline">
+    Side-by-side static renderings of each chamber's co-authorship graph
+    across the three Congresses. Node positions and community colors are
+    assigned independently per Congress — <b>do not compare them across
+    panels</b>. Compare counts and shapes, not identities.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>House</h2>
+      <table>
+        <thead><tr>
+          <th>Congress</th>
+          <th class="num">Nodes</th>
+          <th class="num">Edges</th>
+          <th class="num">Modularity</th>
+          <th class="num">Communities (n≥2)</th>
+          <th class="num">Isolated</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>17th</td><td class="num">301</td><td class="num">40,391</td><td class="num">0.095</td><td class="num">4</td><td class="num">3%</td></tr>
+          <tr><td>18th</td><td class="num">305</td><td class="num">39,755</td><td class="num">0.055</td><td class="num">5</td><td class="num">6%</td></tr>
+          <tr><td>19th</td><td class="num">316</td><td class="num">39,873</td><td class="num">0.095</td><td class="num">3</td><td class="num">6%</td></tr>
+        </tbody>
+      </table>
+<figure>
+  <img src="./assets/plots/temporal-house.png"
+       alt="House co-authorship across the 17th, 18th, 19th Congress">
+  <figcaption>
+    Backbone view: top 500 co-authorship pairs per Congress, isolated
+    nodes omitted. Full House graphs are near-complete graphs (~90% of
+    legislator pairs share bills) in all three Congresses — the backbone
+    shows who the strongest pairs are, and how those pairs shift.
+    Statistics table above reflects the full graph, including isolated
+    nodes.
+  </figcaption>
+</figure>
+</section>
+
+<section>
+<h2>Senate</h2>
+      <table>
+        <thead><tr>
+          <th>Congress</th>
+          <th class="num">Nodes</th>
+          <th class="num">Edges</th>
+          <th class="num">Modularity</th>
+          <th class="num">Communities (n≥2)</th>
+          <th class="num">Isolated</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>17th</td><td class="num">24</td><td class="num">4</td><td class="num">0.000</td><td class="num">2</td><td class="num">83%</td></tr>
+          <tr><td>18th</td><td class="num">24</td><td class="num">23</td><td class="num">0.315</td><td class="num">2</td><td class="num">50%</td></tr>
+          <tr><td>19th</td><td class="num">24</td><td class="num">71</td><td class="num">0.089</td><td class="num">4</td><td class="num">12%</td></tr>
+        </tbody>
+      </table>
+<figure>
+  <img src="./assets/plots/temporal-senate.png"
+       alt="Senate co-authorship across the 17th, 18th, 19th Congress">
+  <figcaption>
+    Full graph, isolated nodes omitted. Senate-17's panel shows only
+    <b>4 edges across 4 legislators</b> — only 2 bills in the 17th Senate
+    carried ≥2 co-authors, so the graph is nearly empty by construction.
+    Senate-18 and Senate-19 show progressively denser structure. The
+    sparsity is the story, not a defect in the rendering.
+  </figcaption>
+</figure>
+</section>
+
+<section>
+<h2>Caveat</h2>
+<p>
+  Louvain runs independently on each Congress, so "community 3" in
+  house-17 is <b>not</b> the same coalition as "community 3" in house-19,
+  and colors carry no cross-panel meaning. The temporal comparison this
+  page supports is counts and shapes: edges, nodes, modularity, isolated
+  fraction, and the general pattern of connected vs. sparse.
+</p>
+</section>
+
+</main><footer>
+  <p>
+    Source, pipeline, and methodology:
+    <a href="https://github.com/csystm1/ph-legislative-graph">https://github.com/csystm1/ph-legislative-graph</a>.
+    Data from <a href="https://github.com/bettergovph/open-congress-data">bettergovph/open-congress-data</a>
+    (17th–19th Congress, 2016–2025).
+  </p>
+  <p>
+    Reproduced from committed parquet artifacts under <code>data/analytics/</code>.
+    No live database is required to read this site.
+  </p>
+</footer>
+</body>
+</html>

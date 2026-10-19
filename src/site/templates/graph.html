@@ -1,0 +1,39 @@
+<header>
+  <h1>__CHAMBER_TITLE__ __CONGRESS__th Congress — co-authorship graph</h1>
+  <p class="tagline">
+    Legislators as nodes, co-authorship as edges. Louvain communities
+    (seed 42). Node color = community; node size = bills co-authored;
+    edge width = shared-bill count.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>Statistics</h2>
+<table>
+  <tbody>
+    <tr><th>Nodes</th><td class="num">__NODES__</td></tr>
+    <tr><th>Edges</th><td class="num">__EDGES__</td></tr>
+    <tr><th>Modularity</th><td class="num">__MODULARITY__</td></tr>
+    <tr><th>Communities (n≥2)</th><td class="num">__COMMS_NT__</td></tr>
+    <tr><th>Communities (total)</th><td class="num">__COMMS_ALL__</td></tr>
+    <tr><th>Isolated fraction</th><td class="num">__ISOLATED__</td></tr>
+  </tbody>
+</table>
+__SPARSITY_NOTE__
+</section>
+
+__GRAPH_VIEW_SECTION__
+
+<section>
+<h2>Static rendering</h2>
+<figure>
+  <img src="../assets/plots/__SLUG__.png" alt="__SLUG__ static graph">
+  <figcaption>
+    __STATIC_CAPTION__
+  </figcaption>
+</figure>
+</section>
+
+</main>

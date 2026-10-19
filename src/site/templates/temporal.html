@@ -1,0 +1,57 @@
+<header>
+  <h1>Temporal evolution, 17th–19th Congress</h1>
+  <p class="tagline">
+    Side-by-side static renderings of each chamber's co-authorship graph
+    across the three Congresses. Node positions and community colors are
+    assigned independently per Congress — <b>do not compare them across
+    panels</b>. Compare counts and shapes, not identities.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>House</h2>
+__HOUSE_METRICS_TABLE__
+<figure>
+  <img src="./assets/plots/temporal-house.png"
+       alt="House co-authorship across the 17th, 18th, 19th Congress">
+  <figcaption>
+    Backbone view: top 500 co-authorship pairs per Congress, isolated
+    nodes omitted. Full House graphs are near-complete graphs (~90% of
+    legislator pairs share bills) in all three Congresses — the backbone
+    shows who the strongest pairs are, and how those pairs shift.
+    Statistics table above reflects the full graph, including isolated
+    nodes.
+  </figcaption>
+</figure>
+</section>
+
+<section>
+<h2>Senate</h2>
+__SENATE_METRICS_TABLE__
+<figure>
+  <img src="./assets/plots/temporal-senate.png"
+       alt="Senate co-authorship across the 17th, 18th, 19th Congress">
+  <figcaption>
+    Full graph, isolated nodes omitted. Senate-17's panel shows only
+    <b>4 edges across 4 legislators</b> — only 2 bills in the 17th Senate
+    carried ≥2 co-authors, so the graph is nearly empty by construction.
+    Senate-18 and Senate-19 show progressively denser structure. The
+    sparsity is the story, not a defect in the rendering.
+  </figcaption>
+</figure>
+</section>
+
+<section>
+<h2>Caveat</h2>
+<p>
+  Louvain runs independently on each Congress, so "community 3" in
+  house-17 is <b>not</b> the same coalition as "community 3" in house-19,
+  and colors carry no cross-panel meaning. The temporal comparison this
+  page supports is counts and shapes: edges, nodes, modularity, isolated
+  fraction, and the general pattern of connected vs. sparse.
+</p>
+</section>
+
+</main>

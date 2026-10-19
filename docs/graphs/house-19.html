@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>House 19th — Philippine Legislative Bills Graph</title>
+<meta name="description" content="Co-authorship graph of the 19th House of the Philippines.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="wide-view"><nav class="site-nav">
+  <a href="../index.html" data-nav="home">Overview</a>
+  <a href="../graphs/house-17.html" data-nav="house-17">House 17th</a>
+  <a href="../graphs/house-18.html" data-nav="house-18">House 18th</a>
+  <a href="../graphs/house-19.html" data-nav="house-19" class="active">House 19th</a>
+  <a href="../graphs/senate-17.html" data-nav="senate-17">Senate 17th</a>
+  <a href="../graphs/senate-18.html" data-nav="senate-18">Senate 18th</a>
+  <a href="../graphs/senate-19.html" data-nav="senate-19">Senate 19th</a>
+  <a href="../funnel.html" data-nav="funnel">Funnel</a>
+  <a href="../temporal.html" data-nav="temporal">Temporal</a>
+</nav><header>
+  <h1>House 19th Congress — co-authorship graph</h1>
+  <p class="tagline">
+    Legislators as nodes, co-authorship as edges. Louvain communities
+    (seed 42). Node color = community; node size = bills co-authored;
+    edge width = shared-bill count.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>Statistics</h2>
+<table>
+  <tbody>
+    <tr><th>Nodes</th><td class="num">316</td></tr>
+    <tr><th>Edges</th><td class="num">39,873</td></tr>
+    <tr><th>Modularity</th><td class="num">0.095</td></tr>
+    <tr><th>Communities (n≥2)</th><td class="num">3</td></tr>
+    <tr><th>Communities (total)</th><td class="num">22</td></tr>
+    <tr><th>Isolated fraction</th><td class="num">6%</td></tr>
+  </tbody>
+</table>
+
+</section>
+
+<section>
+<h2>Interactive backbone</h2>
+<aside>
+Full House graph: <b>39,873 edges</b> across 316 legislators — approximately <b>80% of all possible pairs</b> share co-authorship. No browser-side rendering of that density is readable. Below is the <b>500 strongest co-authorship pairs</b> as a readable backbone; statistics table above reflects the full graph. Senate pages retain full-graph interactive views.
+</aside>
+<p>
+  Hover any node for the full attribute tooltip; drag to pan;
+  scroll to zoom (labels overlap at default zoom — zooming in
+  separates them).
+</p>
+<iframe class="graph-iframe" src="./house-19-pyvis.html" height="800"
+        loading="lazy" title="house-19 co-authorship backbone"></iframe>
+</section>
+
+
+<section>
+<h2>Static rendering</h2>
+<figure>
+  <img src="../assets/plots/house-19.png" alt="house-19 static graph">
+  <figcaption>
+    Same backbone as the interactive view, rendered as a static image for print and no-JS readers. Top 20 nodes by <code>bills_coauthored</code> are labeled — with ~150-200 nodes in the backbone, labeling all would overlap on a static image. The interactive view above labels every node.
+  </figcaption>
+</figure>
+</section>
+
+</main><footer>
+  <p>
+    Source, pipeline, and methodology:
+    <a href="https://github.com/csystm1/ph-legislative-graph">https://github.com/csystm1/ph-legislative-graph</a>.
+    Data from <a href="https://github.com/bettergovph/open-congress-data">bettergovph/open-congress-data</a>
+    (17th–19th Congress, 2016–2025).
+  </p>
+  <p>
+    Reproduced from committed parquet artifacts under <code>data/analytics/</code>.
+    No live database is required to read this site.
+  </p>
+</footer>
+</body>
+</html>

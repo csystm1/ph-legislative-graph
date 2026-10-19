@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Senate 18th — Philippine Legislative Bills Graph</title>
+<meta name="description" content="Co-authorship graph of the 18th Senate of the Philippines.">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body class="wide-view"><nav class="site-nav">
+  <a href="../index.html" data-nav="home">Overview</a>
+  <a href="../graphs/house-17.html" data-nav="house-17">House 17th</a>
+  <a href="../graphs/house-18.html" data-nav="house-18">House 18th</a>
+  <a href="../graphs/house-19.html" data-nav="house-19">House 19th</a>
+  <a href="../graphs/senate-17.html" data-nav="senate-17">Senate 17th</a>
+  <a href="../graphs/senate-18.html" data-nav="senate-18" class="active">Senate 18th</a>
+  <a href="../graphs/senate-19.html" data-nav="senate-19">Senate 19th</a>
+  <a href="../funnel.html" data-nav="funnel">Funnel</a>
+  <a href="../temporal.html" data-nav="temporal">Temporal</a>
+</nav><header>
+  <h1>Senate 18th Congress — co-authorship graph</h1>
+  <p class="tagline">
+    Legislators as nodes, co-authorship as edges. Louvain communities
+    (seed 42). Node color = community; node size = bills co-authored;
+    edge width = shared-bill count.
+  </p>
+</header>
+
+<main>
+
+<section>
+<h2>Statistics</h2>
+<table>
+  <tbody>
+    <tr><th>Nodes</th><td class="num">24</td></tr>
+    <tr><th>Edges</th><td class="num">23</td></tr>
+    <tr><th>Modularity</th><td class="num">0.315</td></tr>
+    <tr><th>Communities (n≥2)</th><td class="num">2</td></tr>
+    <tr><th>Communities (total)</th><td class="num">14</td></tr>
+    <tr><th>Isolated fraction</th><td class="num">50%</td></tr>
+  </tbody>
+</table>
+<p class="tagline"><b>Sparsity note.</b> 50% of nodes are isolated — Senate co-author data is sparse in this Congress. Isolated nodes are kept, not dropped.</p>
+</section>
+
+<section>
+<h2>Interactive graph</h2>
+<p>
+  Hover any node for the full attribute tooltip; drag to pan; scroll to zoom.
+  All legislators are labeled; zoom in to separate overlapping names.
+</p>
+<iframe class="graph-iframe" src="./senate-18-pyvis.html" height="800"
+        loading="lazy" title="senate-18 co-authorship graph"></iframe>
+</section>
+
+
+<section>
+<h2>Static rendering</h2>
+<figure>
+  <img src="../assets/plots/senate-18.png" alt="senate-18 static graph">
+  <figcaption>
+    Full graph, static rendering. Top 10 nodes by <code>bills_coauthored</code> are labeled. The interactive view above labels every node.
+  </figcaption>
+</figure>
+</section>
+
+</main><footer>
+  <p>
+    Source, pipeline, and methodology:
+    <a href="https://github.com/csystm1/ph-legislative-graph">https://github.com/csystm1/ph-legislative-graph</a>.
+    Data from <a href="https://github.com/bettergovph/open-congress-data">bettergovph/open-congress-data</a>
+    (17th–19th Congress, 2016–2025).
+  </p>
+  <p>
+    Reproduced from committed parquet artifacts under <code>data/analytics/</code>.
+    No live database is required to read this site.
+  </p>
+</footer>
+</body>
+</html>

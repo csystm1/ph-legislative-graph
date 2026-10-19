@@ -33,3 +33,6 @@ Thumbs.db
 .idea/
 
 *.part
+
+# pyvis sometimes dumps its static assets here even in remote-cdn mode
+lib/

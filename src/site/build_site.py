@@ -17,8 +17,9 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.site import charts, graphs
 from src.site.theme import CSS
-from src.utils.config import PROJECT_ROOT
+from src.utils.config import CONGRESS_SCOPE, PROJECT_ROOT
 from src.utils.io import atomic_write_text
 from src.utils.logger import get_logger
 
@@ -28,6 +29,8 @@ ANALYTICS_DIR = PROJECT_ROOT / "data" / "analytics"
 DOCS_DIR = PROJECT_ROOT / "docs"
 DOCS_ASSETS = DOCS_DIR / "assets"
 DOCS_CSS = DOCS_ASSETS / "style.css"
+DOCS_GRAPHS = DOCS_DIR / "graphs"
+DOCS_PLOTS = DOCS_ASSETS / "plots"
 DOCS_NOJEKYLL = DOCS_DIR / ".nojekyll"
 
 TEMPLATE_DIR = Path(__file__).parent / "templates"
@@ -35,15 +38,12 @@ TEMPLATE_DIR = Path(__file__).parent / "templates"
 REPO_URL = "https://github.com/csystm1/ph-legislative-graph"
 DATA_REPO_URL = "https://github.com/bettergovph/open-congress-data"
 
-# Bill totals, asserted from Phase 1-3 verification. Update here and
-# re-verify against data/analytics/graph_stats.csv if the upstream ingest
-# ever changes the corpus.
+# Bill totals, asserted from Phase 1-3 verification.
 _TOTAL_SENATE = 7_761
 _TOTAL_HOUSE = 31_629
 _TOTAL_BILLS = _TOTAL_SENATE + _TOTAL_HOUSE
 
-_CSS_PATH = "./assets/style.css"
-_ROOT = "./"
+_CHAMBERS = ("house", "senate")
 
 
 def _load(name: str) -> str:
@@ -124,14 +124,17 @@ def _render_landing(stats: pd.DataFrame, funnel: pd.DataFrame) -> str:
     return body
 
 
-def _wrap_page(*, title: str, description: str, body: str, active_nav: str) -> str:
+def _wrap(*, title: str, description: str, body: str,
+          active_nav: str, root: str, css_path: str,
+          body_class: str = "") -> str:
     head = (
         _load("head.html")
         .replace("__PAGE_TITLE__", title)
         .replace("__PAGE_DESCRIPTION__", description)
-        .replace("__CSS_PATH__", _CSS_PATH)
+        .replace("__CSS_PATH__", css_path)
+        .replace("__BODY_CLASS__", body_class)
     )
-    nav = _load("nav.html").replace("__ROOT__", _ROOT)
+    nav = _load("nav.html").replace("__ROOT__", root)
     if active_nav:
         nav = nav.replace(
             f'data-nav="{active_nav}"',
@@ -143,6 +146,255 @@ def _wrap_page(*, title: str, description: str, body: str, active_nav: str) -> s
         .replace("__DATA_REPO_URL__", DATA_REPO_URL)
     )
     return f"{head}{nav}{body}{footer}"
+
+
+_HOUSE_BACKBONE_EDGES = 500
+
+
+def _graph_view_section(chamber: str, slug: str,
+                        total_edges: int, total_nodes: int) -> str:
+    if chamber == "house":
+        density = total_edges / (total_nodes * (total_nodes - 1) / 2) if total_nodes > 1 else 0
+        return (
+            "<section>\n"
+            "<h2>Interactive backbone</h2>\n"
+            "<aside>\n"
+            f"Full House graph: <b>{total_edges:,} edges</b> across "
+            f"{total_nodes} legislators — approximately "
+            f"<b>{density:.0%} of all possible pairs</b> share "
+            "co-authorship. No browser-side rendering of that density is "
+            f"readable. Below is the <b>{_HOUSE_BACKBONE_EDGES} strongest "
+            "co-authorship pairs</b> as a readable backbone; statistics "
+            "table above reflects the full graph. Senate pages retain "
+            "full-graph interactive views.\n"
+            "</aside>\n"
+            "<p>\n"
+            "  Hover any node for the full attribute tooltip; drag to pan;\n"
+            "  scroll to zoom (labels overlap at default zoom — zooming in\n"
+            "  separates them).\n"
+            "</p>\n"
+            f'<iframe class="graph-iframe" src="./{slug}-pyvis.html" height="800"\n'
+            f'        loading="lazy" title="{slug} co-authorship backbone"></iframe>\n'
+            "</section>\n"
+        )
+    return (
+        "<section>\n"
+        "<h2>Interactive graph</h2>\n"
+        "<p>\n"
+        "  Hover any node for the full attribute tooltip; drag to pan; scroll to zoom.\n"
+        "  All legislators are labeled; zoom in to separate overlapping names.\n"
+        "</p>\n"
+        f'<iframe class="graph-iframe" src="./{slug}-pyvis.html" height="800"\n'
+        f'        loading="lazy" title="{slug} co-authorship graph"></iframe>\n'
+        "</section>\n"
+    )
+
+
+def _static_caption(chamber: str) -> str:
+    if chamber == "house":
+        return (
+            "Same backbone as the interactive view, rendered as a static "
+            "image for print and no-JS readers. Top 20 nodes by "
+            "<code>bills_coauthored</code> are labeled — with ~150-200 nodes "
+            "in the backbone, labeling all would overlap on a static image. "
+            "The interactive view above labels every node."
+        )
+    return (
+        "Full graph, static rendering. Top 10 nodes by "
+        "<code>bills_coauthored</code> are labeled. The interactive view "
+        "above labels every node."
+    )
+
+
+def _sparsity_note(chamber: str, congress: int,
+                   isolated_fraction: float, edges: int) -> str:
+    if chamber == "senate" and congress == 17:
+        return (
+            '<p class="tagline">'
+            "<b>Sparsity note.</b> Only 2 bills in the 17th Senate carried "
+            "≥2 co-authors, producing the 4 graph edges shown here. Most "
+            "nodes are isolated by construction. The graph is honest about "
+            "that, not broken — see the README's Limitations section.</p>"
+        )
+    if chamber == "senate" and isolated_fraction >= 0.4:
+        return (
+            '<p class="tagline">'
+            f"<b>Sparsity note.</b> {isolated_fraction:.0%} of nodes are "
+            "isolated — Senate co-author data is sparse in this Congress. "
+            "Isolated nodes are kept, not dropped.</p>"
+        )
+    return ""
+
+
+def _graph_body(stats: pd.DataFrame, chamber: str, congress: int) -> str:
+    row = stats[(stats.chamber == chamber) & (stats.congress == congress)].iloc[0]
+    slug = f"{chamber}-{congress}"
+    sparsity = _sparsity_note(
+        chamber, congress,
+        float(row["isolated_fraction"]), int(row["edges"]),
+    )
+    body = _load("graph.html")
+    replacements = {
+        "__CHAMBER_TITLE__": chamber.capitalize(),
+        "__CONGRESS__": str(congress),
+        "__SLUG__": slug,
+        "__NODES__": f"{int(row['nodes']):,}",
+        "__EDGES__": f"{int(row['edges']):,}",
+        "__MODULARITY__": _fmt_float(row["modularity"]),
+        "__COMMS_NT__": f"{int(row['n_communities_nontrivial'])}",
+        "__COMMS_ALL__": f"{int(row['n_communities_all'])}",
+        "__ISOLATED__": _fmt_pct(row["isolated_fraction"]),
+        "__SPARSITY_NOTE__": sparsity,
+        "__GRAPH_VIEW_SECTION__": _graph_view_section(
+            chamber, slug, int(row["edges"]), int(row["nodes"]),
+        ),
+        "__STATIC_CAPTION__": _static_caption(chamber),
+    }
+    for k, v in replacements.items():
+        body = body.replace(k, v)
+    return body
+
+
+def _write_graph_pages(stats: pd.DataFrame) -> None:
+    DOCS_GRAPHS.mkdir(parents=True, exist_ok=True)
+    DOCS_PLOTS.mkdir(parents=True, exist_ok=True)
+
+    for chamber in _CHAMBERS:
+        for congress in CONGRESS_SCOPE:
+            slug = f"{chamber}-{congress}"
+            nodes = pd.read_parquet(ANALYTICS_DIR / "nodes" / f"{slug}.parquet")
+            edges = pd.read_parquet(ANALYTICS_DIR / "edges" / f"{slug}.parquet")
+            communities = pd.read_parquet(
+                ANALYTICS_DIR / "communities" / f"{slug}.parquet"
+            )
+
+            if chamber == "senate":
+                pyvis_html, _ = graphs.render_graph_html(
+                    nodes, edges, communities,
+                )
+                pyvis_path = DOCS_GRAPHS / f"{slug}-pyvis.html"
+                atomic_write_text(pyvis_html, pyvis_path)
+                logger.info("wrote %s", pyvis_path)
+            else:
+                # House: interactive backbone of the strongest edges only.
+                # The full graph is a near-complete graph (~90% of pairs
+                # share bills); no view of that density is readable.
+                pyvis_html, n_rendered = graphs.render_graph_html(
+                    nodes, edges, communities,
+                    top_edges=_HOUSE_BACKBONE_EDGES,
+                )
+                pyvis_path = DOCS_GRAPHS / f"{slug}-pyvis.html"
+                atomic_write_text(pyvis_html, pyvis_path)
+                logger.info(
+                    "wrote %s (%d of %d edges)",
+                    pyvis_path, n_rendered, len(edges),
+                )
+
+            png_path = DOCS_PLOTS / f"{slug}.png"
+            if chamber == "house":
+                # Backbone rendering for House: 500 strongest edges only.
+                # Full 40k-edge PNG is an indistinguishable blob.
+                charts.render_graph_png(
+                    nodes, edges, communities, png_path,
+                    title=f"{chamber.capitalize()} {congress}th — backbone (top 500 edges)",
+                    top_labels=20,
+                    top_edges=500,
+                )
+            else:
+                charts.render_graph_png(
+                    nodes, edges, communities, png_path,
+                    title=f"{chamber.capitalize()} {congress}th — co-authorship",
+                    top_labels=10,
+                )
+            logger.info("wrote %s", png_path)
+
+            body = _graph_body(stats, chamber, congress)
+            page = _wrap(
+                title=f"{chamber.capitalize()} {congress}th",
+                description=(
+                    f"Co-authorship graph of the {congress}th "
+                    f"{chamber.capitalize()} of the Philippines."
+                ),
+                body=body,
+                active_nav=slug,
+                root="../",
+                css_path="../assets/style.css",
+                body_class="wide-view",
+            )
+            page_path = DOCS_GRAPHS / f"{slug}.html"
+            atomic_write_text(page, page_path)
+            logger.info("wrote %s", page_path)
+
+
+def _metrics_table(stats: pd.DataFrame, chamber: str) -> str:
+    rows = stats[stats.chamber == chamber].sort_values("congress")
+    lines = [
+        "      <table>",
+        "        <thead><tr>",
+        "          <th>Congress</th>",
+        '          <th class="num">Nodes</th>',
+        '          <th class="num">Edges</th>',
+        '          <th class="num">Modularity</th>',
+        '          <th class="num">Communities (n≥2)</th>',
+        '          <th class="num">Isolated</th>',
+        "        </tr></thead>",
+        "        <tbody>",
+    ]
+    for _, r in rows.iterrows():
+        lines.append(
+            f"          <tr><td>{int(r['congress'])}th</td>"
+            f'<td class="num">{int(r["nodes"]):,}</td>'
+            f'<td class="num">{int(r["edges"]):,}</td>'
+            f'<td class="num">{_fmt_float(r["modularity"])}</td>'
+            f'<td class="num">{int(r["n_communities_nontrivial"])}</td>'
+            f'<td class="num">{_fmt_pct(r["isolated_fraction"])}</td>'
+            "</tr>"
+        )
+    lines.append("        </tbody>")
+    lines.append("      </table>")
+    return "\n".join(lines)
+
+
+def _write_temporal_page(stats: pd.DataFrame) -> None:
+    DOCS_PLOTS.mkdir(parents=True, exist_ok=True)
+
+    for chamber in _CHAMBERS:
+        per_congress = []
+        for congress in CONGRESS_SCOPE:
+            slug = f"{chamber}-{congress}"
+            per_congress.append((
+                congress,
+                pd.read_parquet(ANALYTICS_DIR / "nodes" / f"{slug}.parquet"),
+                pd.read_parquet(ANALYTICS_DIR / "edges" / f"{slug}.parquet"),
+                pd.read_parquet(
+                    ANALYTICS_DIR / "communities" / f"{slug}.parquet"
+                ),
+            ))
+        png_path = DOCS_PLOTS / f"temporal-{chamber}.png"
+        # House panels use the same 500-edge backbone as the House pages;
+        # full-density rendering produces three indistinguishable blobs.
+        # Senate panels keep full edges — sparse enough to read, and the
+        # sparsity is the story.
+        charts.render_temporal_png(
+            per_congress, png_path, chamber=chamber,
+            top_edges=_HOUSE_BACKBONE_EDGES if chamber == "house" else None,
+        )
+        logger.info("wrote %s", png_path)
+
+    body = _load("temporal.html")
+    body = body.replace("__HOUSE_METRICS_TABLE__", _metrics_table(stats, "house"))
+    body = body.replace("__SENATE_METRICS_TABLE__", _metrics_table(stats, "senate"))
+    page = _wrap(
+        title="Temporal",
+        description="Co-authorship across the 17th-19th Congress, per chamber.",
+        body=body,
+        active_nav="temporal",
+        root="./",
+        css_path="./assets/style.css",
+        body_class="wide-view",
+    )
+    atomic_write_text(page, DOCS_DIR / "temporal.html")
+    logger.info("wrote %s", DOCS_DIR / "temporal.html")
 
 
 def _write_css() -> None:
@@ -159,7 +411,7 @@ def _ensure_nojekyll() -> None:
 
 
 def main() -> int:
-    logger.info("=== building site (landing only) ===")
+    logger.info("=== building site ===")
     for p in (
         ANALYTICS_DIR / "graph_stats.csv",
         ANALYTICS_DIR / "committee_funnel.csv",
@@ -172,11 +424,12 @@ def main() -> int:
     stats = pd.read_csv(ANALYTICS_DIR / "graph_stats.csv")
     funnel = pd.read_csv(ANALYTICS_DIR / "committee_funnel.csv")
 
+    DOCS_PLOTS.mkdir(parents=True, exist_ok=True)
     _ensure_nojekyll()
     _write_css()
 
     body = _render_landing(stats, funnel)
-    page = _wrap_page(
+    page = _wrap(
         title="Overview",
         description=(
             "Co-authorship network and committee-funnel analysis of "
@@ -184,12 +437,16 @@ def main() -> int:
         ),
         body=body,
         active_nav="home",
+        root="./",
+        css_path="./assets/style.css",
     )
-    out = DOCS_DIR / "index.html"
-    atomic_write_text(page, out)
-    logger.info("wrote %s", out)
+    atomic_write_text(page, DOCS_DIR / "index.html")
+    logger.info("wrote %s", DOCS_DIR / "index.html")
 
-    logger.info("=== site build complete (landing only) ===")
+    _write_graph_pages(stats)
+    _write_temporal_page(stats)
+
+    logger.info("=== site build complete ===")
     return 0
 
 

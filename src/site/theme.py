@@ -95,6 +95,14 @@ nav.site-nav {
 nav.site-nav a { margin-right: 1.2em; }
 nav.site-nav a.active { color: #222; font-weight: bold; }
 
+/* Graph and temporal pages use a wider content column — a 74ch body
+   squeezes a 300-node graph into ~600px, which reads as a hairball
+   regardless of node/edge styling. Prose elsewhere on the site stays
+   at 74ch for readability. */
+body.wide-view {
+  max-width: 1200px;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;
@@ -126,6 +134,11 @@ figcaption {
   border: 1px solid #ccc;
   background: #fafafa;
   margin: 1em 0;
+}
+iframe.graph-iframe {
+  width: 100%;
+  border: 1px solid #ccc;
+  display: block;
 }
 
 ul.findings { padding-left: 1.2em; }
