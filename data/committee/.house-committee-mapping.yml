@@ -1,0 +1,88 @@
+# House committee code -> official display name
+#
+# Derived from https://congress.gov.ph/committees/committee/view/{code}
+# on 2026-10-19. Names are the site's official names, title-cased for
+# readability. Type (standing/special) noted per line as a comment.
+#
+# Unresolved codes (404 on the source site, 16 bills total):
+#   J506 (13 bills) -- likely a defunct special committee
+#   K503 (1), K504 (1), K505 (1) -- possibly retired or typos
+# These fall back to the raw code as display name in parse_toml.py
+# and appear in the house_committee_missing counter. Revisit if needed.
+
+# --- Standing committees (numeric 05xx) ---
+"0502": "Agrarian Reform"                                          # standing
+"0504": "Appropriations"                                           # standing
+"0505": "Banks and Financial Intermediaries"                       # standing
+"0506": "Civil Service and Professional Regulation"                # standing
+"0507": "Constitutional Amendments"                                # standing
+"0508": "Legislative Franchises"                                   # standing
+"0510": "Energy"                                                   # standing
+"0512": "Population and Family Relations"                          # standing
+"0513": "Foreign Affairs"                                          # standing
+"0514": "Games and Amusements"                                     # standing
+"0515": "Government Enterprises and Privatization"                 # standing
+"0516": "Government Reorganization"                                # standing
+"0517": "Health"                                                   # standing
+"0518": "Housing and Urban Development"                            # standing
+"0520": "Justice"                                                  # standing
+"0521": "Labor and Employment"                                     # standing
+"0522": "Local Government"                                         # standing
+"0523": "Muslim Affairs"                                           # standing
+"0525": "National Defense and Security"                            # standing
+"0526": "Natural Resources"                                        # standing
+"0527": "People's Participation"                                   # standing
+"0528": "Public Information"                                       # standing
+"0529": "Public Order and Safety"                                  # standing
+"0530": "Public Works and Highways"                                # standing
+"0531": "Revision of Laws"                                         # standing
+"0532": "Rules"                                                    # standing
+"0533": "Rural Development"                                        # standing
+"0534": "Science and Technology"                                   # standing
+"0535": "Social Services"                                          # standing
+"0536": "Economic Affairs"                                         # standing
+"0537": "Suffrage and Electoral Reforms"                           # standing
+"0538": "Tourism"                                                  # standing
+"0539": "Trade and Industry"                                       # standing
+"0542": "Ways and Means"                                           # standing
+"0543": "Youth and Sports Development"                             # standing
+
+# --- Standing committees (alpha-prefixed) ---
+"A501": "Ecology"                                                  # standing
+"A504": "Women and Gender Equality"                                # standing
+"A506": "Veterans Affairs and Welfare"                             # standing
+"B502": "Poverty Alleviation"                                      # standing
+"B512": "Cooperatives Development"                                 # standing
+"C501": "Basic Education and Culture"                              # standing
+"C502": "Higher and Technical Education"                           # standing
+"D501": "Public Accounts"                                          # standing
+"D502": "Dangerous Drugs"                                          # standing
+"E502": "Metro Manila Development"                                 # standing
+"E504": "Information and Communications Technology"                # standing
+"E505": "Agriculture & Food"                                       # standing
+"E506": "Aquaculture and Fisheries Resources"                      # standing
+"E507": "Human Rights"                                             # standing
+"E509": "Transportation"                                           # standing
+"E510": "Micro, Small and Medium Enterprise Development"           # standing
+"E513": "Overseas Workers Affairs"                                 # standing
+"F501": "Welfare of Children"                                      # standing
+"H502": "Indigenous Cultural Communities and Indigenous Peoples"   # standing
+"H503": "Climate Change"                                           # standing
+"I501": "Sustainable Development Goals"                            # standing
+"I502": "Visayas Development"                                      # standing
+"I504": "Disaster Resilience"                                      # standing
+"I505": "Senior Citizens"                                          # standing
+"J502": "Flagship Programs and Projects"                           # standing
+
+# --- Special committees ---
+"A509": "Bases Conversion"                                         # special
+"B505": "Reforestation"                                            # special
+"B511": "East ASEAN Growth Area"                                   # special
+"B513": "Food Security"                                            # special
+"E512": "Peace, Reconciliation and Unity"                          # special
+"E515": "Land Use"                                                 # special
+"I503": "West Philippine Sea"                                      # special
+"J501": "Persons with Disabilities"                                # special
+"J504": "Strategic Intelligence"                                   # special
+"J505": "Creative Industries"                                      # special
+"K501": "Nuclear Energy"                                           # special
