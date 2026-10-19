@@ -280,10 +280,20 @@ limitations:
       Distinct unresolved: 10/19/28. Floors — do not iterate.
       outputs/house_unresolved_coauthors.csv is Congress-tagged.
   - id: house_committee_fallback
-    description: >
-      9 distinct unmapped House committee codes across 17th-19th
-      (41 rows). Fallback to code-as-name. Extending the mapping needs a
-      browser session with Cloudflare clearance; deferred to a later phase.
+    description: |
+      4 codes (J506, K503, K504, K505) return 404 on
+      congress.gov.ph/committees/committee/view/{code} (re-verified
+      2026-10-19). 16 House bills fall back to code-as-name. Possibly
+      retired committees or upstream typos; accepted as-is. Add one line
+      per code to .house-committee-mapping.yml if ever found.
+  - id: house_committee_historical_names
+    description: |
+      Committee codes persist in bill metadata after the committee is
+      renamed or retired. C503 ("Agriculture, Food & Fisheries", 17th
+      Congress) no longer appears in current listings, which show
+      "Agriculture & Food" and "Aquaculture and Fisheries Resources" as
+      separate panels. Codes are mapped to the name at time of use; the
+      mapping is a historical lookup, not a live registry.
   - id: upstream_manual_encoding
     description: "bettergovph/open-congress-data carries a manual-encoding disclaimer. HEAD 6e853ee (2025-10-16)."
 
