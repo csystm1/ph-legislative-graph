@@ -47,11 +47,14 @@
     <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
   </li>
   <li>
-    <b>Senate structure varies sharply by Congress.</b>
-    The 17th Senate's graph has only __S17_EDGES__ edges and __S17_ISOLATED__
-    of nodes isolated (no co-authorship edges at all); the 19th Senate's has
-    __S19_EDGES__ edges and __S19_ISOLATED__ isolated. Same chamber, same
-    co-authorship model — different data regime.
+    <b>Senate co-authorship is near-universal.</b>
+    Each Senate Congress spans just 24 legislators, and the co-authorship
+    graph is essentially complete: __S17_EDGES__ of 276 possible pairs in
+    the 17th, 276 of 276 in the 18th, 276 of 276 in the 19th. Every pair
+    of senators co-authored at least one bill in the 18th and 19th
+    Congresses; __S17_ISOLATED__ isolated nodes in the 17th, and none in
+    either other Congress. Bulk coauthorship motions ("all Senators
+    present be made coauthors") drive the density.
     <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
   </li>
   <li>
