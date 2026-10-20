@@ -1,4 +1,4 @@
-"""Parse 19th-Congress bill TOMLs into staging parquet.
+"""Parse 17th-19th-Congress bill TOMLs into staging parquet.
 
 Outputs (atomic):
     data/staging/bills.parquet
@@ -122,17 +122,20 @@ _TITLE_PREFIXES = (
 # Value: minimum distinct coauthor names expected from [[history]] extraction
 # (before entity resolution — resolution failures are accepted and logged).
 _SELF_CHECK_EXPECTATIONS = {
-    (17, 2124): 4,
+    (17, 2124): 3,   # Zubiri, Villanueva, Gatchalian (Ejercito is primary)
     (17, 1391): 6,
     (17, 1597): 3,
     (17, 1280): 5,
+    (17, 1365): 8,   # NEW
+    (17, 1732): 9,   # NEW
     (18, 1086): 4,
     (18, 2272): 10,
+    (18, 1241): 6,   # NEW
+    (18, 1972): 3,   # NEW
     (19, 2568): 7,
     (19, 2218): 6,
     (19, 1480): 5,
 }
-
 
 def _has_coauthor_word(s: str) -> bool:
     """True if s contains 'coauthor' / 'co-author' / 'co author' (any spacing)."""
@@ -462,6 +465,35 @@ def _first_status(d: dict) -> str | None:
     return (block[0] or {}).get("status")
 
 
+def _split_authors_raw(authors_raw) -> list[str]:
+    """Return individual 'Last, First M.' name strings from authors_raw.
+
+    Handles both corpus formats:
+    - list of "Last, First M." strings
+    - single string with alternating "Last1, First1, Last2, First2, ..."
+
+    Odd token count in string form is treated as corruption (unpaired
+    trailing token dropped, warning logged). Cross-checked against
+    senate_website_author_codes at the call site to catch mispairing.
+    """
+    if not authors_raw:
+        return []
+    if isinstance(authors_raw, list):
+        return [s.strip() for s in authors_raw if isinstance(s, str) and s.strip()]
+    if isinstance(authors_raw, str):
+        parts = [p.strip() for p in authors_raw.split(",") if p.strip()]
+        if len(parts) < 2:
+            return []
+        if len(parts) % 2 != 0:
+            logger.warning(
+                "authors_raw string has odd token count (%d); dropping trailing token",
+                len(parts),
+            )
+            parts = parts[:-1]
+        return [f"{parts[i]}, {parts[i+1]}" for i in range(0, len(parts), 2)]
+    return []
+
+
 # --- Committee map loading ------------------------------------------------
 
 def _load_yaml_flat(path: Path) -> dict:
@@ -526,7 +558,6 @@ def parse_bills(
     committee_block_used = 0
 
     # --- Senate ---
-    # --- Senate ---
     sb_dir = DOCUMENT_DIR / "sb" / str(congress)
     sb_files = sorted(sb_dir.glob("*.toml"))
     sb_total = len(sb_files)
@@ -578,9 +609,16 @@ def parse_bills(
         # --- Senate primary ---
         sources: dict[str, str] = {}
 
-        ar_name = _senate_primary_from_authors_raw(m.get("authors_raw"))
-        if ar_name:
-            pid, _method = resolve_senate_coauthor(ar_name, senate_indexes)
+        all_authors_raw = _split_authors_raw(m.get("authors_raw"))
+        if (m.get("senate_website_author_codes") and all_authors_raw
+                and len(m["senate_website_author_codes"]) != len(all_authors_raw)):
+            logger.warning(
+                "authors_raw/codes count mismatch for %s: %d names, %d codes",
+                bill_id, len(all_authors_raw), len(m["senate_website_author_codes"]),
+            )
+
+        if all_authors_raw:
+            pid, _method = resolve_senate_coauthor(all_authors_raw[0], senate_indexes)
             if pid:
                 sources["authors_raw"] = pid
 
@@ -627,15 +665,26 @@ def parse_bills(
             })
 
         # --- Senate co-authors ---
-        extracted = _senate_coauthors_from_history(d, bill_number)
-        if (congress, bill_number) in _SELF_CHECK_EXPECTATIONS:
-            want = _SELF_CHECK_EXPECTATIONS[(congress, bill_number)]
-            if len(extracted) < want:
-                logger.warning(
-                    "self-check: %dth SBN-%d yielded %d coauthor(s), expected >=%d",
-                    congress, bill_number, len(extracted), want,
-                )
         seen_pids: set[str] = {primary_pid} if primary_pid else set()
+
+        # (1) Filing-line co-authors: authors_raw[1:] (House precedent)
+        for raw_name in all_authors_raw[1:]:
+            pid, method = resolve_senate_coauthor(raw_name, senate_indexes)
+            if not pid:
+                senate_unresolved[raw_name] += 1
+                continue
+            if pid in seen_pids:
+                continue
+            seen_pids.add(pid)
+            authorship.append({
+                "bill_id": bill_id,
+                "legislator_id": pid,
+                "role": "co_author",
+                "resolution_method": f"senate_authors_raw/{method}",
+            })
+
+        # (2) History prose co-authors
+        extracted = _senate_coauthors_from_history(d, bill_number)
         for raw_name, sbn_in_action in extracted:
             if sbn_in_action != bill_number:
                 senate_coauthor_mismatches.append({
@@ -648,7 +697,7 @@ def parse_bills(
             if not pid:
                 senate_unresolved[raw_name] += 1
                 continue
-            if pid in seen_pids:
+            if pid in seen_pids:            # <-- SHARED, no reset
                 continue
             seen_pids.add(pid)
             authorship.append({
@@ -657,6 +706,16 @@ def parse_bills(
                 "role": "co_author",
                 "resolution_method": f"senate_history/{method}",
             })
+
+        # (3) Self-check after both loops — measures actual output
+        if (congress, bill_number) in _SELF_CHECK_EXPECTATIONS:
+            want = _SELF_CHECK_EXPECTATIONS[(congress, bill_number)]
+            actual = len(seen_pids) - (1 if primary_pid else 0)
+            if actual < want:
+                logger.warning(
+                    "self-check: %dth SBN-%d resolved %d coauthor(s), expected >=%d",
+                    congress, bill_number, actual, want,
+                )
 
         # --- Senate committees ---
         block = d.get("committees") or []
@@ -689,7 +748,6 @@ def parse_bills(
             if used:
                 committee_fallback_used += 1
 
-    # --- House ---
     # --- House ---
     hb_dir = DOCUMENT_DIR / "hb" / str(congress)
     hb_files = sorted(hb_dir.glob("*.toml"))
