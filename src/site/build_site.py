@@ -304,12 +304,14 @@ def _write_graph_pages(stats: pd.DataFrame) -> None:
                     title=f"{chamber.capitalize()} {congress}th — backbone (top 500 edges)",
                     top_labels=20,
                     top_edges=500,
+                    chamber=chamber,
                 )
             else:
                 charts.render_graph_png(
                     nodes, edges, communities, png_path,
                     title=f"{chamber.capitalize()} {congress}th — co-authorship",
                     top_labels=10,
+                    chamber=chamber,
                 )
             logger.info("wrote %s", png_path)
 
