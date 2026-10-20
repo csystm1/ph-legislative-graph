@@ -163,6 +163,14 @@ def _parse_query(raw_name: str) -> dict | None:
     if ", " not in n:
         return None
     last_raw, rest = n.split(", ", 1)
+
+    # Strip trailing suffix from last-name segment (e.g. "SOTTO III, VICENTE")
+    last_parts = last_raw.split()
+    while last_parts and last_parts[-1] in SUFFIXES:
+        last_parts = last_parts[:-1]
+    if last_parts:
+        last_raw = " ".join(last_parts)
+
     rtoks = rest.split()
     if len(rtoks) >= 2 and rtoks[-1] == last_raw:
         rtoks = rtoks[:-1]
@@ -341,17 +349,73 @@ def resolve_senate_coauthor(
 ) -> tuple[str | None, str]:
     """Resolve a Senate co-author name from a ``[[history]]`` action.
 
-    Senate history prose uses ``"FIRST MIDDLE LAST"`` (no comma). Rewrite
-    to ``"LAST, FIRST MIDDLE"`` before delegating. No bill-code
-    tiebreaker on this side — Senate co-authors are parsed from prose,
-    not from codes.
+    Senate history prose uses ``"FIRST MIDDLE LAST"`` (no comma), sometimes
+    with a trailing suffix (``"SOTTO III"``, ``"REVILLA JR"``), sometimes
+    with a compound surname (``"DE LIMA"``, ``"DELA ROSA"``,
+    ``"MACAPAGAL ARROYO"``), and sometimes a bare mononym
+    (``"Zubiri"``, ``"Gordon"``).
+
+    Resolution strategy:
+    - ``"LAST, FIRST"`` form passes through unchanged.
+    - Trailing suffixes (JR/SR/II/III/IV/V) are stripped.
+    - Single-token names resolve as mononyms against in-target last-name
+      tokens; ambiguity → ``ambiguous_mononym_N``.
+    - Otherwise, try last-name candidates of length 1..3 tokens, longest
+      first. Compound surnames match at n_last>=2; simple surnames at
+      n_last=1.
+
+    Returns ``(person_id, method)``. Methods from ``_resolve_by_signature``
+    are prefixed ``senate_``. Additional methods: ``empty``,
+    ``unparseable``, ``mononym``, ``ambiguous_mononym_N``.
     """
-    name = raw_name.strip()
-    if "," not in name:
-        parts = name.split()
-        if len(parts) >= 2:
-            name = f"{parts[-1]}, {' '.join(parts[:-1])}"
-    return _resolve_by_signature(name, [], indexes)
+    name = (raw_name or "").strip()
+    if not name:
+        return (None, "empty")
+
+    # Corpus has both "RAMON BONG REVILLA JR" and "RAMON BONG REVILLA, JR".
+    # The latter parses as "LAST, FIRST" with empty first-name after suffix
+    # strip and would be rejected as unparseable. Rewrite to the space form
+    # when the post-comma segment is entirely a suffix.
+    if "," in name:
+        head, tail = name.rsplit(",", 1)
+        tail_toks = tail.strip().split()
+        if tail_toks and all(t.upper() in SUFFIXES for t in tail_toks):
+            name = f"{head.strip()} {' '.join(tail_toks)}"
+
+    if "," in name:
+        return _resolve_by_signature(name, [], indexes)
+
+    parts = name.split()
+    while parts and parts[-1].upper() in SUFFIXES:
+        parts = parts[:-1]
+    if not parts:
+        return (None, "unparseable")
+
+    if len(parts) == 1:
+        token = _norm_raw(parts[0])
+        candidates = [
+            pid for pid in indexes.in_target
+            if token and token in indexes.target_info[pid]["last_tokens"]
+        ]
+        if len(candidates) == 1:
+            return (candidates[0], "mononym")
+        if len(candidates) > 1:
+            return (None, f"ambiguous_mononym_{len(candidates)}")
+        return (None, "no_candidate")
+
+    max_last = min(3, len(parts) - 1)
+    fallback: tuple[str | None, str] = (None, "no_candidate")
+    for n_last in range(max_last, 0, -1):
+        last = " ".join(parts[-n_last:])
+        first = " ".join(parts[:-n_last])
+        rewrite = f"{last}, {first}"
+        pid, method = _resolve_by_signature(rewrite, [], indexes)
+        if pid:
+            return (pid, f"senate_{method}")
+        if method.startswith("ambiguous") and fallback == (None, "no_candidate"):
+            fallback = (None, method)
+
+    return fallback
 
 
 # ---------- Self-test ----------

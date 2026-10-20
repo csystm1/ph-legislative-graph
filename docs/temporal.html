@@ -42,8 +42,8 @@
         </tr></thead>
         <tbody>
           <tr><td>17th</td><td class="num">301</td><td class="num">40,391</td><td class="num">0.095</td><td class="num">4</td><td class="num">3%</td></tr>
-          <tr><td>18th</td><td class="num">305</td><td class="num">39,755</td><td class="num">0.056</td><td class="num">4</td><td class="num">6%</td></tr>
-          <tr><td>19th</td><td class="num">316</td><td class="num">39,873</td><td class="num">0.095</td><td class="num">3</td><td class="num">6%</td></tr>
+          <tr><td>18th</td><td class="num">305</td><td class="num">39,755</td><td class="num">0.054</td><td class="num">4</td><td class="num">6%</td></tr>
+          <tr><td>19th</td><td class="num">316</td><td class="num">39,873</td><td class="num">0.097</td><td class="num">3</td><td class="num">6%</td></tr>
         </tbody>
       </table>
 <figure>
@@ -72,20 +72,22 @@
           <th class="num">Isolated</th>
         </tr></thead>
         <tbody>
-          <tr><td>17th</td><td class="num">24</td><td class="num">4</td><td class="num">0.000</td><td class="num">2</td><td class="num">83%</td></tr>
-          <tr><td>18th</td><td class="num">24</td><td class="num">23</td><td class="num">0.315</td><td class="num">2</td><td class="num">50%</td></tr>
-          <tr><td>19th</td><td class="num">24</td><td class="num">71</td><td class="num">0.089</td><td class="num">4</td><td class="num">12%</td></tr>
+          <tr><td>17th</td><td class="num">24</td><td class="num">268</td><td class="num">0.012</td><td class="num">2</td><td class="num">0%</td></tr>
+          <tr><td>18th</td><td class="num">24</td><td class="num">276</td><td class="num">0.000</td><td class="num">1</td><td class="num">0%</td></tr>
+          <tr><td>19th</td><td class="num">24</td><td class="num">276</td><td class="num">0.008</td><td class="num">2</td><td class="num">0%</td></tr>
         </tbody>
       </table>
 <figure>
   <img src="./assets/plots/temporal-senate.png"
        alt="Senate co-authorship across the 17th, 18th, 19th Congress">
   <figcaption>
-    Full graph, isolated nodes omitted. Senate-17's panel shows only
-    <b>4 edges across 4 legislators</b> — only 2 bills in the 17th Senate
-    carried ≥2 co-authors, so the graph is nearly empty by construction.
-    Senate-18 and Senate-19 show progressively denser structure. The
-    sparsity is the story, not a defect in the rendering.
+    Full graph, isolated nodes omitted. All three Senate panels show
+    complete or near-complete graphs — <b>268, 276, and 276 edges</b>
+    across 24 legislators in the 17th, 18th, and 19th Congresses, out
+    of a maximum 276 possible pairs. Every pair of senators co-authored
+    at least one bill in the 18th and 19th. Small legislative chambers
+    with frequent bulk coauthorship motions produce dense graphs; this
+    is the expected shape, not an artifact of extraction.
   </figcaption>
 </figure>
 </section>

@@ -209,20 +209,24 @@ def _static_caption(chamber: str) -> str:
 
 def _sparsity_note(chamber: str, congress: int,
                    isolated_fraction: float, edges: int) -> str:
-    if chamber == "senate" and congress == 17:
-        return (
-            '<p class="tagline">'
-            "<b>Sparsity note.</b> Only 2 bills in the 17th Senate carried "
-            "≥2 co-authors, producing the 4 graph edges shown here. Most "
-            "nodes are isolated by construction. The graph is honest about "
-            "that, not broken — see the README's Limitations section.</p>"
-        )
-    if chamber == "senate" and isolated_fraction >= 0.4:
+    """Optional per-graph explanatory note.
+
+    Fires only when a graph is unusually sparse for its chamber
+    (isolated_fraction >= 0.4). As of the co-author extraction fix, no
+    Senate or House Congress qualifies — all six graphs run at 71–89%
+    edge-density with <=6% isolated nodes. The function is retained for
+    future Congresses where data coverage may be thinner.
+
+    ``edges`` is currently unused but retained for signature stability
+    across callers.
+    """
+    del edges  # retained in signature; no current use
+    if isolated_fraction >= 0.4:
         return (
             '<p class="tagline">'
             f"<b>Sparsity note.</b> {isolated_fraction:.0%} of nodes are "
-            "isolated — Senate co-author data is sparse in this Congress. "
-            "Isolated nodes are kept, not dropped.</p>"
+            f"isolated — {chamber} co-author data is sparse in this "
+            "Congress. Isolated nodes are kept, not dropped.</p>"
         )
     return ""
 
@@ -300,12 +304,14 @@ def _write_graph_pages(stats: pd.DataFrame) -> None:
                     title=f"{chamber.capitalize()} {congress}th — backbone (top 500 edges)",
                     top_labels=20,
                     top_edges=500,
+                    chamber=chamber,
                 )
             else:
                 charts.render_graph_png(
                     nodes, edges, communities, png_path,
                     title=f"{chamber.capitalize()} {congress}th — co-authorship",
                     top_labels=10,
+                    chamber=chamber,
                 )
             logger.info("wrote %s", png_path)
 

@@ -123,17 +123,79 @@ enough to render in full.
 - **Upstream manual-encoding disclaimer** — `open-congress-data` is community-maintained
   and self-describes a manual-encoding process; parsed data inherits its
   accuracy characteristics.
-- **Senate co-author sparsity** — across the 17th–19th Senate, bills with
-  ≥ 2 co-authors are rare (17th: 2 bills; 18th: 11; 19th: 81). Under a
-  co-authorship edge model, single-co-author bills contribute zero
-  edges, so Senate graphs are sparse: senate-17 has 4 edges / 24 nodes
-  (modularity 0.0 — too sparse for Louvain to find structure) and 83%
-  isolated nodes; senate-18 has 23 edges and 50% isolated; senate-19
-  has 71 edges and 12% isolated. House graphs are dense (~40k edges
-  each, < 10% isolated). Senate community structure should be read with
-  that in mind.
+- **Senate co-authorship is near-universal** — across the 17th–19th
+  Congresses, Senate bills with ≥2 co-authors are common: 53 (17th),
+  76 (18th), 104 (19th), out of 200 / 176 / 296 Senate bills with any
+  co-author data. Under a co-authorship edge model this produces a
+  complete or near-complete graph: senate-17 has 268 of 276 possible
+  edges over 24 nodes (97.1% density, 0% isolated); senate-18 has 276
+  (100%, 0% isolated); senate-19 has 276 (100%, 0% isolated). Modularity
+  is near zero (0.012 / 0.0 / 0.008) because a complete graph admits no
+  meaningful partition — not because of sparsity. House graphs, by
+  contrast, show real community structure (modularity 0.05–0.10,
+  3–4 nontrivial communities) over a much larger 301–316-member chamber.
+  **An earlier version of this dataset reported a 17th-Congress sparsity
+  anomaly (4 edges, 2 multi-coauthor bills, 83% isolated).** That was
+  traced to co-author extraction gaps — the TOML `[[history]]` parser
+  handled only one phrasing, the Senate entity matcher mishandled
+  `FIRST MIDDLE LAST` prose (compound surnames, suffixes, mononyms), and
+  `meta.authors_raw` lists were truncated to their first name so filing-
+  line co-authors were silently dropped. All three were fixed this
+  session; see "Data quality" below.
 - **Data snapshot** — upstream HEAD `6e853ee`, 2025-10-16. Re-run
   `python -m src.ingest.fetch` to refresh.
+
+### Data quality
+
+- **Senate co-author extraction.** Senate co-authors are parsed from TOML
+  `[[history]]` block prose (string-walk, no regex). The parser handles
+  all 23 distinct co-author phrasings observed across the 17th–19th
+  Congresses: self-request letters (`intention to be made co-author`,
+  `requesting that he/she be made co-author`), passive clerk records
+  (`Senator X was made co-author`, `Senators X, Y, and Z were made
+  coauthors`), motions (`Motion of Senator X that he be made co-author`,
+  `… together with Senators [list]`, `… namely [list]`), bulk
+  (`All Senators present were made coauthors: [list]`), manifestations
+  (`Senator X manifested the desire of Senator Y …`, `Manifestation of
+  Senator X that Senator Y …`), and third-party requests
+  (`Letter from Senator X … requesting that Senator Y be included`).
+  The Senate entity matcher handles `FIRST MIDDLE LAST` prose, including
+  compound surnames, suffixes, and mononyms. Post-fix resolution floors:
+  **99.9% (17th) / 99.8% (18th) / 99.7% (19th)**. Residual: 12
+  unresolved mentions across all three Congresses — corpus typos
+  (`RIVILLA`, `TOLENTINO` without space) and extraction artifacts
+  (`… on March 13, 2018`, `… has`, `… be`). Filing-line co-authors are also 
+  extracted: `meta.authors_raw` is split into individual names 
+  (both list and string forms) and positions 1..N become co_authors 
+  with `resolution_method="senate_authors_raw/…"`, while
+  position 0 remains the primary. One source-data anomaly is logged:
+  **SBN-01470-19** lists 9 names in `authors_raw` but only 1 entry in
+  `senate_website_author_codes` — the extraction uses the fuller
+  `authors_raw` list, and the mismatch is surfaced as a warning at parse
+  time. Bulk coauthorship motions ("all Senators present were made
+  coauthors: [list]") are extracted in full, which is the primary driver
+  of the near-complete Senate graphs (276 of 276 possible edges in the
+  18th and 19th Congresses).
+
+- **Senate community structure is not meaningful.** With 276 of 276
+  possible co-authorship edges in the 18th and 19th Congresses, the
+  Senate graph is a complete clique. Modularity (~0) reflects the absence
+  of any possible partition, not a failure of the Louvain algorithm or a
+  sign of sparse data. The Senate panels on the temporal page and the
+  per-Congress graph pages are still rendered, but community detection
+  is not informative for these chambers under the current co-authorship
+  model.
+
+- **House co-author pipeline.** The House pipeline is fully auditable:
+  every raw coauthor mention either resolves to a unique legislator or
+  is logged in `outputs/house_unresolved_coauthors.csv`. Resolution
+  floors: **97.33% (17th) / 92.74% (18th) / 91.95% (19th)**. The
+  residual gap between raw mentions and curated rows is fully accounted
+  for by unresolved names plus legitimate deduplication (a House member
+  listed twice in `congress_website_coauthors_raw`, or listed both as
+  a coauthor and as the bill's primary author). No silent-drop path.
+  This contrasts with the Senate pipeline before the extraction fix,
+  where missed phrasings were silent — now both pipelines are auditable.
 
 ## Pipeline
 

@@ -1,4 +1,4 @@
-"""Parse 19th-Congress bill TOMLs into staging parquet.
+"""Parse 17th-19th-Congress bill TOMLs into staging parquet.
 
 Outputs (atomic):
     data/staging/bills.parquet
@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import collections
 import re
+import time
 import tomllib
 from pathlib import Path
 
@@ -57,6 +58,8 @@ _BILLS_COLUMNS = ["bill_id", "chamber", "congress", "bill_number", "title",
                   "long_title", "filed_date", "status", "became_ra"]
 _AUTHORSHIP_COLUMNS = ["bill_id", "legislator_id", "role", "resolution_method"]
 _COMMITTEES_COLUMNS = ["bill_id", "committee_name", "committee_type"]
+
+_PROGRESS_EVERY = 2000  # emit a progress line every N files within a chamber dir
 
 # --- History parsing: pure string walk, no regex --------------------------
 #
@@ -92,6 +95,299 @@ def _extract_name_from(action: str, start_pos: int) -> tuple[str, int]:
     name = action[start_pos:end_of_name].strip(" .,;:()")
     return name, end_of_name
 
+# --- Senate co-author extraction: pattern dispatch ------------------------
+#
+# Senate history encodes co-authorship across many phrasings in 17th-19th
+# Congresses. Extraction dispatches on action shape; each branch walks the
+# string. No regex (see note above _extract_name_from).
+
+_PROSE_WORDS = frozenset({
+    "was", "were", "is", "are", "be", "to", "will", "shall",
+    "had", "has", "have",
+})
+
+_NAME_PARTICLES = frozenset({
+    "de", "la", "del", "las", "los", "van", "von", "der", "den",
+    "di", "da", "dos", "das",
+})
+
+_TITLE_PREFIXES = (
+    "Senate President Pro Tempore ",
+    "Senate President ",
+    "Senators ",
+    "Senator ",
+)
+
+# Ground-truth bills for the self-check. Key: (congress, bill_number).
+# Value: minimum distinct coauthor names expected from [[history]] extraction
+# (before entity resolution — resolution failures are accepted and logged).
+_SELF_CHECK_EXPECTATIONS = {
+    (17, 2124): 3,   # Zubiri, Villanueva, Gatchalian (Ejercito is primary)
+    (17, 1391): 6,
+    (17, 1597): 3,
+    (17, 1280): 5,
+    (17, 1365): 8,   # NEW
+    (17, 1732): 9,   # NEW
+    (18, 1086): 4,
+    (18, 2272): 10,
+    (18, 1241): 6,   # NEW
+    (18, 1972): 3,   # NEW
+    (19, 2568): 7,
+    (19, 2218): 6,
+    (19, 1480): 5,
+}
+
+def _has_coauthor_word(s: str) -> bool:
+    """True if s contains 'coauthor' / 'co-author' / 'co author' (any spacing)."""
+    compact = "".join(c for c in s if c.isalpha()).lower()
+    return "coauthor" in compact
+
+
+def _find_sbn(action: str, from_pos: int = 0) -> tuple[int | None, int]:
+    """Find first SBN-N (N digits) at/after from_pos; return (N, end_pos)."""
+    idx = action.find("SBN-", from_pos)
+    if idx == -1:
+        return None, -1
+    num_start = idx + 4
+    num_end = num_start
+    while num_end < len(action) and action[num_end].isdigit():
+        num_end += 1
+    if num_end == num_start:
+        return None, -1
+    return int(action[num_start:num_end]), num_end
+
+
+def _extract_allcaps_name_list_from(action: str, start_pos: int) -> tuple[list[str], int]:
+    """Walk a comma/and-separated ALL-CAPS name list from start_pos."""
+    names: list[str] = []
+    pos = start_pos
+    name_start = pos
+    name_end = pos
+    while pos < len(action):
+        tok_end = pos
+        while tok_end < len(action) and action[tok_end] not in " \t":
+            tok_end += 1
+        word = action[pos:tok_end]
+        stripped = word.strip(".,;:()")
+        if not stripped:
+            # Advance at least one char, or we spin forever when pos
+            # lands on a space (tok_end == pos → empty word → no progress).
+            pos = tok_end if tok_end > pos else pos + 1
+            continue
+        is_separator = stripped.lower() in ("and", "or")
+        is_prose = (
+            stripped[0].islower()
+            and len(stripped) >= 4
+            and not is_separator
+        )
+        if is_prose:
+            break
+        if is_separator:
+            if name_end > name_start:
+                nm = action[name_start:name_end].strip(" .,;:()")
+                if nm:
+                    names.append(nm)
+            name_start = tok_end
+            while name_start < len(action) and action[name_start] in " \t":
+                name_start += 1
+            name_end = name_start
+            pos = tok_end if tok_end > pos else pos + 1
+            continue
+        name_end = tok_end
+        if word.endswith((",", ";", ":")):
+            nm = action[name_start:name_end].strip(" .,;:()")
+            if nm:
+                names.append(nm)
+            name_start = tok_end
+            while name_start < len(action) and action[name_start] in " \t":
+                name_start += 1
+            name_end = name_start
+        pos = tok_end
+        while pos < len(action) and action[pos] in " \t":
+            pos += 1
+    if name_end > name_start:
+        nm = action[name_start:name_end].strip(" .,;:()")
+        if nm:
+            names.append(nm)
+    return names, name_end
+
+
+def _clean_titled_piece(piece: str) -> str:
+    """Strip title prefixes and truncate at first lowercase prose word."""
+    piece = piece.strip(" .,;:()")
+    for prefix in _TITLE_PREFIXES:
+        if piece.startswith(prefix):
+            piece = piece[len(prefix):].strip(" .,;:()")
+            break
+    words = piece.split()
+    for i, w in enumerate(words):
+        w_clean = w.strip(".,;:()")
+        if (
+            w_clean
+            and w_clean[0].islower()
+            and len(w_clean) >= 3
+            and w_clean.lower() not in _NAME_PARTICLES
+        ):
+            words = words[:i]
+            break
+    return " ".join(words)
+
+
+def _extract_titled_name_list_from(action: str, start_pos: int) -> tuple[list[str], int]:
+    """Walk a comma/and-separated Title Case name list from start_pos."""
+    end = len(action)
+    for i in range(start_pos, len(action)):
+        if action[i] == ";":
+            end = i
+            break
+    body = action[start_pos:end]
+    body = body.replace(" and ", ", ")
+    pieces = [p.strip() for p in body.split(",") if p.strip()]
+    names = [_clean_titled_piece(p) for p in pieces]
+    names = [n for n in names if n]
+    return names, end
+
+
+def _extract_name_list_any(action: str, start_pos: int) -> tuple[list[str], int]:
+    """Dispatch ALL-CAPS vs Title Case list walker on the first token."""
+    tok_end = start_pos
+    while tok_end < len(action) and action[tok_end] not in " \t":
+        tok_end += 1
+    word = action[start_pos:tok_end].strip(".,;:()")
+    if not word:
+        return [], start_pos
+    if word.isupper():
+        return _extract_allcaps_name_list_from(action, start_pos)
+    return _extract_titled_name_list_from(action, start_pos)
+
+
+def _strip_trailing_verb(name: str) -> str:
+    changed = True
+    while changed:
+        changed = False
+        for tail in (" was", " were", " is", " are", " be", " to", " will", " shall", " on"):
+            if name.endswith(tail):
+                name = name[:-len(tail)].rstrip()
+                changed = True
+                break
+    return name
+
+
+def _extract_coauthors_from_action(action: str) -> list[str]:
+    """Return coauthor raw names from one history action; [] if none."""
+    if not _has_coauthor_word(action):
+        return []
+
+    # ---- Letter from Senator: dispatch on the suffix clause ----
+    if "Letter from Senator " in action:
+        m = "informing that Senators "
+        idx = action.find(m)
+        if idx != -1:
+            extracted, _ = _extract_name_list_any(action, idx + len(m))
+            return extracted
+        m = "requesting that Senator "
+        idx = action.find(m)
+        if idx != -1:
+            nm, _ = _extract_name_from(action, idx + len(m))
+            return [_strip_trailing_verb(nm)] if nm else []
+        m = "Letter from Senator "
+        idx = action.find(m)
+        if idx != -1:
+            nm, _ = _extract_name_from(action, idx + len(m))
+            return [_strip_trailing_verb(nm)] if nm else []
+        return []
+
+    # ---- Passive plural: "Senators X, Y, Z were made coauthors" ----
+    if action.startswith("Senators "):
+        extracted, _ = _extract_name_list_any(action, len("Senators "))
+        return extracted
+
+    # ---- Passive singular: "Senator X was made co-author" ----
+    if action.startswith("Senator ") and " was made " in action:
+        nm, _ = _extract_name_from(action, len("Senator "))
+        nm = _strip_trailing_verb(nm)
+        return [nm] if nm else []
+
+    # ---- Motion: "Motion of Senator X [that ... | namely ... | together with ...]" ----
+    m = "Motion of Senator "
+    idx = action.find(m)
+    if idx != -1:
+        names: list[str] = []
+        nm_x, nm_x_end = _extract_name_from(action, idx + len(m))
+        nm_x = _strip_trailing_verb(nm_x)
+        if nm_x:
+            names.append(nm_x)
+        namely_idx = action.find("namely ", nm_x_end)
+        if namely_idx != -1:
+            extracted, _ = _extract_name_list_any(action, namely_idx + len("namely "))
+            names.extend(extracted)
+        tw = "together with Senators "
+        tw_idx = action.find(tw, nm_x_end)
+        if tw_idx != -1:
+            extracted, _ = _extract_name_list_any(action, tw_idx + len(tw))
+            names.extend(extracted)
+        else:
+            tw_sg = "together with Senator "
+            tw_sg_idx = action.find(tw_sg, nm_x_end)
+            if tw_sg_idx != -1:
+                nm_y, _ = _extract_name_from(action, tw_sg_idx + len(tw_sg))
+                nm_y = _strip_trailing_verb(nm_y)
+                if nm_y:
+                    names.append(nm_y)
+        return names
+
+    # ---- Bulk: "All Senators present were made coauthors: [list]" ----
+    if "All Senators present" in action:
+        m = "were made coauthors: "
+        idx = action.find(m)
+        if idx != -1:
+            list_start = idx + len(m)
+            if action[list_start:list_start + len("Senators ")] == "Senators ":
+                list_start += len("Senators ")
+            extracted, _ = _extract_name_list_any(action, list_start)
+            return extracted
+        return []
+
+    # ---- Manifestation of another: "Manifestation of Senator X that Senator Y ..." ----
+    if "Manifestation of Senator " in action:
+        m = "that Senator "
+        idx = action.find(m)
+        if idx != -1:
+            nm_y, _ = _extract_name_from(action, idx + len(m))
+            nm_y = _strip_trailing_verb(nm_y)
+            return [nm_y] if nm_y else []
+        return []
+
+    # ---- Manifestation by: "Senator X manifested [that ... | the desire of Senator Y ...]" ----
+    if action.startswith("Senator ") and " manifested " in action:
+        nm_x, nm_x_end = _extract_name_from(action, len("Senator "))
+        nm_x = _strip_trailing_verb(nm_x)
+        if not nm_x:
+            return []
+        m = "desire of Senator "
+        idx = action.find(m, nm_x_end)
+        if idx != -1:
+            nm_y, _ = _extract_name_from(action, idx + len(m))
+            nm_y = _strip_trailing_verb(nm_y)
+            return [nm_y] if nm_y else []
+        return [nm_x]
+
+    return []
+
+
+def _senate_coauthors_from_history(d: dict, bill_number: int) -> list[tuple[str, int]]:
+    """[(raw_name, sbn)] from all observed co-author phrasings in [[history]]."""
+    out: list[tuple[str, int]] = []
+    for h in d.get("history") or []:
+        action = h.get("action") or ""
+        if not _has_coauthor_word(action):
+            continue
+        sbn, _ = _find_sbn(action)
+        if sbn is None:
+            sbn = bill_number
+        for name in _extract_coauthors_from_action(action):
+            out.append((name, sbn))
+    return out
 
 _RE_RA_MENTION = re.compile(
     r"(?:Republic Act\s+No\.?\s+|RA\s+No\.?\s+|R\.A\.\s+No\.?\s+)(\d+)",
@@ -152,48 +448,6 @@ def _senate_primary_from_history(d: dict) -> str | None:
     return None
 
 
-def _senate_coauthors_from_history(d: dict) -> list[tuple[str, int]]:
-    """[(raw_name, sbn)] from ``Letter from Senator ... intention to ... SBN-N``."""
-    out: list[tuple[str, int]] = []
-    for h in d.get("history") or []:
-        action = h.get("action") or ""
-        # Fast prefilter — no false positives, keeps the walk off most actions
-        if "Letter from Senator " not in action:
-            continue
-        if "intention to" not in action:
-            continue
-        if "SBN-" not in action:
-            continue
-
-        ns = action.find("Letter from Senator ") + len("Letter from Senator ")
-        name, name_end = _extract_name_from(action, ns)
-        if not name:
-            continue
-
-        intent_idx = action.find("intention to", name_end)
-        if intent_idx == -1:
-            continue
-        sbn_idx = action.find("SBN-", intent_idx)
-        if sbn_idx == -1:
-            continue
-        num_start = sbn_idx + 4
-        num_end = num_start
-        while num_end < len(action) and action[num_end].isdigit():
-            num_end += 1
-        if num_end == num_start:
-            continue
-        sbn = int(action[num_start:num_end])
-
-        # "co-author" / "coauthor" / "co author" between "intention to" and "SBN-"
-        between = action[intent_idx:sbn_idx].lower()
-        compact = "".join(c for c in between if c.isalpha())
-        if "coauthor" not in compact:
-            continue
-
-        out.append((name, sbn))
-    return out
-
-
 def _check_became_ra(d: dict) -> bool:
     """Conservative: True only if a history action explicitly names an RA number."""
     for h in d.get("history") or []:
@@ -209,6 +463,35 @@ def _first_status(d: dict) -> str | None:
     if len(block) > 1:
         logger.debug("bill has %d status entries; using first", len(block))
     return (block[0] or {}).get("status")
+
+
+def _split_authors_raw(authors_raw) -> list[str]:
+    """Return individual 'Last, First M.' name strings from authors_raw.
+
+    Handles both corpus formats:
+    - list of "Last, First M." strings
+    - single string with alternating "Last1, First1, Last2, First2, ..."
+
+    Odd token count in string form is treated as corruption (unpaired
+    trailing token dropped, warning logged). Cross-checked against
+    senate_website_author_codes at the call site to catch mispairing.
+    """
+    if not authors_raw:
+        return []
+    if isinstance(authors_raw, list):
+        return [s.strip() for s in authors_raw if isinstance(s, str) and s.strip()]
+    if isinstance(authors_raw, str):
+        parts = [p.strip() for p in authors_raw.split(",") if p.strip()]
+        if len(parts) < 2:
+            return []
+        if len(parts) % 2 != 0:
+            logger.warning(
+                "authors_raw string has odd token count (%d); dropping trailing token",
+                len(parts),
+            )
+            parts = parts[:-1]
+        return [f"{parts[i]}, {parts[i+1]}" for i in range(0, len(parts), 2)]
+    return []
 
 
 # --- Committee map loading ------------------------------------------------
@@ -276,7 +559,18 @@ def parse_bills(
 
     # --- Senate ---
     sb_dir = DOCUMENT_DIR / "sb" / str(congress)
-    for f in sorted(sb_dir.glob("*.toml")):
+    sb_files = sorted(sb_dir.glob("*.toml"))
+    sb_total = len(sb_files)
+    sb_start = time.monotonic()
+    logger.info("  sb/%d: parsing %d files", congress, sb_total)
+    for i, f in enumerate(sb_files, 1):
+        if i % _PROGRESS_EVERY == 0 or i == sb_total:
+            elapsed = time.monotonic() - sb_start
+            rate = i / elapsed if elapsed > 0 else 0.0
+            logger.info(
+                "  sb/%d: %d/%d (%.1f%%) %.0fs, %.1f files/s",
+                congress, i, sb_total, 100.0 * i / sb_total, elapsed, rate,
+            )
         d = tomllib.loads(f.read_text(encoding="utf-8"))
         m = d.get("meta") or {}
 
@@ -315,9 +609,16 @@ def parse_bills(
         # --- Senate primary ---
         sources: dict[str, str] = {}
 
-        ar_name = _senate_primary_from_authors_raw(m.get("authors_raw"))
-        if ar_name:
-            pid, _method = resolve_senate_coauthor(ar_name, senate_indexes)
+        all_authors_raw = _split_authors_raw(m.get("authors_raw"))
+        if (m.get("senate_website_author_codes") and all_authors_raw
+                and len(m["senate_website_author_codes"]) != len(all_authors_raw)):
+            logger.warning(
+                "authors_raw/codes count mismatch for %s: %d names, %d codes",
+                bill_id, len(all_authors_raw), len(m["senate_website_author_codes"]),
+            )
+
+        if all_authors_raw:
+            pid, _method = resolve_senate_coauthor(all_authors_raw[0], senate_indexes)
             if pid:
                 sources["authors_raw"] = pid
 
@@ -365,14 +666,9 @@ def parse_bills(
 
         # --- Senate co-authors ---
         seen_pids: set[str] = {primary_pid} if primary_pid else set()
-        for raw_name, sbn_in_action in _senate_coauthors_from_history(d):
-            if sbn_in_action != bill_number:
-                senate_coauthor_mismatches.append({
-                    "bill_id": bill_id,
-                    "file_bill_number": bill_number,
-                    "action_sbn": sbn_in_action,
-                    "raw_name": raw_name,
-                })
+
+        # (1) Filing-line co-authors: authors_raw[1:] (House precedent)
+        for raw_name in all_authors_raw[1:]:
             pid, method = resolve_senate_coauthor(raw_name, senate_indexes)
             if not pid:
                 senate_unresolved[raw_name] += 1
@@ -384,8 +680,42 @@ def parse_bills(
                 "bill_id": bill_id,
                 "legislator_id": pid,
                 "role": "co_author",
+                "resolution_method": f"senate_authors_raw/{method}",
+            })
+
+        # (2) History prose co-authors
+        extracted = _senate_coauthors_from_history(d, bill_number)
+        for raw_name, sbn_in_action in extracted:
+            if sbn_in_action != bill_number:
+                senate_coauthor_mismatches.append({
+                    "bill_id": bill_id,
+                    "file_bill_number": bill_number,
+                    "action_sbn": sbn_in_action,
+                    "raw_name": raw_name,
+                })
+            pid, method = resolve_senate_coauthor(raw_name, senate_indexes)
+            if not pid:
+                senate_unresolved[raw_name] += 1
+                continue
+            if pid in seen_pids:            # <-- SHARED, no reset
+                continue
+            seen_pids.add(pid)
+            authorship.append({
+                "bill_id": bill_id,
+                "legislator_id": pid,
+                "role": "co_author",
                 "resolution_method": f"senate_history/{method}",
             })
+
+        # (3) Self-check after both loops — measures actual output
+        if (congress, bill_number) in _SELF_CHECK_EXPECTATIONS:
+            want = _SELF_CHECK_EXPECTATIONS[(congress, bill_number)]
+            actual = len(seen_pids) - (1 if primary_pid else 0)
+            if actual < want:
+                logger.warning(
+                    "self-check: %dth SBN-%d resolved %d coauthor(s), expected >=%d",
+                    congress, bill_number, actual, want,
+                )
 
         # --- Senate committees ---
         block = d.get("committees") or []
@@ -420,7 +750,18 @@ def parse_bills(
 
     # --- House ---
     hb_dir = DOCUMENT_DIR / "hb" / str(congress)
-    for f in sorted(hb_dir.glob("*.toml")):
+    hb_files = sorted(hb_dir.glob("*.toml"))
+    hb_total = len(hb_files)
+    hb_start = time.monotonic()
+    logger.info("  hb/%d: parsing %d files", congress, hb_total)
+    for i, f in enumerate(hb_files, 1):
+        if i % _PROGRESS_EVERY == 0 or i == hb_total:
+            elapsed = time.monotonic() - hb_start
+            rate = i / elapsed if elapsed > 0 else 0.0
+            logger.info(
+                "  hb/%d: %d/%d (%.1f%%) %.0fs, %.1f files/s",
+                congress, i, hb_total, 100.0 * i / hb_total, elapsed, rate,
+            )
         d = tomllib.loads(f.read_text(encoding="utf-8"))
         m = d.get("meta") or {}
 

@@ -61,22 +61,25 @@
     <b>House graphs are dense but weakly modular.</b>
     Each 17th–19th House graph spans 301–316 legislators and
     39,755–40,391 co-authorship edges, with Louvain modularity between
-    0.056 and 0.095. The signal is broad overlap
+    0.054 and 0.097. The signal is broad overlap
     between blocs, not clean partition into them.
     <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
   </li>
   <li>
-    <b>Senate structure varies sharply by Congress.</b>
-    The 17th Senate's graph has only 4 edges and 83%
-    of nodes isolated (no co-authorship edges at all); the 19th Senate's has
-    71 edges and 12% isolated. Same chamber, same
-    co-authorship model — different data regime.
+    <b>Senate co-authorship is near-universal.</b>
+    Each Senate Congress spans just 24 legislators, and the co-authorship
+    graph is essentially complete: 268 of 276 possible pairs in
+    the 17th, 276 of 276 in the 18th, 276 of 276 in the 19th. Every pair
+    of senators co-authored at least one bill in the 18th and 19th
+    Congresses; 0% isolated nodes in the 17th, and none in
+    either other Congress. Bulk coauthorship motions ("all Senators
+    present be made coauthors") drive the density.
     <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
   </li>
   <li>
     <b>High modularity on a sparse graph is not evidence of coalition structure.</b>
-    Senate-18 has the highest modularity in the corpus (0.315) — but
-    that rests on 23 edges across 24 nodes. It is
+    Senate-18 has the highest modularity in the corpus (0.000) — but
+    that rests on 276 edges across 24 nodes. It is
     what Louvain returns when there is almost nothing to partition.
     <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
   </li>
@@ -115,11 +118,11 @@
   </thead>
   <tbody>
       <tr><td>House</td><td>17th</td><td class="num">301</td><td class="num">40,391</td><td class="num">0.095</td><td class="num">4</td><td class="num">3%</td><td><a href="./graphs/house-17.html">view graph</a></td></tr>
-      <tr><td>House</td><td>18th</td><td class="num">305</td><td class="num">39,755</td><td class="num">0.056</td><td class="num">4</td><td class="num">6%</td><td><a href="./graphs/house-18.html">view graph</a></td></tr>
-      <tr><td>House</td><td>19th</td><td class="num">316</td><td class="num">39,873</td><td class="num">0.095</td><td class="num">3</td><td class="num">6%</td><td><a href="./graphs/house-19.html">view graph</a></td></tr>
-      <tr><td>Senate</td><td>17th</td><td class="num">24</td><td class="num">4</td><td class="num">0.000</td><td class="num">2</td><td class="num">83%</td><td><a href="./graphs/senate-17.html">view graph</a></td></tr>
-      <tr><td>Senate</td><td>18th</td><td class="num">24</td><td class="num">23</td><td class="num">0.315</td><td class="num">2</td><td class="num">50%</td><td><a href="./graphs/senate-18.html">view graph</a></td></tr>
-      <tr><td>Senate</td><td>19th</td><td class="num">24</td><td class="num">71</td><td class="num">0.089</td><td class="num">4</td><td class="num">12%</td><td><a href="./graphs/senate-19.html">view graph</a></td></tr>
+      <tr><td>House</td><td>18th</td><td class="num">305</td><td class="num">39,755</td><td class="num">0.054</td><td class="num">4</td><td class="num">6%</td><td><a href="./graphs/house-18.html">view graph</a></td></tr>
+      <tr><td>House</td><td>19th</td><td class="num">316</td><td class="num">39,873</td><td class="num">0.097</td><td class="num">3</td><td class="num">6%</td><td><a href="./graphs/house-19.html">view graph</a></td></tr>
+      <tr><td>Senate</td><td>17th</td><td class="num">24</td><td class="num">268</td><td class="num">0.012</td><td class="num">2</td><td class="num">0%</td><td><a href="./graphs/senate-17.html">view graph</a></td></tr>
+      <tr><td>Senate</td><td>18th</td><td class="num">24</td><td class="num">276</td><td class="num">0.000</td><td class="num">1</td><td class="num">0%</td><td><a href="./graphs/senate-18.html">view graph</a></td></tr>
+      <tr><td>Senate</td><td>19th</td><td class="num">24</td><td class="num">276</td><td class="num">0.008</td><td class="num">2</td><td class="num">0%</td><td><a href="./graphs/senate-19.html">view graph</a></td></tr>
 
   </tbody>
 </table>

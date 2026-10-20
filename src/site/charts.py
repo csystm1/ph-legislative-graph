@@ -19,6 +19,13 @@ import pandas as pd  # noqa: E402
 
 from src.site.theme import COMMUNITY_COLORS, COMMUNITY_FALLBACK  # noqa: E402
 
+from collections import Counter  # add near top imports
+
+
+_PARTICLES = {"de", "dela", "del", "la", "las", "los", "di", "van", "von",
+              "der", "den", "dos", "das", "y"}
+_SUFFIXES = {"JR", "JR.", "SR", "SR.", "II", "III", "IV", "V"}
+
 _MIN_SIZE = 20.0
 _MAX_SIZE = 140.0
 
@@ -66,9 +73,74 @@ def _graph_from_frames(nodes: pd.DataFrame, edges: pd.DataFrame,
     return G, merged.set_index("legislator_id")
 
 
+def _surname_and_first(full_name: str) -> tuple[str, str]:
+    """Return (first_token, surname) from full_name.
+
+    Handles compound surnames via lowercase particles (dela Rosa, de Lima).
+    Walks backward from the last token, absorbing any lowercase particle
+    (``dela``, ``de``, ``del``, ``la``) into the surname. Capitalized middle
+    tokens (Schramm, Martin, Macapagal) are treated as given names and
+    dropped from the label — imperfect for capitalized compounds like
+    ``Macapagal Arroyo`` but correct for every current 17th-19th senator.
+    """
+    if not full_name:
+        return "", ""
+    parts = full_name.split()
+    while parts and parts[-1].upper().rstrip(".") in _SUFFIXES:
+        parts = parts[:-1]
+    if not parts:
+        return "", ""
+    first = parts[0]
+    if len(parts) == 1:
+        return first, ""
+    surname_parts = [parts[-1]]
+    i = len(parts) - 2
+    while i > 0 and parts[i].lower() in _PARTICLES:
+        surname_parts.insert(0, parts[i])
+        i -= 1
+    return first, " ".join(surname_parts)
+
+
+def _short_label(full_name: str) -> str:
+    """'Ronald dela Rosa' → 'Ronald dela Rosa'.
+
+    'Aquilino Martin de la Llana Pimentel III' → 'Aquilino Pimentel'.
+    Compound surnames preserved; middle names and suffixes dropped."""
+    first, surname = _surname_and_first(full_name)
+    if not first and not surname:
+        return full_name or ""
+    return f"{first} {surname}".strip() if surname else first
+
+
+def _senate_labels(merged_by_id: pd.DataFrame, node_ids: list[str]) -> dict[str, str]:
+    """First+Last labels for a Senate graph, collision-aware."""
+    labels = {lid: _short_label(str(merged_by_id.loc[lid, "full_name"]))
+              for lid in node_ids}
+    counts = Counter(labels.values())
+    collided = {lbl for lbl, c in counts.items() if c > 1}
+    if collided:
+        for lid, lbl in labels.items():
+            if lbl in collided:
+                full = str(merged_by_id.loc[lid, "full_name"])
+                first, surname = _surname_and_first(full)
+                mid_parts = full.split()[1:-1] if len(full.split()) > 2 else []
+                mid_initial = next(
+                    (p[0] for p in mid_parts
+                     if p and p[0].isupper() and p not in _SUFFIXES),
+                    "",
+                )
+                labels[lid] = (
+                    f"{first} {mid_initial}. {surname}" if mid_initial
+                    else f"{first} {surname}"
+                )
+    return labels
+
+
 def _draw_graph(ax, G: nx.Graph, merged_by_id: pd.DataFrame, *,
                 title: str, top_labels: int = 0,
-                fig_font: float = 8.0) -> None:
+                fig_font: float = 8.0,
+                layout: str = "spring",
+                all_labels: dict[str, str] | None = None) -> None:
     ax.set_facecolor("#fafafa")
 
     if G.number_of_nodes() == 0:
@@ -76,14 +148,21 @@ def _draw_graph(ax, G: nx.Graph, merged_by_id: pd.DataFrame, *,
         ax.set_axis_off()
         return
 
-    pos = nx.spring_layout(G, seed=42, k=1.2, iterations=80)
+    if layout == "circular":
+        pos = nx.circular_layout(G)
+    else:
+        pos = nx.spring_layout(G, seed=42, k=1.2, iterations=80)
+
+    edge_alpha = 0.15
+    edge_lw = 0.35 if layout == "circular" else 0.5
 
     edge_x, edge_y = [], []
     for u, v in G.edges():
         if u in pos and v in pos:
             edge_x.extend([pos[u][0], pos[v][0], None])
             edge_y.extend([pos[u][1], pos[v][1], None])
-    ax.plot(edge_x, edge_y, color="#888888", alpha=0.15, linewidth=0.5, zorder=1)
+    ax.plot(edge_x, edge_y, color="#888888", alpha=edge_alpha,
+            linewidth=edge_lw, zorder=1)
 
     nids = list(G.nodes())
     node_x = [pos[n][0] for n in nids]
@@ -93,7 +172,31 @@ def _draw_graph(ax, G: nx.Graph, merged_by_id: pd.DataFrame, *,
     ax.scatter(node_x, node_y, c=node_c, s=node_s, edgecolors="#333333",
                linewidths=0.5, alpha=0.85, zorder=2)
 
-    if top_labels > 0:
+    if all_labels is not None:
+        # All-nodes labeling for circular layout: place text outside the
+        # ring, with horizontal alignment chosen by quadrant so labels
+        # never cross the ring into the graph interior.
+        for lid in nids:
+            if lid not in all_labels or lid not in pos:
+                continue
+            x, y = pos[lid]
+            r = math.hypot(x, y) or 1.0
+            ux, uy = x / r, y / r
+            lx, ly = x + 0.10 * ux, y + 0.10 * uy
+            angle = math.atan2(y, x)
+            if -math.pi / 4 <= angle <= math.pi / 4:
+                ha, va = "left", "center"
+            elif math.pi / 4 < angle <= 3 * math.pi / 4:
+                ha, va = "center", "bottom"
+            elif angle > 3 * math.pi / 4 or angle < -3 * math.pi / 4:
+                ha, va = "right", "center"
+            else:
+                ha, va = "center", "top"
+            ax.annotate(all_labels[lid], (lx, ly), fontsize=fig_font,
+                        ha=ha, va=va, zorder=3)
+        ax.set_xlim(-1.35, 1.35)
+        ax.set_ylim(-1.35, 1.35)
+    elif top_labels > 0:
         label_rows = (
             merged_by_id.sort_values("bills_coauthored", ascending=False)
             .head(top_labels)
@@ -120,6 +223,7 @@ def render_graph_png(
     title: str,
     top_labels: int = 10,
     top_edges: int | None = None,
+    chamber: str | None = None,
 ) -> None:
     if top_edges is not None and top_edges < len(edges):
         edges = edges.nlargest(top_edges, "weight").reset_index(drop=True)
@@ -130,9 +234,19 @@ def render_graph_png(
         ].reset_index(drop=True)
 
     G, merged_by_id = _graph_from_frames(nodes, edges, communities)
-    fig, ax = plt.subplots(figsize=(8, 6), dpi=130)
-    fig.patch.set_facecolor("white")
-    _draw_graph(ax, G, merged_by_id, title=title, top_labels=top_labels)
+
+    if chamber == "senate":
+        # Dense near-clique — circular layout, all nodes labeled.
+        all_labels = _senate_labels(merged_by_id, list(G.nodes()))
+        fig, ax = plt.subplots(figsize=(10, 10), dpi=140)
+        fig.patch.set_facecolor("white")
+        _draw_graph(ax, G, merged_by_id, title=title, top_labels=0,
+                    fig_font=7.5, layout="circular", all_labels=all_labels)
+    else:
+        fig, ax = plt.subplots(figsize=(8, 6), dpi=130)
+        fig.patch.set_facecolor("white")
+        _draw_graph(ax, G, merged_by_id, title=title, top_labels=top_labels)
+
     fig.tight_layout()
     _save_atomic(fig, out_path)
     plt.close(fig)
