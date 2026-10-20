@@ -71,16 +71,20 @@
     graph is essentially complete: 268 of 276 possible pairs in
     the 17th, 276 of 276 in the 18th, 276 of 276 in the 19th. Every pair
     of senators co-authored at least one bill in the 18th and 19th
-    Congresses; 0% isolated nodes in the 17th, and none in
-    either other Congress. Bulk coauthorship motions ("all Senators
+    Congresses; isolation is negligible: 0% in the 17th, 
+    and zero in both the 18th and 19th. Bulk coauthorship motions ("all Senators
     present be made coauthors") drive the density.
     <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
   </li>
   <li>
-    <b>High modularity on a sparse graph is not evidence of coalition structure.</b>
-    Senate-18 has the highest modularity in the corpus (0.000) — but
-    that rests on 276 edges across 24 nodes. It is
-    what Louvain returns when there is almost nothing to partition.
+    <b>House graphs carry the only meaningful community signal.</b>
+    Senate co-authorship graphs are complete or nearly complete cliques
+    (268–276 of 276 possible pairs per Congress), so Louvain returns
+    modularity ≈ 0 by definition. The interpretable community structure
+    in this corpus lives on the House side — 3–4 nontrivial communities
+    per Congress at modularity 0.054–0.097, reflecting real bloc overlap
+    in a 301–316-member chamber. Senate modularity values should not be
+    read as evidence of absence of coalition structure.
     <small class="source">source: <code>data/analytics/graph_stats.csv</code></small>
   </li>
   <li>
